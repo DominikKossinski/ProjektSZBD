@@ -1,6 +1,7 @@
 language: java
 sudo: true
 dist: trusty
+install: true
 jdk: oraclejdk9
 addons:
   apt:
