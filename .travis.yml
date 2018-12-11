@@ -1,7 +1,7 @@
 language: java
 sudo: true
 dist: trusty
-install: true
+install: mvn clean install -P-quality-checks -DskipTests
 jdk: oraclejdk9
 addons:
   apt:
@@ -10,7 +10,6 @@ addons:
 
 script:
 - clear
-- mvn clean install --settings src/test/mvnsettings.xml
 notifications:
   email:
     on_success: always
