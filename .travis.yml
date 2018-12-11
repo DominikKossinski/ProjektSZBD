@@ -10,7 +10,7 @@ addons:
 
 script:
 - clear
-- mvn clean install --settings test/mvnsettings.xml
+- mvn clean install --settings src/test/mvnsettings.xml
 notifications:
   email:
     on_success: always
