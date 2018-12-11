@@ -9,7 +9,7 @@ addons:
 install: mvn clean install -P-quality-checks -DskipTests
 script:
 - clear
-- mvn install
+- mvn clean install --settings test/mvnsettings.xml
 notifications:
   email:
     on_success: always
