@@ -1,15 +1,16 @@
 language: java
 sudo: true
 dist: trusty
-
+install: true
 jdk: oraclejdk9
 addons:
   apt:
     packages:
     - oracle-java9-installer
-before_install: mvn install:install-file -Dfile=src/lib/ojdbc7.jar  -DgroupId=com.oracle -DartifactId=ojdbc7 -Dversion=12.1.0.1 -Dpackaging=jar
-install: mvn install
+script:
+- mvn install:install-file -Dfile=src/lib/ojdbc7.jar  -DgroupId=com.oracle -DartifactId=ojdbc7 -Dversion=12.1.0.1 -Dpackaging=jar
+- mvn install
 notifications:
   email:
     on_success: always
-    on_failure: always
+    on_failure:   always
