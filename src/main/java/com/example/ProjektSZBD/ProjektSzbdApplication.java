@@ -8,26 +8,15 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 @SpringBootApplication
 public class ProjektSzbdApplication {
 
-    private static String DBUrl;
-    private static String DBUser;
-    private static String DBPassword;
-
     private static JdbcTemplate jdbcTemplate;
 
     public static void main(String[] args) {
-        if (args.length != 3) {
-            System.exit(-1);
-        } else {
-            DBUrl = args[0];
-            DBUser = args[1];
-            DBPassword = args[2];
-            System.out.println("DB: '" + args[0] + "' '" + args[1] + "' '" + args[2] + "'");
-        }
+
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("oracle.jdbc.driver.OracleDriver");
-        dataSource.setUrl(DBUrl);
-        dataSource.setUsername(DBUser);
-        dataSource.setPassword(DBPassword);
+        dataSource.setUrl(System.getenv("dbUrl"));
+        dataSource.setUsername(System.getenv("dbUserName"));
+        dataSource.setPassword(System.getenv("dbPassword"));
         jdbcTemplate = new JdbcTemplate(dataSource);
         String c = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM PRACOWNICY", String.class);
         System.out.println(c);
