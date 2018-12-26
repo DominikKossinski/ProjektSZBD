@@ -6,7 +6,9 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -28,6 +30,20 @@ public class HospitalRestController {
                 });
                 return hospitals;
             }
+
+            @Override
+            public Hospital getHospitalById(int id) {
+                try {
+                    Hospital hospital = getJdbcTemplate().queryForObject("SELECT * FROM SZPITALE WHERE ID_SZPITALA = " + id,
+                            (rs, ag1) -> {
+                                return new Hospital(rs.getInt("id_szpitala"), rs.getString("nazwa_szpitala"),
+                                        rs.getString("adres"), rs.getString("miasto"));
+                            });
+                    return hospital;
+                } catch (EmptyResultDataAccessException e) {
+                    return null;
+                }
+            }
         };
     }
 
@@ -45,11 +61,7 @@ public class HospitalRestController {
                 JSONObject hospitalJsonObject = (JSONObject) parser.parse(hospital.toJSONString());
                 hospitalsArray.add(hospitalJsonObject);
             } catch (ParseException e) {
-                JSONObject response = new JSONObject();
-                e.printStackTrace();
-                response.put("resp_status", "ERROR");
-                response.put("description", "JSON PARSE ERROR");
-                return response.toJSONString();
+                return returnParseErrorResponse(e);
             }
         }
         JSONObject response = new JSONObject();
@@ -59,4 +71,32 @@ public class HospitalRestController {
         return response.toJSONString();
     }
 
+    @RequestMapping("/api/hospital")
+    public String getHospitalById(@RequestParam("id") int id) {
+        Hospital hospital = hospitalInterface.getHospitalById(id);
+        if (hospital == null) {
+            JSONObject response = new JSONObject();
+            response.put("resp_status", "ERROR");
+            response.put("description", "No hospital with id = " + id);
+            return response.toJSONString();
+        } else {
+            try {
+                JSONObject response = new JSONObject();
+                response.put("resp_status", "ok");
+                response.put("description", "Details of hospital with id = " + id);
+                response.put("hospital", hospital.toJSONObject());
+                return response.toJSONString();
+            } catch (ParseException e) {
+                return returnParseErrorResponse(e);
+            }
+        }
+    }
+
+    private String returnParseErrorResponse(ParseException e) {
+        e.printStackTrace();
+        JSONObject response = new JSONObject();
+        response.put("resp_status", "ERROR");
+        response.put("description", "JSON PARSE ERROR");
+        return response.toJSONString();
+    }
 }

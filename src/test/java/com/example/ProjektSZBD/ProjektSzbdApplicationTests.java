@@ -37,6 +37,11 @@ public class ProjektSzbdApplicationTests {
                         "ul. Szpitalna 28", "Poznań"));
                 return hospitals;
             }
+
+            @Override
+            public Hospital getHospitalById(int id) {
+                return null;
+            }
         };
         this.hospitalRestController = new HospitalRestController(hospitalInterface);
     }
