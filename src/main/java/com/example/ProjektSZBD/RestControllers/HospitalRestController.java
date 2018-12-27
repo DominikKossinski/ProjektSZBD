@@ -1,6 +1,7 @@
 package com.example.ProjektSZBD.RestControllers;
 
 import com.example.ProjektSZBD.Data.Hospital;
+import com.example.ProjektSZBD.ResponseCreator;
 import com.example.ProjektSZBD.RestInterfaces.HospitalInterface;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -15,31 +16,34 @@ import java.util.List;
 
 import static com.example.ProjektSZBD.ProjektSzbdApplication.getJdbcTemplate;
 
+/**
+ * RestController obsługujący żądania dotyczące szpitali, które znajdują się w bazie danych.
+ */
 @RestController
 public class HospitalRestController {
 
+    /**
+     * Interfejs odpowiadający za komunikację z bazą danych.
+     */
     private HospitalInterface hospitalInterface;
 
+    /**
+     * Publiczny konstruktor bez argumentowy, który tworzy domyślny interfejs do komunikacjii z bazą danych.
+     */
     public HospitalRestController() {
         this.hospitalInterface = new HospitalInterface() {
             @Override
             public List<Hospital> getAllHospitals() {
-                List<Hospital> hospitals = getJdbcTemplate().query("SELECT * FROM SZPITALE", (rs, arg1) -> {
-                    return new Hospital(rs.getInt("id_szpitala"), rs.getString("nazwa_szpitala"),
-                            rs.getString("adres"), rs.getString("miasto"));
-                });
-                return hospitals;
+                return getJdbcTemplate().query("SELECT * FROM SZPITALE", (rs, arg1) -> new Hospital(rs.getInt("id_szpitala"), rs.getString("nazwa_szpitala"),
+                        rs.getString("adres"), rs.getString("miasto")));
             }
 
             @Override
             public Hospital getHospitalById(int id) {
                 try {
-                    Hospital hospital = getJdbcTemplate().queryForObject("SELECT * FROM SZPITALE WHERE ID_SZPITALA = " + id,
-                            (rs, ag1) -> {
-                                return new Hospital(rs.getInt("id_szpitala"), rs.getString("nazwa_szpitala"),
-                                        rs.getString("adres"), rs.getString("miasto"));
-                            });
-                    return hospital;
+                    return getJdbcTemplate().queryForObject("SELECT * FROM SZPITALE WHERE ID_SZPITALA = " + id,
+                            (rs, ag1) -> new Hospital(rs.getInt("id_szpitala"), rs.getString("nazwa_szpitala"),
+                                    rs.getString("adres"), rs.getString("miasto")));
                 } catch (EmptyResultDataAccessException e) {
                     return null;
                 }
@@ -47,10 +51,21 @@ public class HospitalRestController {
         };
     }
 
+    /**
+     * Publiczny konstruktor, przyjmujący jako argument interfejs odpowiadający za wystawianie
+     * danych dla restController'a.
+     *
+     * @param hospitalInterface - interfejs odpowiadający za wystawianie danych o szpitalach.
+     */
     public HospitalRestController(HospitalInterface hospitalInterface) {
         this.hospitalInterface = hospitalInterface;
     }
 
+    /**
+     * Metoda obsługująca żądanie danych o wszystkich szpitalach.
+     * @return (String) - tekst w formacie JSON, który zawiera odpowiedź na żądanie
+     * @See ResponseCreator
+     */
     @RequestMapping("/api/allHospitals")
     public String getHospitals() {
         JSONArray hospitalsArray = new JSONArray();
@@ -58,45 +73,35 @@ public class HospitalRestController {
         JSONParser parser = new JSONParser();
         for (Hospital hospital : hospitals) {
             try {
-                JSONObject hospitalJsonObject = (JSONObject) parser.parse(hospital.toJSONString());
+                JSONObject hospitalJsonObject = hospital.toJSONObject();
                 hospitalsArray.add(hospitalJsonObject);
             } catch (ParseException e) {
-                return returnParseErrorResponse(e);
+                return ResponseCreator.parseErrorResponse(e);
             }
         }
-        JSONObject response = new JSONObject();
-        response.put("resp_status", "ok");
-        response.put("description", "List of all hospitals");
-        response.put("hospitals", hospitalsArray);
-        return response.toJSONString();
+        return ResponseCreator.jsonResponse("hospitals", hospitalsArray, "List of all hospitals");
     }
 
+    /**
+     * Metoda odpowiadająca za obsługę żądania dotyczącego danych o jednym szpitalu.
+     * @param id - id szpitala, o którego dane zostało wysłane żądanie
+     * @return (String) - tekst w formacie JSON, który zawiera odpowiedź na żądanie.
+     * @See ResponseCreator
+     */
     @RequestMapping("/api/hospital")
     public String getHospitalById(@RequestParam("id") int id) {
         Hospital hospital = hospitalInterface.getHospitalById(id);
         if (hospital == null) {
-            JSONObject response = new JSONObject();
-            response.put("resp_status", "ERROR");
-            response.put("description", "No hospital with id = " + id);
-            return response.toJSONString();
+            return ResponseCreator.jsonErrorResponse("No hospital with id = " + id);
         } else {
             try {
-                JSONObject response = new JSONObject();
-                response.put("resp_status", "ok");
-                response.put("description", "Details of hospital with id = " + id);
-                response.put("hospital", hospital.toJSONObject());
-                return response.toJSONString();
+                return ResponseCreator.jsonResponse("hospital",
+                        hospital.toJSONObject(), "Details of hospital with id = " + id);
             } catch (ParseException e) {
-                return returnParseErrorResponse(e);
+                return ResponseCreator.parseErrorResponse(e);
             }
         }
     }
 
-    private String returnParseErrorResponse(ParseException e) {
-        e.printStackTrace();
-        JSONObject response = new JSONObject();
-        response.put("resp_status", "ERROR");
-        response.put("description", "JSON PARSE ERROR");
-        return response.toJSONString();
-    }
+
 }
