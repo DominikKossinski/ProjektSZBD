@@ -16,4 +16,6 @@ public interface HospitalSectionInterface {
      * @return (List of HospitalSection) - listę oddziałów w szpitalu o podanym id.
      */
     List<HospitalSection> getHospitalSectionsByHospitalId(int id);
+
+
 }

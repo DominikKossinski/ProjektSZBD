@@ -1,5 +1,6 @@
 package com.example.ProjektSZBD.RestInterfaces;
 
+import com.example.ProjektSZBD.Data.Director;
 import com.example.ProjektSZBD.Data.Hospital;
 
 import java.util.List;
@@ -22,4 +23,19 @@ public interface HospitalInterface {
      * @return (Hospital) - szpital o żądanym id
      */
     Hospital getHospitalById(int id);
+
+    /**
+     * Metoda zwracająca informacje na temat dyrektora szpitala.
+     *
+     * @param hospitalId - id szpitala
+     * @return (Director) - obiekt reprezentujący dyrektora szpitala
+     */
+    Director getHospitalDirector(int hospitalId);
+
+    /**
+     * Metoda zwracająca listę dyrektorów.
+     *
+     * @return (List of Director) - listę obiektów reprezentujących dyrektorów szpitali
+     */
+    List<Director> getHospitalsDirectors();
 }

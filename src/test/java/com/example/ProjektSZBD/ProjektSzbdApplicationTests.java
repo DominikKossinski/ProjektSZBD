@@ -1,5 +1,6 @@
 package com.example.ProjektSZBD;
 
+import com.example.ProjektSZBD.Data.Director;
 import com.example.ProjektSZBD.Data.Hospital;
 import com.example.ProjektSZBD.RestControllers.HospitalRestController;
 import com.example.ProjektSZBD.RestInterfaces.HospitalInterface;
@@ -40,6 +41,16 @@ public class ProjektSzbdApplicationTests {
 
             @Override
             public Hospital getHospitalById(int id) {
+                return null;
+            }
+
+            @Override
+            public Director getHospitalDirector(int hospitalId) {
+                return null;
+            }
+
+            @Override
+            public List<Director> getHospitalsDirectors() {
                 return null;
             }
         };
