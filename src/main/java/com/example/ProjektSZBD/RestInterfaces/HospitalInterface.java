@@ -1,6 +1,6 @@
 package com.example.ProjektSZBD.RestInterfaces;
 
-import com.example.ProjektSZBD.Data.Director;
+import com.example.ProjektSZBD.Data.Doctors.Director;
 import com.example.ProjektSZBD.Data.Hospital;
 
 import java.util.List;

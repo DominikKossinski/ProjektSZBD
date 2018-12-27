@@ -1,6 +1,6 @@
 package com.example.ProjektSZBD.RestControllers;
 
-import com.example.ProjektSZBD.Data.Director;
+import com.example.ProjektSZBD.Data.Doctors.Director;
 import com.example.ProjektSZBD.Data.Hospital;
 import com.example.ProjektSZBD.ResponseCreator;
 import com.example.ProjektSZBD.RestInterfaces.HospitalInterface;
@@ -56,7 +56,7 @@ public class HospitalRestController {
                     return getJdbcTemplate().queryForObject("select l.ID_LEKARZA, l.IMIE, l.NAZWISKO, l.id_oddzialu, l.stanowisko " +
                                     "from lekarze l join oddzialy o on l.id_oddzialu = o.id_oddzialu " +
                                     "join SZPITALE s on s.ID_SZPITALA = o.ID_SZPITALA " +
-                                    "where  o.ID_SZPITALA = " + hospitalId + " and l.stanowisko = 'Dyrektor'",
+                                    "where  o.ID_SZPITALA = " + hospitalId + " and l.stanowisko = 'Dyrektor' order by s.id_szpitala",
                             (rs, ag1) -> new Director(hospitalId, rs.getInt("id_lekarza"), rs.getString("imie"),
                                     rs.getString("nazwisko"), rs.getInt("id_oddzialu"))
                     );
@@ -71,7 +71,7 @@ public class HospitalRestController {
                                 "l.id_oddzialu, l.stanowisko " +
                                 "from lekarze l join oddzialy o on l.id_oddzialu = o.id_oddzialu " +
                                 "join SZPITALE s on s.ID_SZPITALA = o.ID_SZPITALA " +
-                                "where l.stanowisko = 'Dyrektor'",
+                                "where l.stanowisko = 'Dyrektor' order by s.id_szpitala",
                         (rs, ag1) -> new Director(rs.getInt("id_szpitala"), rs.getInt("id_lekarza"),
                                 rs.getString("imie"),
                                 rs.getString("nazwisko"), rs.getInt("id_oddzialu")));
@@ -133,6 +133,13 @@ public class HospitalRestController {
         }
     }
 
+    /**
+     * Metoda odpowiadająca za obsługę żądań dotyczących dyrektorów szpitali. Gdy hospitalId
+     * nie zostanie podane zwraca dyrektorów wszystkich szpitali.
+     *
+     * @param hospitalId - id szpitala (jeśli nie podane przyjmuje wartość -1)
+     * @return
+     */
     @RequestMapping("/api/hospitalDirector")
     public String getHospitalsDirectors(
             @RequestParam(value = "hospitalId", defaultValue = "-1", required = false) int hospitalId
@@ -140,7 +147,7 @@ public class HospitalRestController {
         if (hospitalId != -1) {
             Director director = hospitalInterface.getHospitalDirector(hospitalId);
             try {
-                JSONObject doctorObject = director.toSimpleJSONObject();
+                JSONObject doctorObject = director.toJSONObject();
                 return ResponseCreator.jsonResponse("director", doctorObject,
                         "Director of hospital with id = " + hospitalId);
             } catch (ParseException e) {

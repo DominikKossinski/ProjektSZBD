@@ -1,4 +1,4 @@
-package com.example.ProjektSZBD.Data;
+package com.example.ProjektSZBD.Data.Doctors;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -88,7 +88,7 @@ public class Doctor {
      *
      * @return (String) - tekst w formacie JSON, zawierający  dane o obiekcie
      */
-    private String toJSONString() {
+    protected String toJSONString() {
         return "{\"id\"" + id + ", \"first_name\":\"" + firstName + "\", " +
                 "\"last_name\":\"" + lastName + "\", \"salary\":" + salary + ", " +
                 "\"hospital_section_id\":" + hospitalSectionId + ", \"position\":\"" + position + "\", " +
@@ -100,7 +100,7 @@ public class Doctor {
      *
      * @return (String) - tekst w formacie JSON, zawierający  dane o obiekcie
      */
-    private String toSimpleJSONString() {
+    String toSimpleJSONString() {
         return "{\"id\"" + id + ", \"first_name\":\"" + firstName + "\", " +
                 "\"last_name\":\"" + lastName + "\", " +
                 "\"hospital_section_id\":" + hospitalSectionId + ", \"position\":\"" + position + "\"}";

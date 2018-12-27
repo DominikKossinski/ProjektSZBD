@@ -1,6 +1,6 @@
 package com.example.ProjektSZBD.RestControllers;
 
-import com.example.ProjektSZBD.Data.Doctor;
+import com.example.ProjektSZBD.Data.Doctors.Doctor;
 import com.example.ProjektSZBD.ResponseCreator;
 import com.example.ProjektSZBD.RestInterfaces.DoctorInterface;
 import org.json.simple.JSONArray;

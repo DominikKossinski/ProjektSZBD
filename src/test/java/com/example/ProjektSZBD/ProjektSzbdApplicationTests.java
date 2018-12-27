@@ -1,6 +1,6 @@
 package com.example.ProjektSZBD;
 
-import com.example.ProjektSZBD.Data.Director;
+import com.example.ProjektSZBD.Data.Doctors.Director;
 import com.example.ProjektSZBD.Data.Hospital;
 import com.example.ProjektSZBD.RestControllers.HospitalRestController;
 import com.example.ProjektSZBD.RestInterfaces.HospitalInterface;
