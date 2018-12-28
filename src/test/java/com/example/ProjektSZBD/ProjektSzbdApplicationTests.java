@@ -1,6 +1,7 @@
 package com.example.ProjektSZBD;
 
 import com.example.ProjektSZBD.Data.Doctors.Director;
+import com.example.ProjektSZBD.Data.Doctors.Ordynator;
 import com.example.ProjektSZBD.Data.Hospital;
 import com.example.ProjektSZBD.RestControllers.HospitalRestController;
 import com.example.ProjektSZBD.RestInterfaces.HospitalInterface;
@@ -51,6 +52,11 @@ public class ProjektSzbdApplicationTests {
 
             @Override
             public List<Director> getHospitalsDirectors() {
+                return null;
+            }
+
+            @Override
+            public List<Ordynator> getHospitalOrdynators(int hospitalId) {
                 return null;
             }
         };

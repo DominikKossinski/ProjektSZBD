@@ -1,11 +1,14 @@
 package com.example.ProjektSZBD.RestControllers;
 
+import com.example.ProjektSZBD.Data.Doctors.Ordynator;
 import com.example.ProjektSZBD.Data.HospitalSection;
 import com.example.ProjektSZBD.ResponseCreator;
 import com.example.ProjektSZBD.RestInterfaces.HospitalSectionInterface;
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,13 +32,27 @@ public class HospitalSectionRestController {
      * z bazą danych.
      */
     public HospitalSectionRestController() {
-        this.hospitalSectionInterface = id -> {
-            return getJdbcTemplate().query(
-                    "SELECT * FROM ODDZIALY WHERE ID_SZPITALA = " + id,
-                    (rs, arg1) -> {
-                        return new HospitalSection(rs.getInt("id_oddzialu"),
-                                rs.getString("nazwa"), rs.getInt("id_szpitala"));
-                    });
+        this.hospitalSectionInterface = new HospitalSectionInterface() {
+            @Override
+            public List<HospitalSection> getHospitalSectionsByHospitalId(int id) {
+                return getJdbcTemplate().query(
+                        "SELECT * FROM ODDZIALY WHERE ID_SZPITALA = " + id,
+                        (rs, arg1) -> new HospitalSection(rs.getInt("id_oddzialu"),
+                                rs.getString("nazwa"), rs.getInt("id_szpitala")));
+            }
+
+            @Override
+            public Ordynator getHospitalSectionOrdynator(int hospitalSectionId) {
+                return getJdbcTemplate().queryForObject("select o.nazwa, s.id_szpitala, l.ID_LEKARZA, l.IMIE, l.NAZWISKO, l.id_oddzialu " +
+                                "from lekarze l " +
+                                "       join oddzialy o on l.id_oddzialu = o.id_oddzialu " +
+                                "       join SZPITALE s on s.ID_SZPITALA = o.ID_SZPITALA " +
+                                "where o.id_oddzialu = 1 " +
+                                "  and l.stanowisko = 'Ordynator'",
+                        (rs, arg1) -> new Ordynator(rs.getString("nazwa"), rs.getInt("id_szpitala"),
+                                rs.getInt("id_lekarza"), rs.getString("imie"),
+                                rs.getString("nazwisko"), rs.getInt("id_oddzialu")));
+            }
         };
     }
 
@@ -69,6 +86,24 @@ public class HospitalSectionRestController {
                 "List of sections in hospital with id =" + hospitalId);
 
 
+    }
+
+    /**
+     * Metoda odpowiadająca za żądanie informacji o ordynatorze oddziału.
+     *
+     * @param hospitalSectionId - id oddziału
+     * @return (String) - tekst w formacie json zawierający odpowiedź na żądanie.
+     */
+    @RequestMapping("/api/sectionOrdynator")
+    public String getSectionOrdynator(@RequestParam("hospitalSectionId") int hospitalSectionId) {
+        Ordynator ordynator = hospitalSectionInterface.getHospitalSectionOrdynator(hospitalSectionId);
+        try {
+            JSONObject ordynatorObject = ordynator.toJSONObject();
+            return ResponseCreator.jsonResponse("ordynator", ordynatorObject,
+                    "Ordynator of hospital section with id = " + hospitalSectionId);
+        } catch (ParseException e) {
+            return ResponseCreator.parseErrorResponse(e);
+        }
     }
 
 

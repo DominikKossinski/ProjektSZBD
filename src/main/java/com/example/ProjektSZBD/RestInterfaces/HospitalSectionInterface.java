@@ -1,5 +1,6 @@
 package com.example.ProjektSZBD.RestInterfaces;
 
+import com.example.ProjektSZBD.Data.Doctors.Ordynator;
 import com.example.ProjektSZBD.Data.HospitalSection;
 
 import java.util.List;
@@ -17,5 +18,11 @@ public interface HospitalSectionInterface {
      */
     List<HospitalSection> getHospitalSectionsByHospitalId(int id);
 
-
+    /**
+     * Metoda zwracająca ordynatora oddziału.
+     *
+     * @param hospitalSectionId - id oddziału
+     * @return (Ordynator) - ordynatora oddziału.
+     */
+    Ordynator getHospitalSectionOrdynator(int hospitalSectionId);
 }

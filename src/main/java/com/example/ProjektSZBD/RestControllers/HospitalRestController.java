@@ -1,6 +1,7 @@
 package com.example.ProjektSZBD.RestControllers;
 
 import com.example.ProjektSZBD.Data.Doctors.Director;
+import com.example.ProjektSZBD.Data.Doctors.Ordynator;
 import com.example.ProjektSZBD.Data.Hospital;
 import com.example.ProjektSZBD.ResponseCreator;
 import com.example.ProjektSZBD.RestInterfaces.HospitalInterface;
@@ -74,6 +75,17 @@ public class HospitalRestController {
                                 "where l.stanowisko = 'Dyrektor' order by s.id_szpitala",
                         (rs, ag1) -> new Director(rs.getInt("id_szpitala"), rs.getInt("id_lekarza"),
                                 rs.getString("imie"),
+                                rs.getString("nazwisko"), rs.getInt("id_oddzialu")));
+            }
+
+            @Override
+            public List<Ordynator> getHospitalOrdynators(int hospitalId) {
+                return getJdbcTemplate().query("select o.nazwa, s.id_szpitala, l.ID_LEKARZA, " +
+                                "l.IMIE, l.NAZWISKO, l.id_oddzialu from lekarze l join oddzialy o on l.id_oddzialu = o.id_oddzialu " +
+                                "join SZPITALE s on s.ID_SZPITALA = o.ID_SZPITALA " +
+                                "where  o.ID_SZPITALA = 1 and l.stanowisko = 'Ordynator'",
+                        (rs, arg1) -> new Ordynator(rs.getString("nazwa"), rs.getInt("id_szpitala"),
+                                rs.getInt("id_lekarza"), rs.getString("imie"),
                                 rs.getString("nazwisko"), rs.getInt("id_oddzialu")));
             }
         };
@@ -165,6 +177,28 @@ public class HospitalRestController {
             }
             return ResponseCreator.jsonResponse("directors", directorsArray, "List of all directors");
         }
+    }
+
+
+    /**
+     * Metoda odpowiadająca za obsługę żądania informacjii o wszystkich ordynatorach w danym szpitalu
+     *
+     * @param hospitalId - id szpitala
+     * @return (String) - tekst w formacie json zawierający odpowiedź na żądanie.
+     */
+    @RequestMapping("/api/hospitalOrdynators")
+    public String getHospitalOrdynators(@RequestParam("hospitalId") int hospitalId) {
+        List<Ordynator> ordynators = hospitalInterface.getHospitalOrdynators(hospitalId);
+        JSONArray ordynatorsArray = new JSONArray();
+        for (Ordynator ordynator : ordynators) {
+            try {
+                ordynatorsArray.add(ordynator.toJSONObject());
+            } catch (ParseException e) {
+                return ResponseCreator.parseErrorResponse(e);
+            }
+        }
+        return ResponseCreator.jsonResponse("ordynators", ordynatorsArray,
+                "List of ordynators in hospital with id = " + hospitalId);
     }
 
 
