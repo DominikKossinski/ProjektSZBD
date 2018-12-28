@@ -14,7 +14,7 @@ import java.util.List;
 import static com.example.ProjektSZBD.ProjektSzbdApplication.getJdbcTemplate;
 
 /**
- * RestController odpowiadający za obsługę żądań związanych danymi lekarzy
+ * RestController odpowiadający za obsługę żądań związanych danymi lekarzy.
  */
 @RestController
 public class DoctorRestController {
