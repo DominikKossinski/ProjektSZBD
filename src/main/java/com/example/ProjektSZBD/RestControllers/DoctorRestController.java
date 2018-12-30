@@ -92,6 +92,15 @@ public class DoctorRestController {
     }
 
     /**
+     * Publiczny konstruktor klasy ustawiajcy interfejs na interfejs przekazany jako argument.
+     *
+     * @param doctorInterface - interfejs wystawiajcy dane o lekarzach
+     */
+    public DoctorRestController(DoctorInterface doctorInterface) {
+        this.doctorInterface = doctorInterface;
+    }
+
+    /**
      * Metoda klasy odpowiadająca za obsługę żądania pełnych danych lekarzy, z możliwością
      * obsługi żądania dotyczącego wszystkich lekarzy (gdy hospitalId oraz hospitalSectionId nie
      * zostało podane), lekarzy z danego szpitala (gdy hospitalId zostało podane) i lekarzy
@@ -108,20 +117,17 @@ public class DoctorRestController {
         List<Doctor> doctors;
         if (hospitalId == -1 && hospitalSectionId == -1) {
             doctors = doctorInterface.getAllDoctors();
+            return createResponseWithDoctorsArray(doctors, "List of all doctors");
         } else if (hospitalSectionId != -1) {
             doctors = doctorInterface.getDoctorsByHospitalSectionId(hospitalSectionId);
+            return createResponseWithDoctorsArray(doctors,
+                    "List of doctors from hospital section with id = " + hospitalSectionId);
         } else {
             doctors = doctorInterface.getDoctorsByHospitalId(hospitalId);
+            return createResponseWithDoctorsArray(doctors,
+                    "List of doctors from hospital with id = " + hospitalId);
         }
-        JSONArray doctorsArray = new JSONArray();
-        for (Doctor doctor : doctors) {
-            try {
-                doctorsArray.add(doctor.toJSONObject());
-            } catch (ParseException e) {
-                return ResponseCreator.parseErrorResponse(e);
-            }
-        }
-        return ResponseCreator.jsonResponse("doctors", doctorsArray, "List of all doctors");
+
     }
 
     /**
@@ -141,20 +147,34 @@ public class DoctorRestController {
         List<Doctor> doctors;
         if (hospitalId == -1 && hospitalSectionId == -1) {
             doctors = doctorInterface.getAllDoctorsInfo();
+            return createResponseWithDoctorsArray(doctors, "List of all doctors info");
         } else if (hospitalSectionId != -1) {
             doctors = doctorInterface.getDoctorsInfoByHospitalSectionId(hospitalSectionId);
+            return createResponseWithDoctorsArray(doctors,
+                    "List of doctors info from hospital section with id = " + hospitalSectionId);
         } else {
             doctors = doctorInterface.getDoctorsInfoByHospitalId(hospitalId);
+            return createResponseWithDoctorsArray(doctors,
+                    "List of doctors info from hospital with id = " + hospitalId);
         }
+    }
+
+    /**
+     * Metoda służąca do zwracania odpowiedzi serwera.
+     *
+     * @param doctors     - lista doktorów
+     * @param description - opis odpowiedzi
+     * @return (String) - tekst zawierający odpowiedź serwera.
+     */
+    private String createResponseWithDoctorsArray(List<Doctor> doctors, String description) {
         JSONArray doctorsArray = new JSONArray();
         for (Doctor doctor : doctors) {
             try {
-                doctorsArray.add(doctor.toSimpleJSONObject());
+                doctorsArray.add(doctor.toJSONObject());
             } catch (ParseException e) {
                 return ResponseCreator.parseErrorResponse(e);
             }
         }
-        return ResponseCreator.jsonResponse("doctors", doctorsArray, "List of all doctors info");
+        return ResponseCreator.jsonResponse("doctors", doctorsArray, description);
     }
-
 }
