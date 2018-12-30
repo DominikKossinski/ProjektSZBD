@@ -159,9 +159,13 @@ public class HospitalRestController {
         if (hospitalId != -1) {
             Director director = hospitalInterface.getHospitalDirector(hospitalId);
             try {
-                JSONObject doctorObject = director.toJSONObject();
-                return ResponseCreator.jsonResponse("director", doctorObject,
-                        "Director of hospital with id = " + hospitalId);
+                if (director != null) {
+                    JSONObject doctorObject = director.toJSONObject();
+                    return ResponseCreator.jsonResponse("director", doctorObject,
+                            "Director of hospital with id = " + hospitalId);
+                } else {
+                    return ResponseCreator.jsonErrorResponse("No director of hospital with id = " + hospitalId);
+                }
             } catch (ParseException e) {
                 return ResponseCreator.parseErrorResponse(e);
             }

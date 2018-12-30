@@ -7,6 +7,7 @@ import com.example.ProjektSZBD.RestInterfaces.HospitalSectionInterface;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -43,15 +44,19 @@ public class HospitalSectionRestController {
 
             @Override
             public Ordynator getHospitalSectionOrdynator(int hospitalSectionId) {
-                return getJdbcTemplate().queryForObject("select o.nazwa, s.id_szpitala, l.ID_LEKARZA, l.IMIE, l.NAZWISKO, l.id_oddzialu " +
-                                "from lekarze l " +
-                                "       join oddzialy o on l.id_oddzialu = o.id_oddzialu " +
-                                "       join SZPITALE s on s.ID_SZPITALA = o.ID_SZPITALA " +
-                                "where o.id_oddzialu = 1 " +
-                                "  and l.stanowisko = 'Ordynator'",
-                        (rs, arg1) -> new Ordynator(rs.getString("nazwa"), rs.getInt("id_szpitala"),
-                                rs.getInt("id_lekarza"), rs.getString("imie"),
-                                rs.getString("nazwisko"), rs.getInt("id_oddzialu")));
+                try {
+                    return getJdbcTemplate().queryForObject("select o.nazwa, s.id_szpitala, l.ID_LEKARZA, l.IMIE, l.NAZWISKO, l.id_oddzialu " +
+                                    "from lekarze l " +
+                                    "       join oddzialy o on l.id_oddzialu = o.id_oddzialu " +
+                                    "       join SZPITALE s on s.ID_SZPITALA = o.ID_SZPITALA " +
+                                    "where o.id_oddzialu = 1 " +
+                                    "  and l.stanowisko = 'Ordynator'",
+                            (rs, arg1) -> new Ordynator(rs.getString("nazwa"), rs.getInt("id_szpitala"),
+                                    rs.getInt("id_lekarza"), rs.getString("imie"),
+                                    rs.getString("nazwisko"), rs.getInt("id_oddzialu")));
+                } catch (EmptyResultDataAccessException e) {
+                    return null;
+                }
             }
         };
     }
@@ -83,7 +88,7 @@ public class HospitalSectionRestController {
             }
         }
         return ResponseCreator.jsonResponse("sections", sectionsArray,
-                "List of sections in hospital with id =" + hospitalId);
+                "List of sections in hospital with id = " + hospitalId);
 
 
     }
@@ -98,9 +103,14 @@ public class HospitalSectionRestController {
     public String getSectionOrdynator(@RequestParam("hospitalSectionId") int hospitalSectionId) {
         Ordynator ordynator = hospitalSectionInterface.getHospitalSectionOrdynator(hospitalSectionId);
         try {
-            JSONObject ordynatorObject = ordynator.toJSONObject();
-            return ResponseCreator.jsonResponse("ordynator", ordynatorObject,
-                    "Ordynator of hospital section with id = " + hospitalSectionId);
+            if (ordynator != null) {
+                JSONObject ordynatorObject = ordynator.toJSONObject();
+                return ResponseCreator.jsonResponse("ordynator", ordynatorObject,
+                        "Ordynator of hospital section with id = " + hospitalSectionId);
+            } else {
+                return ResponseCreator.jsonErrorResponse(
+                        "No ordynator of hospitalSection with id = " + hospitalSectionId);
+            }
         } catch (ParseException e) {
             return ResponseCreator.parseErrorResponse(e);
         }
