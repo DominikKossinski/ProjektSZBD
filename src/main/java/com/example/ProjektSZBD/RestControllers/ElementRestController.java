@@ -103,15 +103,7 @@ public class ElementRestController {
     ) {
         if (hospitalId == -1 && hospitalSectionId == -1 && id == -1) {
             List<Element> elements = elementInterface.getAllElements();
-            JSONArray elementsArray = new JSONArray();
-            for (Element element : elements) {
-                try {
-                    elementsArray.add(element.toJSONObject());
-                } catch (ParseException e) {
-                    return ResponseCreator.parseErrorResponse(e);
-                }
-            }
-            return ResponseCreator.jsonResponse("elements", elementsArray, "List of all elements");
+            return createResponseWithElementsList(elements, "List of all elements");
         }
         if (id != -1) {
             Element element = elementInterface.getElementById(id);
@@ -127,30 +119,27 @@ public class ElementRestController {
             }
         } else if (hospitalSectionId != -1) {
             List<Element> elements = elementInterface.getElementsByHospitalSectionId(hospitalSectionId);
-            JSONArray elementsArray = new JSONArray();
-            for (Element element : elements) {
-                try {
-                    elementsArray.add(element.toJSONObject());
-                } catch (ParseException e) {
-                    return ResponseCreator.parseErrorResponse(e);
-                }
-            }
-            return ResponseCreator.jsonResponse("elements", elementsArray,
+            return createResponseWithElementsList(elements,
                     "List of elements from section with id = " + hospitalSectionId);
         } else if (hospitalId != -1) {
             List<Element> elements = elementInterface.getElementsByHospitalId(hospitalId);
-            JSONArray elementsArray = new JSONArray();
-            for (Element element : elements) {
-                try {
-                    elementsArray.add(element.toJSONObject());
-                } catch (ParseException e) {
-                    return ResponseCreator.parseErrorResponse(e);
-                }
-            }
-            return ResponseCreator.jsonResponse("elements", elementsArray,
-                    "List of elements from hospital with id =" + hospitalId);
+            return createResponseWithElementsList(elements,
+                    "List of elements from hospital with id = " + hospitalId);
         }
 
         return ResponseCreator.jsonErrorResponse("You can use only one parameter");
+    }
+
+
+    private String createResponseWithElementsList(List<Element> elements, String description) {
+        JSONArray elementsArray = new JSONArray();
+        for (Element element : elements) {
+            try {
+                elementsArray.add(element.toJSONObject());
+            } catch (ParseException e) {
+                return ResponseCreator.parseErrorResponse(e);
+            }
+        }
+        return ResponseCreator.jsonResponse("elements", elementsArray, description);
     }
 }

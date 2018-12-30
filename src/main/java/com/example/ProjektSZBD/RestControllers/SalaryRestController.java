@@ -6,6 +6,7 @@ import com.example.ProjektSZBD.RestInterfaces.SalaryInterface;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,9 +33,13 @@ public class SalaryRestController {
         this.salaryInterface = new SalaryInterface() {
             @Override
             public Salary getSalaryByPosition(String position) {
-                return getJdbcTemplate().queryForObject("SELECT * FROM PLACE WHERE STANOWISKO = '" + position + "'",
-                        (rs, arg1) -> new Salary(rs.getString("stanowisko"), rs.getFloat("placa_min"),
-                                rs.getFloat("placa_max")));
+                try {
+                    return getJdbcTemplate().queryForObject("SELECT * FROM PLACE WHERE STANOWISKO = '" + position + "'",
+                            (rs, arg1) -> new Salary(rs.getString("stanowisko"), rs.getFloat("placa_min"),
+                                    rs.getFloat("placa_max")));
+                } catch (EmptyResultDataAccessException e) {
+                    return null;
+                }
             }
 
             @Override
@@ -78,8 +83,12 @@ public class SalaryRestController {
         } else {
             Salary salary = salaryInterface.getSalaryByPosition(position);
             try {
-                JSONObject salaryObject = salary.toJSONObject();
-                return ResponseCreator.jsonResponse("salary", salaryObject, "Salary for position = " + position);
+                if (salary != null) {
+                    JSONObject salaryObject = salary.toJSONObject();
+                    return ResponseCreator.jsonResponse("salary", salaryObject, "Salary for position = " + position);
+                } else {
+                    return ResponseCreator.jsonErrorResponse("No salary for position = " + position);
+                }
             } catch (ParseException e) {
                 return ResponseCreator.parseErrorResponse(e);
             }
