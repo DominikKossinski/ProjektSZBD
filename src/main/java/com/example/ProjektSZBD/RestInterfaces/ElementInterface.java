@@ -15,7 +15,7 @@ public interface ElementInterface {
      * @param id - id elementu
      * @return (Element) - obiekt zawierający informacje o elemencie wyposażenia
      */
-    Element getElementById(int id);
+    Element getElementById(long id);
 
     /**
      * Metoda zwracająca informację o wszystkich elementach wyposażenia.
@@ -30,7 +30,7 @@ public interface ElementInterface {
      * @param hospitalSectionId - id oddziału
      * @return (List of element) - lista obiektów zawierających informacje o elementach wyposażenia
      */
-    List<Element> getElementsByHospitalSectionId(int hospitalSectionId);
+    List<Element> getElementsByHospitalSectionId(long hospitalSectionId);
 
     /**
      * Metoda zwracająca informację o wszystkich elementach wyposażenia w wybranym szpitalu.
@@ -38,5 +38,5 @@ public interface ElementInterface {
      * @param hospitalId - id szpitala
      * @return (List of element) - lista obiektów zawierających informacje o elementach wyposażenia
      */
-    List<Element> getElementsByHospitalId(int hospitalId);
+    List<Element> getElementsByHospitalId(long hospitalId);
 }

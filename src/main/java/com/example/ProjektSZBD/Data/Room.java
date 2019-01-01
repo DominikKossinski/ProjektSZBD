@@ -12,7 +12,7 @@ public class Room {
     /**
      * Pole przechowujące id pokoju.
      */
-    private int id;
+    private long id;
 
     /**
      * Pole przechowujące piętro.
@@ -27,7 +27,7 @@ public class Room {
     /**
      * Pole przechowujące id oddziału.
      */
-    private int hospitalSectionId;
+    private long hospitalSectionId;
 
     /**
      * Pole przechowujące aktualną ilość zajętych miejsc.
@@ -42,7 +42,7 @@ public class Room {
      * @param numberOfPlaces    - liczba miejsc
      * @param hospitalSectionId - id oddziału
      */
-    public Room(int id, int floor, int numberOfPlaces, int hospitalSectionId, int actPlacedCount) {
+    public Room(long id, int floor, int numberOfPlaces, long hospitalSectionId, int actPlacedCount) {
         this.id = id;
         this.floor = floor;
         this.numberOfPlaces = numberOfPlaces;

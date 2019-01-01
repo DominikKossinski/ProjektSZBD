@@ -35,15 +35,15 @@ public class HospitalSectionRestController {
     public HospitalSectionRestController() {
         this.hospitalSectionInterface = new HospitalSectionInterface() {
             @Override
-            public List<HospitalSection> getHospitalSectionsByHospitalId(int id) {
+            public List<HospitalSection> getHospitalSectionsByHospitalId(long id) {
                 return getJdbcTemplate().query(
                         "SELECT * FROM ODDZIALY WHERE ID_SZPITALA = " + id,
-                        (rs, arg1) -> new HospitalSection(rs.getInt("id_oddzialu"),
-                                rs.getString("nazwa"), rs.getInt("id_szpitala")));
+                        (rs, arg1) -> new HospitalSection(rs.getLong("id_oddzialu"),
+                                rs.getString("nazwa"), rs.getLong("id_szpitala")));
             }
 
             @Override
-            public Ordynator getHospitalSectionOrdynator(int hospitalSectionId) {
+            public Ordynator getHospitalSectionOrdynator(long hospitalSectionId) {
                 try {
                     return getJdbcTemplate().queryForObject("select o.nazwa, s.id_szpitala, l.ID_LEKARZA, l.IMIE, l.NAZWISKO, l.id_oddzialu " +
                                     "from lekarze l " +
@@ -51,9 +51,9 @@ public class HospitalSectionRestController {
                                     "       join SZPITALE s on s.ID_SZPITALA = o.ID_SZPITALA " +
                                     "where o.id_oddzialu = 1 " +
                                     "  and l.stanowisko = 'Ordynator'",
-                            (rs, arg1) -> new Ordynator(rs.getString("nazwa"), rs.getInt("id_szpitala"),
-                                    rs.getInt("id_lekarza"), rs.getString("imie"),
-                                    rs.getString("nazwisko"), rs.getInt("id_oddzialu")));
+                            (rs, arg1) -> new Ordynator(rs.getString("nazwa"), rs.getLong("id_szpitala"),
+                                    rs.getLong("id_lekarza"), rs.getString("imie"),
+                                    rs.getString("nazwisko"), rs.getLong("id_oddzialu")));
                 } catch (EmptyResultDataAccessException e) {
                     return null;
                 }
@@ -77,7 +77,7 @@ public class HospitalSectionRestController {
      * @return (String) - tekst w formacie json zawierający odpowiedź na żądanie.
      */
     @GetMapping("/api/hospitalSections")
-    public String getHospitalSectionsByHospitalId(@RequestParam("hospitalId") int hospitalId) {
+    public String getHospitalSectionsByHospitalId(@RequestParam("hospitalId") long hospitalId) {
         List<HospitalSection> hospitalSections = hospitalSectionInterface.getHospitalSectionsByHospitalId(hospitalId);
         JSONArray sectionsArray = new JSONArray();
         for (HospitalSection section : hospitalSections) {
@@ -100,7 +100,7 @@ public class HospitalSectionRestController {
      * @return (String) - tekst w formacie json zawierający odpowiedź na żądanie.
      */
     @RequestMapping("/api/sectionOrdynator")
-    public String getSectionOrdynator(@RequestParam("hospitalSectionId") int hospitalSectionId) {
+    public String getSectionOrdynator(@RequestParam("hospitalSectionId") long hospitalSectionId) {
         Ordynator ordynator = hospitalSectionInterface.getHospitalSectionOrdynator(hospitalSectionId);
         try {
             if (ordynator != null) {

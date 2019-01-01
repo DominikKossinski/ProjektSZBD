@@ -34,7 +34,7 @@ public class ElementTests {
         elementDB = new ElementDB();
         ElementInterface elementInterface = new ElementInterface() {
             @Override
-            public Element getElementById(int id) {
+            public Element getElementById(long id) {
                 if (id == 0) {
                     return null;
                 }
@@ -47,12 +47,12 @@ public class ElementTests {
             }
 
             @Override
-            public List<Element> getElementsByHospitalSectionId(int hospitalSectionId) {
+            public List<Element> getElementsByHospitalSectionId(long hospitalSectionId) {
                 return elementDB.getElementsByHospitalSectionId(hospitalSectionId);
             }
 
             @Override
-            public List<Element> getElementsByHospitalId(int hospitalId) {
+            public List<Element> getElementsByHospitalId(long hospitalId) {
                 return elementDB.getAllElements();
             }
         };

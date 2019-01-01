@@ -12,7 +12,7 @@ public class Patient {
     /**
      * Pole przechowujące pesel.
      */
-    private int pesel;
+    private long pesel;
 
     /**
      * Pole przechowujące imię pacjenta.
@@ -37,7 +37,7 @@ public class Patient {
      * @param lastName  - nazwisko
      * @param password  - hasło
      */
-    public Patient(int pesel, String firstName, String lastName, String password) {
+    public Patient(long pesel, String firstName, String lastName, String password) {
         this.pesel = pesel;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -51,7 +51,7 @@ public class Patient {
      * @param firstName - imię
      * @param lastName  - nazwisko
      */
-    public Patient(int pesel, String firstName, String lastName) {
+    public Patient(long pesel, String firstName, String lastName) {
         this.pesel = pesel;
         this.firstName = firstName;
         this.lastName = lastName;

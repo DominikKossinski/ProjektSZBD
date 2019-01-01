@@ -8,14 +8,14 @@ import java.util.List;
 
 public class HospitalSectionDB {
 
-    public List<HospitalSection> getHospitalSectionByHospitalId(int id) {
+    public List<HospitalSection> getHospitalSectionByHospitalId(long id) {
         ArrayList<HospitalSection> hospitalSections = new ArrayList<>();
         hospitalSections.add(new HospitalSection(1, "Kardiologia", id));
         hospitalSections.add(new HospitalSection(2, "Chirurgia", id));
         return hospitalSections;
     }
 
-    public Ordynator getHospitalSectionOrdynator(int id) {
+    public Ordynator getHospitalSectionOrdynator(long id) {
         return new Ordynator("Kardiologia", 1, 1,
                 "Jan", "Nowak", 1);
     }

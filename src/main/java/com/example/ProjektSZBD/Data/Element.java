@@ -12,7 +12,7 @@ public class Element {
     /**
      * Pole przechowujące id.
      */
-    private int id;
+    private long id;
 
     /**
      * Pole Przechowujące nazwę.
@@ -32,7 +32,7 @@ public class Element {
     /**
      * Pole przechowujące id oddziału.
      */
-    private int hospitalSectionId;
+    private long hospitalSectionId;
 
     /**
      * Publiczny konstruktor klasy ustawiający wszystkie pola klasy.
@@ -43,7 +43,7 @@ public class Element {
      * @param price             - cena jednostkowa
      * @param hospitalSectionId - id oddziału
      */
-    public Element(int id, String name, int count, float price, int hospitalSectionId) {
+    public Element(long id, String name, int count, float price, long hospitalSectionId) {
         this.id = id;
         this.name = name;
         this.count = count;

@@ -14,7 +14,7 @@ public class Prescription {
     /**
      * Pole przechowujące id recepty.
      */
-    private int id;
+    private long id;
 
     /**
      * Pole przechowujące datę wystawienia recepty.
@@ -29,12 +29,12 @@ public class Prescription {
     /**
      * Pole przechowujące id choroby.
      */
-    private int illnessId;
+    private long illnessId;
 
     /**
      * Pole przechowujące id pobytu.
      */
-    private int stayId;
+    private long stayId;
 
     /**
      * Publiczny konstruktor ustawiający wszystkie pola klasy.
@@ -45,7 +45,7 @@ public class Prescription {
      * @param illnessId - id choroby
      * @param stayId    - id pobytu
      */
-    public Prescription(int id, Date date, String dosage, int illnessId, int stayId) {
+    public Prescription(long id, Date date, String dosage, long illnessId, long stayId) {
         this.id = id;
         this.date = date;
         this.dosage = dosage;

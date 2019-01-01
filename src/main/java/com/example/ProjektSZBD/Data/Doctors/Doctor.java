@@ -12,7 +12,7 @@ public class Doctor {
     /**
      * Pole przechowujące id lekarza.
      */
-    private int id;
+    private long id;
 
     /**
      * Pole przechowujące imię lekarza.
@@ -32,7 +32,7 @@ public class Doctor {
     /**
      * Pole przechowujące id oddziału, na którym lekarz pracuje.
      */
-    private int hospitalSectionId;
+    private long hospitalSectionId;
 
     /**
      * Pole przechowujące stanowisko lekarza.
@@ -55,7 +55,7 @@ public class Doctor {
      * @param position          - stanowisko
      * @param password          - hasło
      */
-    public Doctor(int id, String firstName, String lastName, float salary, int hospitalSectionId,
+    public Doctor(long id, String firstName, String lastName, float salary, long hospitalSectionId,
                   String position, String password) {
         this.id = id;
         this.firstName = firstName;
@@ -75,7 +75,7 @@ public class Doctor {
      * @param hospitalSectionId - id oddziału
      * @param position          - stanowisko
      */
-    public Doctor(int id, String firstName, String lastName, int hospitalSectionId, String position) {
+    public Doctor(long id, String firstName, String lastName, long hospitalSectionId, String position) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;

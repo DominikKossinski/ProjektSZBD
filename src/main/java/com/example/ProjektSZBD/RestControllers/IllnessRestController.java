@@ -35,17 +35,17 @@ public class IllnessRestController {
             public List<Illness> getAllIllnesses() {
                 return getJdbcTemplate().query("SELECT * FROM CHOROBY",
                         (rs, arg1) -> {
-                            return new Illness(rs.getInt("id_choroby"), rs.getString("nazwa"),
+                            return new Illness(rs.getLong("id_choroby"), rs.getString("nazwa"),
                                     rs.getString("opis"));
                         });
             }
 
             @Override
-            public Illness getIllnessById(int id) {
+            public Illness getIllnessById(long id) {
                 try {
                     return getJdbcTemplate().queryForObject("SELECT * FROM CHOROBY WHERE ID_CHOROBY = " + id,
                             (rs, arg1) -> {
-                                return new Illness(rs.getInt("id_choroby"), rs.getString("nazwa"),
+                                return new Illness(rs.getLong("id_choroby"), rs.getString("nazwa"),
                                         rs.getString("opis"));
                             });
                 } catch (EmptyResultDataAccessException e) {
@@ -58,7 +58,7 @@ public class IllnessRestController {
             public List<Illness> getAllIllnessesWithPattern(String pattern) {
                 return getJdbcTemplate().query("SELECT * FROM CHOROBY WHERE LOWER(nazwa) like '%" + pattern + "%'",
                         (rs, arg1) -> {
-                            return new Illness(rs.getInt("id_choroby"), rs.getString("nazwa"),
+                            return new Illness(rs.getLong("id_choroby"), rs.getString("nazwa"),
                                     rs.getString("opis"));
                         });
             }
@@ -85,7 +85,7 @@ public class IllnessRestController {
      */
     @RequestMapping("/api/illness")
     public String getIllnesses(
-            @RequestParam(name = "id", defaultValue = "-1", required = false) int id,
+            @RequestParam(name = "id", defaultValue = "-1", required = false) long id,
             @RequestParam(name = "pattern", defaultValue = "", required = false) String pattern
     ) {
         if (id != -1) {
@@ -102,28 +102,23 @@ public class IllnessRestController {
             }
         } else if (!pattern.isEmpty()) {
             List<Illness> illnesses = illnessInterface.getAllIllnessesWithPattern(pattern.toLowerCase());
-            JSONArray illnessesArray = new JSONArray();
-            for (Illness illness : illnesses) {
-                try {
-                    illnessesArray.add(illness.toJSONObject());
-                } catch (ParseException e) {
-                    return ResponseCreator.parseErrorResponse(e);
-                }
-            }
-            return ResponseCreator.jsonResponse("illnesses", illnessesArray,
-                    "List of all illnesses with pattern = " + pattern);
+            return createResponseWithIllnessesList(illnesses, "List of all illnesses with pattern = " + pattern);
         } else {
             List<Illness> illnesses = illnessInterface.getAllIllnesses();
-            JSONArray illnessesArray = new JSONArray();
-            for (Illness illness : illnesses) {
-                try {
-                    illnessesArray.add(illness.toJSONObject());
-                } catch (ParseException e) {
-                    return ResponseCreator.parseErrorResponse(e);
-                }
-            }
-            return ResponseCreator.jsonResponse("illnesses", illnessesArray, "List of all illnesses");
+            return createResponseWithIllnessesList(illnesses, "List of all illnesses");
         }
+    }
+
+    private String createResponseWithIllnessesList(List<Illness> illnesses, String description) {
+        JSONArray illnessesArray = new JSONArray();
+        for (Illness illness : illnesses) {
+            try {
+                illnessesArray.add(illness.toJSONObject());
+            } catch (ParseException e) {
+                return ResponseCreator.parseErrorResponse(e);
+            }
+        }
+        return ResponseCreator.jsonResponse("illnesses", illnessesArray, description);
     }
 
 

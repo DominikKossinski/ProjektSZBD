@@ -35,12 +35,12 @@ public class HospitalSectionTests {
         this.hospitalSectionDB = new HospitalSectionDB();
         this.hospitalSectionInterface = new HospitalSectionInterface() {
             @Override
-            public List<HospitalSection> getHospitalSectionsByHospitalId(int id) {
+            public List<HospitalSection> getHospitalSectionsByHospitalId(long id) {
                 return hospitalSectionDB.getHospitalSectionByHospitalId(id);
             }
 
             @Override
-            public Ordynator getHospitalSectionOrdynator(int hospitalSectionId) {
+            public Ordynator getHospitalSectionOrdynator(long hospitalSectionId) {
                 if (hospitalSectionId == 0) {
                     return null;
                 }

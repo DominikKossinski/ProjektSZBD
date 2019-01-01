@@ -15,7 +15,7 @@ public interface StayInterface {
      * @param id - id pobytu
      * @return (Stay) - obiekt reprezentujący pobyt
      */
-    Stay getStayById(int id);
+    Stay getStayById(long id);
 
     /**
      * Metoda zwracająca pobyty danego pacjenta.
@@ -23,7 +23,7 @@ public interface StayInterface {
      * @param pesel - pesel pacjenta
      * @return (List of Stay) - listę obiektów reprezentujących pobyty
      */
-    List<Stay> getStayByPesel(int pesel);
+    List<Stay> getStayByPesel(long pesel);
 
     /**
      * Metoda zwracająca pobyty zarejestrowanych przez lekarza.
@@ -31,7 +31,7 @@ public interface StayInterface {
      * @param doctorId - id lekarza
      * @return (List of Stay) - listę obiektów reprezentujących pobyty
      */
-    List<Stay> getStayByDoctor(int doctorId);
+    List<Stay> getStayByDoctor(long doctorId);
 
 
 }

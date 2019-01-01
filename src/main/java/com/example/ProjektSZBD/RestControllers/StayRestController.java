@@ -31,27 +31,27 @@ public class StayRestController {
     public StayRestController() {
         this.stayInterface = new StayInterface() {
             @Override
-            public Stay getStayById(int id) {
+            public Stay getStayById(long id) {
                 return getJdbcTemplate().queryForObject("SELECT * from pobyty where pobyty_id = " + id,
-                        (rs, arg1) -> new Stay(rs.getInt("pobyty_id"), rs.getDate("termin_przyjecia"),
-                                rs.getDate("termin_wypisu"), rs.getInt("id_pokoju"),
-                                rs.getInt("id_lekarza"), rs.getInt("pesel")));
+                        (rs, arg1) -> new Stay(rs.getLong("id_pobytu"), rs.getDate("termin_przyjecia"),
+                                rs.getDate("termin_wypisu"), rs.getLong("id_pokoju"),
+                                rs.getLong("id_lekarza"), rs.getLong("pesel")));
             }
 
             @Override
-            public List<Stay> getStayByPesel(int pesel) {
+            public List<Stay> getStayByPesel(long pesel) {
                 return getJdbcTemplate().query("SELECT * from pobyty where pesel = " + pesel,
-                        (rs, arg1) -> new Stay(rs.getInt("pobyty_id"), rs.getDate("termin_przyjecia"),
-                                rs.getDate("termin_wypisu"), rs.getInt("id_pokoju"),
-                                rs.getInt("id_lekarza"), rs.getInt("pesel")));
+                        (rs, arg1) -> new Stay(rs.getLong("id_pobytu"), rs.getDate("termin_przyjecia"),
+                                rs.getDate("termin_wypisu"), rs.getLong("id_pokoju"),
+                                rs.getLong("id_lekarza"), rs.getLong("pesel")));
             }
 
             @Override
-            public List<Stay> getStayByDoctor(int doctorId) {
+            public List<Stay> getStayByDoctor(long doctorId) {
                 return getJdbcTemplate().query("SELECT * from pobyty where id_lekarza = " + doctorId,
-                        (rs, arg1) -> new Stay(rs.getInt("pobyty_id"), rs.getDate("termin_przyjecia"),
-                                rs.getDate("termin_wypisu"), rs.getInt("id_pokoju"),
-                                rs.getInt("id_lekarza"), rs.getInt("pesel")));
+                        (rs, arg1) -> new Stay(rs.getLong("id_pobytu"), rs.getDate("termin_przyjecia"),
+                                rs.getDate("termin_wypisu"), rs.getLong("id_pokoju"),
+                                rs.getLong("id_lekarza"), rs.getLong("pesel")));
             }
         };
     }
@@ -77,9 +77,9 @@ public class StayRestController {
      */
     @RequestMapping("/api/stays")
     public String getStays(
-            @RequestParam(value = "id", defaultValue = "-1", required = false) int id,
-            @RequestParam(value = "pesel", defaultValue = "-1", required = false) int pesel,
-            @RequestParam(value = "doctorId", defaultValue = "-1", required = false) int doctorId
+            @RequestParam(value = "id", defaultValue = "-1", required = false) long id,
+            @RequestParam(value = "pesel", defaultValue = "-1", required = false) long pesel,
+            @RequestParam(value = "doctorId", defaultValue = "-1", required = false) long doctorId
     ) {
         if (id != -1) {
             Stay stay = stayInterface.getStayById(id);
@@ -97,31 +97,26 @@ public class StayRestController {
         }
         if (pesel != -1) {
             List<Stay> stays = stayInterface.getStayByPesel(pesel);
-            JSONArray staysArray = new JSONArray();
-            for (Stay stay : stays) {
-                try {
-                    staysArray.add(stay.toJSONObject());
-                } catch (ParseException e) {
-                    return ResponseCreator.parseErrorResponse(e);
-                }
-            }
-            return ResponseCreator.jsonResponse("stays", staysArray,
-                    "Stays of patient with pesel = " + pesel);
+            return createResponseWithStaysList(stays, "Stays of patient with pesel = " + pesel);
         }
         if (doctorId != -1) {
             List<Stay> stays = stayInterface.getStayByDoctor(doctorId);
-            JSONArray staysArray = new JSONArray();
-            for (Stay stay : stays) {
-                try {
-                    staysArray.add(stay.toJSONObject());
-                } catch (ParseException e) {
-                    return ResponseCreator.parseErrorResponse(e);
-                }
-            }
-            return ResponseCreator.jsonResponse("stays", staysArray,
-                    "Stays with doctorId = " + doctorId);
+            return createResponseWithStaysList(stays, "Stays with doctorId = " + doctorId);
         }
         return ResponseCreator.jsonErrorResponse(
                 "You need to specify one of parameters [id, pesel, doctorId]");
+    }
+
+    private String createResponseWithStaysList(List<Stay> stays, String description) {
+        JSONArray staysArray = new JSONArray();
+        for (Stay stay : stays) {
+            try {
+                staysArray.add(stay.toJSONObject());
+            } catch (ParseException e) {
+                return ResponseCreator.parseErrorResponse(e);
+            }
+        }
+        return ResponseCreator.jsonResponse("stays", staysArray,
+                description);
     }
 }

@@ -12,7 +12,7 @@ public class Director extends Doctor {
     /**
      * Pole przechowujące id szpitala.
      */
-    private int hospitalId;
+    private long hospitalId;
 
     /**
      * Publiczny konstruktor klasy ustawiający podstawowe informacje o dyrektorze.
@@ -23,7 +23,7 @@ public class Director extends Doctor {
      * @param lastName          - nazwisko
      * @param hospitalSectionId - id oddziału
      */
-    public Director(int hospitalId, int id, String firstName, String lastName, int hospitalSectionId) {
+    public Director(long hospitalId, long id, String firstName, String lastName, long hospitalSectionId) {
         super(id, firstName, lastName, hospitalSectionId, "Dyrektor");
         this.hospitalId = hospitalId;
     }

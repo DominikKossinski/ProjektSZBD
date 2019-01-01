@@ -32,60 +32,60 @@ public class DoctorRestController {
             @Override
             public List<Doctor> getAllDoctors() {
                 return getJdbcTemplate().query("SELECT * FROM LEKARZE",
-                        (rs, arg1) -> new Doctor(rs.getInt("id_lekarza"), rs.getString("imie"),
+                        (rs, arg1) -> new Doctor(rs.getLong("id_lekarza"), rs.getString("imie"),
                                 rs.getString("nazwisko"), rs.getFloat("placa"),
-                                rs.getInt("id_oddzialu"), rs.getString("stanowisko"),
+                                rs.getLong("id_oddzialu"), rs.getString("stanowisko"),
                                 rs.getString("haslo")));
             }
 
             @Override
-            public List<Doctor> getDoctorsByHospitalId(int hospitalId) {
+            public List<Doctor> getDoctorsByHospitalId(long hospitalId) {
                 return getJdbcTemplate().query("select l.ID_LEKARZA, l.IMIE, l.NAZWISKO, l.PLACA, l.ID_ODDZIALU, " +
                                 "l.stanowisko, l.HASLO " +
                                 "from lekarze l join oddzialy o on l.id_oddzialu = o.id_oddzialu " +
                                 "join SZPITALE s on s.ID_SZPITALA = o.ID_SZPITALA " +
                                 "where  o.ID_SZPITALA = " + hospitalId,
-                        (rs, arg1) -> new Doctor(rs.getInt("id_lekarza"), rs.getString("imie"),
+                        (rs, arg1) -> new Doctor(rs.getLong("id_lekarza"), rs.getString("imie"),
                                 rs.getString("nazwisko"), rs.getFloat("placa"),
-                                rs.getInt("id_oddzialu"), rs.getString("stanowisko"),
+                                rs.getLong("id_oddzialu"), rs.getString("stanowisko"),
                                 rs.getString("haslo")));
             }
 
             @Override
-            public List<Doctor> getDoctorsByHospitalSectionId(int hospitalSectionId) {
+            public List<Doctor> getDoctorsByHospitalSectionId(long hospitalSectionId) {
                 return getJdbcTemplate().query("SELECT * FROM LEKARZE WHERE ID_ODDZIALU = " + hospitalSectionId,
-                        (rs, arg1) -> new Doctor(rs.getInt("id_lekarza"), rs.getString("imie"),
+                        (rs, arg1) -> new Doctor(rs.getLong("id_lekarza"), rs.getString("imie"),
                                 rs.getString("nazwisko"), rs.getFloat("placa"),
-                                rs.getInt("id_oddzialu"), rs.getString("stanowisko"),
+                                rs.getLong("id_oddzialu"), rs.getString("stanowisko"),
                                 rs.getString("haslo")));
             }
 
             @Override
             public List<Doctor> getAllDoctorsInfo() {
                 return getJdbcTemplate().query("SELECT id_lekarza, imie, nazwisko, id_oddzialu, stanowisko FROM lekarze",
-                        (rs, arg1) -> new Doctor(rs.getInt("id_lekarza"), rs.getString("imie"),
-                                rs.getString("nazwisko"), rs.getInt("id_oddzialu"),
+                        (rs, arg1) -> new Doctor(rs.getLong("id_lekarza"), rs.getString("imie"),
+                                rs.getString("nazwisko"), rs.getLong("id_oddzialu"),
                                 rs.getString("stanowisko")));
             }
 
             @Override
-            public List<Doctor> getDoctorsInfoByHospitalId(int hospitalId) {
+            public List<Doctor> getDoctorsInfoByHospitalId(long hospitalId) {
                 return getJdbcTemplate().query("select l.ID_LEKARZA, l.IMIE, l.NAZWISKO, l.ID_ODDZIALU, " +
                                 "l.stanowisko " +
                                 "from lekarze l join oddzialy o on l.id_oddzialu = o.id_oddzialu " +
                                 "join SZPITALE s on s.ID_SZPITALA = o.ID_SZPITALA " +
                                 "where  o.ID_SZPITALA = " + hospitalId,
-                        (rs, arg1) -> new Doctor(rs.getInt("id_lekarza"), rs.getString("imie"),
-                                rs.getString("nazwisko"), rs.getInt("id_oddzialu"),
+                        (rs, arg1) -> new Doctor(rs.getLong("id_lekarza"), rs.getString("imie"),
+                                rs.getString("nazwisko"), rs.getLong("id_oddzialu"),
                                 rs.getString("stanowisko")));
             }
 
             @Override
-            public List<Doctor> getDoctorsInfoByHospitalSectionId(int hospitalSectionId) {
+            public List<Doctor> getDoctorsInfoByHospitalSectionId(long hospitalSectionId) {
                 return getJdbcTemplate().query("SELECT id_lekarza, imie, nazwisko, id_oddzialu, stanowisko " +
                                 "FROM lekarze WHERE ID_ODDZIALU = " + hospitalSectionId,
-                        (rs, arg1) -> new Doctor(rs.getInt("id_lekarza"), rs.getString("imie"),
-                                rs.getString("nazwisko"), rs.getInt("id_oddzialu"),
+                        (rs, arg1) -> new Doctor(rs.getLong("id_lekarza"), rs.getString("imie"),
+                                rs.getString("nazwisko"), rs.getLong("id_oddzialu"),
                                 rs.getString("stanowisko")));
             }
         };
@@ -112,8 +112,8 @@ public class DoctorRestController {
      */
     @RequestMapping("/api/doctors")
     public String getAllDoctors(
-            @RequestParam(name = "hospitalSectionId", defaultValue = "-1", required = false) int hospitalSectionId,
-            @RequestParam(name = "hospitalId", defaultValue = "-1", required = false) int hospitalId) {
+            @RequestParam(name = "hospitalSectionId", defaultValue = "-1", required = false) long hospitalSectionId,
+            @RequestParam(name = "hospitalId", defaultValue = "-1", required = false) long hospitalId) {
         List<Doctor> doctors;
         if (hospitalId == -1 && hospitalSectionId == -1) {
             doctors = doctorInterface.getAllDoctors();
@@ -142,8 +142,8 @@ public class DoctorRestController {
      */
     @RequestMapping("/api/doctorsInfo")
     public String getAllDoctorsInfo(
-            @RequestParam(name = "hospitalSectionId", defaultValue = "-1", required = false) int hospitalSectionId,
-            @RequestParam(name = "hospitalId", defaultValue = "-1", required = false) int hospitalId) {
+            @RequestParam(name = "hospitalSectionId", defaultValue = "-1", required = false) long hospitalSectionId,
+            @RequestParam(name = "hospitalId", defaultValue = "-1", required = false) long hospitalId) {
         List<Doctor> doctors;
         if (hospitalId == -1 && hospitalSectionId == -1) {
             doctors = doctorInterface.getAllDoctorsInfo();

@@ -23,7 +23,7 @@ public interface HospitalInterface {
      * @param id - id szpitala
      * @return (Hospital) - szpital o żądanym id
      */
-    Hospital getHospitalById(int id);
+    Hospital getHospitalById(long id);
 
     /**
      * Metoda zwracająca informacje na temat dyrektora szpitala.
@@ -31,7 +31,7 @@ public interface HospitalInterface {
      * @param hospitalId - id szpitala
      * @return (Director) - obiekt reprezentujący dyrektora szpitala
      */
-    Director getHospitalDirector(int hospitalId);
+    Director getHospitalDirector(long hospitalId);
 
     /**
      * Metoda zwracająca listę dyrektorów.
@@ -46,6 +46,6 @@ public interface HospitalInterface {
      * @param hospitalId - id szpitala
      * @return (List of Ordynator) - listę obiektów reprezentujących ordynatorów szpitali
      */
-    List<Ordynator> getHospitalOrdynators(int hospitalId);
+    List<Ordynator> getHospitalOrdynators(long hospitalId);
 
 }

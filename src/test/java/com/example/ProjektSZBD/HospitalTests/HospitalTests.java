@@ -43,7 +43,7 @@ public class HospitalTests {
             }
 
             @Override
-            public Hospital getHospitalById(int id) {
+            public Hospital getHospitalById(long id) {
                 if (id == 0) {
                     return null;
                 }
@@ -51,7 +51,7 @@ public class HospitalTests {
             }
 
             @Override
-            public Director getHospitalDirector(int hospitalId) {
+            public Director getHospitalDirector(long hospitalId) {
                 if (hospitalId == 0) {
                     return null;
                 }
@@ -64,7 +64,7 @@ public class HospitalTests {
             }
 
             @Override
-            public List<Ordynator> getHospitalOrdynators(int hospitalId) {
+            public List<Ordynator> getHospitalOrdynators(long hospitalId) {
                 return hospitalDB.getHospitalOrdynators(hospitalId);
             }
         };

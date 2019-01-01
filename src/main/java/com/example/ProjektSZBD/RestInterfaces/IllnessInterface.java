@@ -22,7 +22,7 @@ public interface IllnessInterface {
      * @param id - id choroby
      * @return (Illness) - obiekt zawierający informacje o chorobie
      */
-    Illness getIllnessById(int id);
+    Illness getIllnessById(long id);
 
     /**
      * Metoda zwracająca choroby wyszukiwane po ciągu znaków (nazwa choroby musi zawierać ciąg znaków).

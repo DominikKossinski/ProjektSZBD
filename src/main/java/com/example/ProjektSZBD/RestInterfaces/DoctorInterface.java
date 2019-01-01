@@ -22,7 +22,7 @@ public interface DoctorInterface {
      * @param hospitalId - id szpitala
      * @return (List of Doctor) - lista wszystkich lekarzy w danym szpitalu
      */
-    List<Doctor> getDoctorsByHospitalId(int hospitalId);
+    List<Doctor> getDoctorsByHospitalId(long hospitalId);
 
     /**
      * Metoda zwracająca wszystkie informacje o lekarzach w danym oddziale.
@@ -30,7 +30,7 @@ public interface DoctorInterface {
      * @param hospitalSectionId - id oddziału
      * @return (List of Doctor) - lista wszystkich lekarzy w danym oddziale
      */
-    List<Doctor> getDoctorsByHospitalSectionId(int hospitalSectionId);
+    List<Doctor> getDoctorsByHospitalSectionId(long hospitalSectionId);
 
     /**
      * Metoda zwracająca podstawowe informacje o lekarzach (imię, nazwisko, stanowisko) o wszystkich lekarzach.
@@ -45,7 +45,7 @@ public interface DoctorInterface {
      * @param hospitalId - id szpitala
      * @return (List of Doctor) - lista wszystkich lekarzy w danym szpitalu z podstawowymi informacjami
      */
-    List<Doctor> getDoctorsInfoByHospitalId(int hospitalId);
+    List<Doctor> getDoctorsInfoByHospitalId(long hospitalId);
 
     /**
      * Metoda zwracająca podstawowe informacje o lekarzach (imię, nazwisko, stanowisko) o lekarzach na danym oddziale/
@@ -53,5 +53,5 @@ public interface DoctorInterface {
      * @param hospitalSectionId - id oddziału
      * @return (List of Doctor) - lista wszystkich lekarzy na danym oddziale     z podstawowymi informacjami
      */
-    List<Doctor> getDoctorsInfoByHospitalSectionId(int hospitalSectionId);
+    List<Doctor> getDoctorsInfoByHospitalSectionId(long hospitalSectionId);
 }

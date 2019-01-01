@@ -12,7 +12,7 @@ public class Hospital {
     /**
      * Pole przechowujące id szpitala.
      */
-    private int id;
+    private long id;
 
     /**
      * Pole przechowujące nazwę szpitala.
@@ -37,7 +37,7 @@ public class Hospital {
      * @param address - adres szpitala
      * @param city    - nazwa miasta, w którym znajduje się szpital
      */
-    public Hospital(int id, String name, String address, String city) {
+    public Hospital(long id, String name, String address, String city) {
         this.id = id;
         this.name = name;
         this.address = address;

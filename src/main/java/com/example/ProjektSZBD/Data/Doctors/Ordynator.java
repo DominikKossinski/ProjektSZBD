@@ -17,7 +17,7 @@ public class Ordynator extends Doctor {
     /**
      * Pole przechowujące id szpitala.
      */
-    private int hospitalId;
+    private long hospitalId;
 
 
     /**
@@ -30,7 +30,7 @@ public class Ordynator extends Doctor {
      * @param lastName            - nazwisko
      * @param hospitalSectionId   - id oddziału
      */
-    public Ordynator(String hospitalSectionName, int hospitalId, int id, String firstName, String lastName, int hospitalSectionId) {
+    public Ordynator(String hospitalSectionName, long hospitalId, long id, String firstName, String lastName, long hospitalSectionId) {
         super(id, firstName, lastName, hospitalSectionId, "Ordynator");
         this.hospitalSectionName = hospitalSectionName;
         this.hospitalId = hospitalId;

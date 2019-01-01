@@ -12,7 +12,7 @@ public class HospitalSection {
     /**
      * Pole przechowujące id oddziału.
      */
-    private int id;
+    private long id;
 
     /**
      * Pole przechowujące nazwę oddziału.
@@ -22,7 +22,7 @@ public class HospitalSection {
     /**
      * Pole przechowujące id szpitala, w którym znajduje się oddział.
      */
-    private int hospitalId;
+    private long hospitalId;
 
     /**
      * Publiczny konstruktor klasy, który ustawia wszystkie pola klasy.
@@ -31,7 +31,7 @@ public class HospitalSection {
      * @param name       - nazwa oddziału
      * @param hospitalId - id szpitala, w którym znajduje sie oddział
      */
-    public HospitalSection(int id, String name, int hospitalId) {
+    public HospitalSection(long id, String name, long hospitalId) {
         this.id = id;
         this.name = name;
         this.hospitalId = hospitalId;

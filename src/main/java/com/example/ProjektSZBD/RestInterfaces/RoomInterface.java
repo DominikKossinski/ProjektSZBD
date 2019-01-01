@@ -15,7 +15,7 @@ public interface RoomInterface {
      * @param id - id pokoju
      * @return (Room) - obiekt zawierający informacje o pokoju
      */
-    Room getRoomById(int id);
+    Room getRoomById(long id);
 
     /**
      * Metoda zwracająca informacje o pokojach na danym oddziale.
@@ -23,7 +23,7 @@ public interface RoomInterface {
      * @param hospitalSectionId - id oddziału
      * @return (List of Room) - lista obiektów zawierających informacje o pokojach
      */
-    List<Room> getRoomsByHospitalSectionId(int hospitalSectionId);
+    List<Room> getRoomsByHospitalSectionId(long hospitalSectionId);
 
     /**
      * Metoda zwracająca informacje o wolnych pokojach na danym oddziale.
@@ -31,5 +31,5 @@ public interface RoomInterface {
      * @param hospitalSectionId - id oddziału
      * @return (List of Room) - lista obiektów zawierających informacje o wolnych pokojach
      */
-    List<Room> getRoomsWithFreePlaces(int hospitalSectionId);
+    List<Room> getRoomsWithFreePlaces(long hospitalSectionId);
 }

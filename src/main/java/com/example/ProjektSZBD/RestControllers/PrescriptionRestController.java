@@ -33,58 +33,58 @@ public class PrescriptionRestController {
     public PrescriptionRestController() {
         this.prescriptionInterface = new PrescriptionInterface() {
             @Override
-            public List<Prescription> getPrescriptionsByPesel(int pesel) {
+            public List<Prescription> getPrescriptionsByPesel(long pesel) {
                 return getJdbcTemplate().query("select r.id_recepty, r.data_wystawienia, r.dawkowanie, " +
                                 "r.id_choroby, r.id_pobytu" +
                                 " from RECEPTY r join POBYTY p on r.ID_POBYTU = p.POBYTY_ID " +
                                 "join pacjenci pa on p.pesel = pa.pesel where pa.pesel = " + pesel,
-                        (rs, arg1) -> new Prescription(rs.getInt("id_recepty"),
+                        (rs, arg1) -> new Prescription(rs.getLong("id_recepty"),
                                 rs.getDate("data_wystawienia"), rs.getString("dawkowanie"),
-                                rs.getInt("id_choroby"), rs.getInt("id_pobytu")));
+                                rs.getLong("id_choroby"), rs.getLong("id_pobytu")));
             }
 
             @Override
-            public List<Prescription> getPrescriptionsByStayId(int stayId) {
+            public List<Prescription> getPrescriptionsByStayId(long stayId) {
                 return getJdbcTemplate().query("select r.id_recepty, r.data_wystawienia, r.dawkowanie, " +
                                 "r.id_choroby, r.id_pobytu" +
                                 " from RECEPTY r join POBYTY p on r.ID_POBYTU = p.POBYTY_ID where p.pobyty_id = " + stayId,
-                        (rs, arg1) -> new Prescription(rs.getInt("id_recepty"),
+                        (rs, arg1) -> new Prescription(rs.getLong("id_recepty"),
                                 rs.getDate("data_wystawienia"), rs.getString("dawkowanie"),
-                                rs.getInt("id_choroby"), rs.getInt("id_pobytu")));
+                                rs.getLong("id_choroby"), rs.getLong("id_pobytu")));
             }
 
             @Override
-            public List<Prescription> getPrescriptionsByDoctorId(int doctorId) {
+            public List<Prescription> getPrescriptionsByDoctorId(long doctorId) {
                 return getJdbcTemplate().query("select r.id_recepty, r.data_wystawienia, r.dawkowanie, " +
                                 "r.id_choroby, r.id_pobytu" +
                                 " from RECEPTY r join POBYTY p on r.ID_POBYTU = p.POBYTY_ID " +
                                 "join lekarze l on l.id_lekarza = p.id_lekarza " +
                                 "where l.id_lekarza = " + doctorId,
-                        (rs, arg1) -> new Prescription(rs.getInt("id_recepty"),
+                        (rs, arg1) -> new Prescription(rs.getLong("id_recepty"),
                                 rs.getDate("data_wystawienia"), rs.getString("dawkowanie"),
-                                rs.getInt("id_choroby"), rs.getInt("id_pobytu")));
+                                rs.getLong("id_choroby"), rs.getLong("id_pobytu")));
             }
 
             @Override
-            public List<Prescription> getPrescriptionsByDoctorId(int doctorId, int pesel) {
+            public List<Prescription> getPrescriptionsByDoctorId(long doctorId, long pesel) {
                 return getJdbcTemplate().query("select r.id_recepty, r.data_wystawienia, r.dawkowanie, " +
                                 "r.id_choroby, r.id_pobytu" +
                                 " from RECEPTY r join POBYTY p on r.ID_POBYTU = p.POBYTY_ID " +
                                 "join pacjenci pa on p.pesel = pa.pesel " +
                                 "join lekarze l on l.id_lekarza = p.id_lekarza " +
                                 "where pa.pesel = " + pesel + ", l.id_lekarza = " + doctorId,
-                        (rs, arg1) -> new Prescription(rs.getInt("id_recepty"),
+                        (rs, arg1) -> new Prescription(rs.getLong("id_recepty"),
                                 rs.getDate("data_wystawienia"), rs.getString("dawkowanie"),
-                                rs.getInt("id_choroby"), rs.getInt("id_pobytu")));
+                                rs.getLong("id_choroby"), rs.getLong("id_pobytu")));
             }
 
             @Override
-            public Prescription getPrescriptionById(int id) {
+            public Prescription getPrescriptionById(long id) {
                 try {
                     return getJdbcTemplate().queryForObject("SELECT * FROM RECEPTY WHERE ID_RECEPTY = " + id,
-                            (rs, arg1) -> new Prescription(rs.getInt("id_recepty"), rs.getDate("data_wystawienia"),
-                                    rs.getString("dawkowanie"), rs.getInt("id_choroby"),
-                                    rs.getInt("id_pobytu")));
+                            (rs, arg1) -> new Prescription(rs.getLong("id_recepty"), rs.getDate("data_wystawienia"),
+                                    rs.getString("dawkowanie"), rs.getLong("id_choroby"),
+                                    rs.getLong("id_pobytu")));
                 } catch (EmptyResultDataAccessException e) {
                     return null;
                 }
@@ -112,10 +112,10 @@ public class PrescriptionRestController {
      */
     @RequestMapping("/api/prescriptions")
     public String getPrescriptions(
-            @RequestParam(value = "pesel", defaultValue = "-1", required = false) int pesel,
-            @RequestParam(value = "stayId", defaultValue = "-1", required = false) int stayId,
-            @RequestParam(value = "doctorId", defaultValue = "-1", required = false) int doctorId,
-            @RequestParam(value = "id", defaultValue = "-1", required = false) int id
+            @RequestParam(value = "pesel", defaultValue = "-1", required = false) long pesel,
+            @RequestParam(value = "stayId", defaultValue = "-1", required = false) long stayId,
+            @RequestParam(value = "doctorId", defaultValue = "-1", required = false) long doctorId,
+            @RequestParam(value = "id", defaultValue = "-1", required = false) long id
     ) {
         if (id != -1) {
             Prescription prescription = prescriptionInterface.getPrescriptionById(id);
@@ -133,42 +133,19 @@ public class PrescriptionRestController {
         }
         if (pesel != -1) {
             List<Prescription> prescriptions = prescriptionInterface.getPrescriptionsByPesel(pesel);
-            JSONArray prescriptionArray = new JSONArray();
-            for (Prescription prescription : prescriptions) {
-                try {
-                    prescriptionArray.add(prescription.toJSONObject());
-                } catch (ParseException e) {
-                    return ResponseCreator.parseErrorResponse(e);
-                }
-            }
-            return ResponseCreator.jsonResponse("prescriptions", prescriptionArray,
+            return createResponseWithPrescriptionsList(prescriptions,
                     "Prescriptions of patient with pesel = " + pesel);
         }
         if (stayId != -1) {
             List<Prescription> prescriptions = prescriptionInterface.getPrescriptionsByStayId(stayId);
-            JSONArray prescriptionArray = new JSONArray();
-            for (Prescription prescription : prescriptions) {
-                try {
-                    prescriptionArray.add(prescription.toJSONObject());
-                } catch (ParseException e) {
-                    return ResponseCreator.parseErrorResponse(e);
-                }
-            }
-            return ResponseCreator.jsonResponse("prescriptions", prescriptionArray,
+            return createResponseWithPrescriptionsList(prescriptions,
                     "Prescriptions of stay with id = " + stayId);
         }
         if (doctorId != -1) {
             List<Prescription> prescriptions = prescriptionInterface.getPrescriptionsByDoctorId(doctorId);
-            JSONArray prescriptionArray = new JSONArray();
-            for (Prescription prescription : prescriptions) {
-                try {
-                    prescriptionArray.add(prescription.toJSONObject());
-                } catch (ParseException e) {
-                    return ResponseCreator.parseErrorResponse(e);
-                }
-            }
-            return ResponseCreator.jsonResponse("prescriptions", prescriptionArray,
+            return createResponseWithPrescriptionsList(prescriptions,
                     "Prescriptions of doctor with id = " + doctorId);
+
         }
         return ResponseCreator.jsonErrorResponse(
                 "You need to specify one of parameters [id, pesel, stayId, doctorId]");
@@ -176,33 +153,37 @@ public class PrescriptionRestController {
 
     @RequestMapping("/api/{pesel}/prescriptions")
     public String getPrescriptions(
-            @PathVariable(name = "pesel") int pesel,
-            @RequestParam(name = "doctorId", defaultValue = "-1", required = false) int doctorId
+            @PathVariable(name = "pesel") long pesel,
+            @RequestParam(name = "doctorId", defaultValue = "-1", required = false) long doctorId
     ) {
         if (doctorId == -1) {
             List<Prescription> prescriptions = prescriptionInterface.getPrescriptionsByPesel(pesel);
-            JSONArray prescriptionArray = new JSONArray();
-            for (Prescription prescription : prescriptions) {
-                try {
-                    prescriptionArray.add(prescription.toJSONObject());
-                } catch (ParseException e) {
-                    return ResponseCreator.parseErrorResponse(e);
-                }
-            }
-            return ResponseCreator.jsonResponse("prescriptions", prescriptionArray,
+            return createResponseWithPrescriptionsList(prescriptions,
                     "Prescriptions of patient with pesel = " + pesel);
         } else {
             List<Prescription> prescriptions = prescriptionInterface.getPrescriptionsByDoctorId(doctorId, pesel);
-            JSONArray prescriptionArray = new JSONArray();
-            for (Prescription prescription : prescriptions) {
-                try {
-                    prescriptionArray.add(prescription.toJSONObject());
-                } catch (ParseException e) {
-                    return ResponseCreator.parseErrorResponse(e);
-                }
-            }
-            return ResponseCreator.jsonResponse("prescriptions", prescriptionArray,
+            return createResponseWithPrescriptionsList(prescriptions,
                     "Prescriptions of patient with pesel = " + pesel + " and with doctorId = " + doctorId);
         }
+    }
+
+    /**
+     * Metoda zwracająca odpowiedź serwera na podstawie listy recept i jej opisu.
+     *
+     * @param prescriptions - lista recept
+     * @param description   - opis
+     * @return (String) - tekst zawierający odpowiedź serwera w formacie JSON
+     */
+    private String createResponseWithPrescriptionsList(List<Prescription> prescriptions, String description) {
+        JSONArray prescriptionArray = new JSONArray();
+        for (Prescription prescription : prescriptions) {
+            try {
+                prescriptionArray.add(prescription.toJSONObject());
+            } catch (ParseException e) {
+                return ResponseCreator.parseErrorResponse(e);
+            }
+        }
+        return ResponseCreator.jsonResponse("prescriptions", prescriptionArray,
+                description);
     }
 }

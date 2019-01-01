@@ -41,12 +41,12 @@ public class DoctorTests {
             }
 
             @Override
-            public List<Doctor> getDoctorsByHospitalId(int hospitalId) {
+            public List<Doctor> getDoctorsByHospitalId(long hospitalId) {
                 return doctorDB.getAllDoctors();
             }
 
             @Override
-            public List<Doctor> getDoctorsByHospitalSectionId(int hospitalSectionId) {
+            public List<Doctor> getDoctorsByHospitalSectionId(long hospitalSectionId) {
                 return doctorDB.getDoctorsByHospitalSectionId(hospitalSectionId);
             }
 
@@ -56,12 +56,12 @@ public class DoctorTests {
             }
 
             @Override
-            public List<Doctor> getDoctorsInfoByHospitalId(int hospitalId) {
+            public List<Doctor> getDoctorsInfoByHospitalId(long hospitalId) {
                 return doctorDB.getAllDoctorsInfo();
             }
 
             @Override
-            public List<Doctor> getDoctorsInfoByHospitalSectionId(int hospitalSectionId) {
+            public List<Doctor> getDoctorsInfoByHospitalSectionId(long hospitalSectionId) {
                 return doctorDB.getDoctorsInfoByHospitalSectionId(hospitalSectionId);
             }
         };

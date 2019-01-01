@@ -16,7 +16,7 @@ class DoctorDB {
         return doctors;
     }
 
-    List<Doctor> getDoctorsByHospitalSectionId(int hospitalSectionId) {
+    List<Doctor> getDoctorsByHospitalSectionId(long hospitalSectionId) {
         ArrayList<Doctor> doctors = new ArrayList<>();
         doctors.add(new Doctor(1, "Jan", "Nowak", 5000,
                 hospitalSectionId, "Lekarz", "password"));
@@ -34,7 +34,7 @@ class DoctorDB {
         return doctors;
     }
 
-    List<Doctor> getDoctorsInfoByHospitalSectionId(int hospitalSectionId) {
+    List<Doctor> getDoctorsInfoByHospitalSectionId(long hospitalSectionId) {
         ArrayList<Doctor> doctors = new ArrayList<>();
         doctors.add(new Doctor(1, "Jan", "Nowak",
                 hospitalSectionId, "Lekarz"));

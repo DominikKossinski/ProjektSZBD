@@ -32,11 +32,11 @@ public class RoomRestController {
     public RoomRestController() {
         this.roomInterface = new RoomInterface() {
             @Override
-            public Room getRoomById(int id) {
+            public Room getRoomById(long id) {
                 try {
                     return getJdbcTemplate().queryForObject("SELECT * FROM POKOJE WHERE ID_POKOJU = " + id,
-                            (rs, arg1) -> new Room(rs.getInt("id_pokoju"), rs.getInt("pietro"),
-                                    rs.getInt("liczba_miejsc"), rs.getInt("id_oddzialu"),
+                            (rs, arg1) -> new Room(rs.getLong("id_pokoju"), rs.getInt("pietro"),
+                                    rs.getInt("liczba_miejsc"), rs.getLong("id_oddzialu"),
                                     rs.getInt("ilosc_zajetych_miejsc")));
                 } catch (EmptyResultDataAccessException e) {
                     return null;
@@ -44,19 +44,19 @@ public class RoomRestController {
             }
 
             @Override
-            public List<Room> getRoomsByHospitalSectionId(int hospitalSectionId) {
+            public List<Room> getRoomsByHospitalSectionId(long hospitalSectionId) {
                 return getJdbcTemplate().query("SELECT * FROM POKOJE WHERE ID_ODDZIALU = " + hospitalSectionId,
-                        (rs, arg1) -> new Room(rs.getInt("id_pokoju"), rs.getInt("pietro"),
-                                rs.getInt("liczba_miejsc"), rs.getInt("id_oddzialu"),
+                        (rs, arg1) -> new Room(rs.getLong("id_pokoju"), rs.getInt("pietro"),
+                                rs.getInt("liczba_miejsc"), rs.getLong("id_oddzialu"),
                                 rs.getInt("ilosc_zajetych_miejsc")));
             }
 
             @Override
-            public List<Room> getRoomsWithFreePlaces(int hospitalSectionId) {
+            public List<Room> getRoomsWithFreePlaces(long hospitalSectionId) {
                 return getJdbcTemplate().query("SELECT * FROM POKOJE WHERE ilosc_zajetych_miejsc < liczba_miejsc " +
                                 "and  ID_ODDZIALU = " + hospitalSectionId,
-                        (rs, arg1) -> new Room(rs.getInt("id_pokoju"), rs.getInt("pietro"),
-                                rs.getInt("liczba_miejsc"), rs.getInt("id_oddzialu"),
+                        (rs, arg1) -> new Room(rs.getLong("id_pokoju"), rs.getInt("pietro"),
+                                rs.getInt("liczba_miejsc"), rs.getLong("id_oddzialu"),
                                 rs.getInt("ilosc_zajetych_miejsc")));
             }
         };
@@ -84,9 +84,9 @@ public class RoomRestController {
      */
     @RequestMapping("/api/rooms")
     public String getRooms(
-            @RequestParam(value = "id", defaultValue = "-1", required = false) int id,
+            @RequestParam(value = "id", defaultValue = "-1", required = false) long id,
             @RequestParam(value = "free", defaultValue = "false", required = false) boolean free,
-            @RequestParam(value = "hospitalSectionId", defaultValue = "-1", required = false) int hospitalSectionId
+            @RequestParam(value = "hospitalSectionId", defaultValue = "-1", required = false) long hospitalSectionId
     ) {
         if (id != -1) {
             Room room = roomInterface.getRoomById(id);
@@ -105,27 +105,11 @@ public class RoomRestController {
                 List<Room> rooms;
                 if (free) {
                     rooms = roomInterface.getRoomsWithFreePlaces(hospitalSectionId);
-                    JSONArray roomsArray = new JSONArray();
-                    for (Room room : rooms) {
-                        try {
-                            roomsArray.add(room.toJSONObject());
-                        } catch (ParseException e) {
-                            return ResponseCreator.parseErrorResponse(e);
-                        }
-                    }
-                    return ResponseCreator.jsonResponse("rooms", roomsArray,
+                    return createResponseWithRoomsList(rooms,
                             "List of free rooms in hospital section with id = " + hospitalSectionId);
                 } else {
                     rooms = roomInterface.getRoomsByHospitalSectionId(hospitalSectionId);
-                    JSONArray roomsArray = new JSONArray();
-                    for (Room room : rooms) {
-                        try {
-                            roomsArray.add(room.toJSONObject());
-                        } catch (ParseException e) {
-                            return ResponseCreator.parseErrorResponse(e);
-                        }
-                    }
-                    return ResponseCreator.jsonResponse("rooms", roomsArray,
+                    return createResponseWithRoomsList(rooms,
                             "List of rooms in hospital section with id = " + hospitalSectionId);
                 }
 
@@ -133,5 +117,18 @@ public class RoomRestController {
                 return ResponseCreator.jsonErrorResponse("You have to specify hospitalSectionId");
             }
         }
+    }
+
+    private String createResponseWithRoomsList(List<Room> rooms, String description) {
+        JSONArray roomsArray = new JSONArray();
+        for (Room room : rooms) {
+            try {
+                roomsArray.add(room.toJSONObject());
+            } catch (ParseException e) {
+                return ResponseCreator.parseErrorResponse(e);
+            }
+        }
+        return ResponseCreator.jsonResponse("rooms", roomsArray,
+                description);
     }
 }

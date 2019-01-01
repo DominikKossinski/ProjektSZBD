@@ -32,12 +32,12 @@ public class ElementRestController {
     public ElementRestController() {
         elementInterface = new ElementInterface() {
             @Override
-            public Element getElementById(int id) {
+            public Element getElementById(long id) {
                 try {
                     return getJdbcTemplate().queryForObject("SELECT * FROM ELEMENTY_WYPOSAZENIA WHERE ID_ELEMENTU = " + id,
-                            (rs, arg1) -> new Element(rs.getInt("id_elementu"), rs.getString("nazwa"),
+                            (rs, arg1) -> new Element(rs.getLong("id_elementu"), rs.getString("nazwa"),
                                     rs.getInt("ilosc"), rs.getFloat("cena_jednostkowa"),
-                                    rs.getInt("id_oddzialu")));
+                                    rs.getLong("id_oddzialu")));
                 } catch (EmptyResultDataAccessException e) {
                     return null;
                 }
@@ -46,29 +46,29 @@ public class ElementRestController {
             @Override
             public List<Element> getAllElements() {
                 return getJdbcTemplate().query("SELECT * FROM ELEMENTY_WYPOSAZENIA",
-                        (rs, arg1) -> new Element(rs.getInt("id_elementu"), rs.getString("nazwa"),
+                        (rs, arg1) -> new Element(rs.getLong("id_elementu"), rs.getString("nazwa"),
                                 rs.getInt("ilosc"), rs.getFloat("cena_jednostkowa"),
-                                rs.getInt("id_oddzialu")));
+                                rs.getLong("id_oddzialu")));
             }
 
             @Override
-            public List<Element> getElementsByHospitalSectionId(int hospitalSectionId) {
+            public List<Element> getElementsByHospitalSectionId(long hospitalSectionId) {
                 return getJdbcTemplate().query("SELECT * FROM ELEMENTY_WYPOSAZENIA WHERE ID_ODDZIALU = " + hospitalSectionId,
-                        (rs, arg1) -> new Element(rs.getInt("id_elementu"), rs.getString("nazwa"),
+                        (rs, arg1) -> new Element(rs.getLong("id_elementu"), rs.getString("nazwa"),
                                 rs.getInt("ilosc"), rs.getFloat("cena_jednostkowa"),
-                                rs.getInt("id_oddzialu")));
+                                rs.getLong("id_oddzialu")));
             }
 
             @Override
-            public List<Element> getElementsByHospitalId(int hospitalId) {
+            public List<Element> getElementsByHospitalId(long hospitalId) {
                 return getJdbcTemplate().query("SELECT e.id_elementu, e.nazwa, e.ilosc, e.cena_jednostkowa, " +
                                 "e.id_oddzialu FROM ELEMENTY_WYPOSAZENIA e " +
                                 "JOIN ODDZIALY o on e.id_oddzialu = o.id_oddzialu " +
                                 "JOIN SZPITALE s on o.id_szpitala = o.id_szpitala " +
                                 "WHERE s.id_szpitala = " + hospitalId,
-                        (rs, arg1) -> new Element(rs.getInt("id_elementu"), rs.getString("nazwa"),
+                        (rs, arg1) -> new Element(rs.getLong("id_elementu"), rs.getString("nazwa"),
                                 rs.getInt("ilosc"), rs.getFloat("cena_jednostkowa"),
-                                rs.getInt("id_oddzialu")));
+                                rs.getLong("id_oddzialu")));
             }
         };
     }
@@ -76,7 +76,7 @@ public class ElementRestController {
     /**
      * Publiczny konstruktor ustawiający interfejs na interfejs przekazany jako argument.
      *
-     * @param elementInterface
+     * @param elementInterface - interfejs wystawiający dane
      */
     public ElementRestController(ElementInterface elementInterface) {
         this.elementInterface = elementInterface;
@@ -97,9 +97,9 @@ public class ElementRestController {
      */
     @RequestMapping("/api/elements")
     public String getElements(
-            @RequestParam(name = "hospitalId", defaultValue = "-1", required = false) int hospitalId,
-            @RequestParam(name = "hospitalSectionId", defaultValue = "-1", required = false) int hospitalSectionId,
-            @RequestParam(name = "id", defaultValue = "-1", required = false) int id
+            @RequestParam(name = "hospitalId", defaultValue = "-1", required = false) long hospitalId,
+            @RequestParam(name = "hospitalSectionId", defaultValue = "-1", required = false) long hospitalSectionId,
+            @RequestParam(name = "id", defaultValue = "-1", required = false) long id
     ) {
         if (hospitalId == -1 && hospitalSectionId == -1 && id == -1) {
             List<Element> elements = elementInterface.getAllElements();
@@ -130,7 +130,13 @@ public class ElementRestController {
         return ResponseCreator.jsonErrorResponse("You can use only one parameter");
     }
 
-
+    /**
+     * Metoda do generowania odpowiedzi serwera.
+     *
+     * @param elements    - lista elementów wyposażenia
+     * @param description - opis zawartości listy
+     * @return (String) -  tekst zawierający odpowiedź serwera w formacie JSON
+     */
     private String createResponseWithElementsList(List<Element> elements, String description) {
         JSONArray elementsArray = new JSONArray();
         for (Element element : elements) {

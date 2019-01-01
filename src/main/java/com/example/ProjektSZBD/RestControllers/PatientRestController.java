@@ -32,11 +32,11 @@ public class PatientRestController {
     public PatientRestController() {
         this.patientInterface = new PatientInterface() {
             @Override
-            public Patient getPatientByPesel(int pesel) {
+            public Patient getPatientByPesel(long pesel) {
                 try {
                     return getJdbcTemplate().queryForObject("SELECT * FROM PACJENCI WHERE PESEL = " + pesel,
                             (rs, arg1) -> {
-                                return new Patient(rs.getInt("pesel"), rs.getString("imie"),
+                                return new Patient(rs.getLong("pesel"), rs.getString("imie"),
                                         rs.getString("nazwisko"), rs.getString("haslo"));
                             });
                 } catch (EmptyResultDataAccessException e) {
@@ -48,15 +48,15 @@ public class PatientRestController {
             public List<Patient> getAllPatients() {
 
                 return getJdbcTemplate().query("SELECT * FROM PACJENCI",
-                        (rs, arg1) -> new Patient(rs.getInt("pesel"), rs.getString("imie"),
+                        (rs, arg1) -> new Patient(rs.getLong("pesel"), rs.getString("imie"),
                                 rs.getString("nazwisko"), rs.getString("haslo")));
             }
 
             @Override
-            public Patient getPatientInfo(int pesel) {
+            public Patient getPatientInfo(long pesel) {
                 try {
                     return getJdbcTemplate().queryForObject("SELECT pesel, imie, nazwisko FROM PACJENCI where pesel = " + pesel,
-                            (rs, arg1) -> new Patient(rs.getInt("pesel"), rs.getString("imie"),
+                            (rs, arg1) -> new Patient(rs.getLong("pesel"), rs.getString("imie"),
                                     rs.getString("nazwisko")));
                 } catch (EmptyResultDataAccessException e) {
                     return null;
@@ -66,7 +66,7 @@ public class PatientRestController {
             @Override
             public List<Patient> getAllPatientsInfo() {
                 return getJdbcTemplate().query("SELECT pesel, imie, nazwisko FROM PACJENCI",
-                        (rs, arg1) -> new Patient(rs.getInt("pesel"), rs.getString("imie"),
+                        (rs, arg1) -> new Patient(rs.getLong("pesel"), rs.getString("imie"),
                                 rs.getString("nazwisko")));
             }
         };
@@ -88,7 +88,7 @@ public class PatientRestController {
      * @return (String) - tekst w formacie JSON zawierający pełne dane o pacjentach
      */
     @RequestMapping("/api/patient")
-    public String getPatients(@RequestParam(value = "pesel", defaultValue = "-1", required = false) int pesel) {
+    public String getPatients(@RequestParam(value = "pesel", defaultValue = "-1", required = false) long pesel) {
         if (pesel == -1) {
             List<Patient> patients = patientInterface.getAllPatients();
             JSONArray patientsArray = new JSONArray();
@@ -122,7 +122,7 @@ public class PatientRestController {
      * @return (String) - tekst w formacie JSON zawierający podstawowe dane o pacjentach
      */
     @RequestMapping("/api/patientInfo")
-    public String getPatientsInfo(@RequestParam(value = "pesel", defaultValue = "-1", required = false) int pesel) {
+    public String getPatientsInfo(@RequestParam(value = "pesel", defaultValue = "-1", required = false) long pesel) {
         if (pesel == -1) {
             List<Patient> patients = patientInterface.getAllPatientsInfo();
             JSONArray patientsArray = new JSONArray();

@@ -7,7 +7,7 @@ import java.util.List;
 
 class ElementDB {
 
-    Element getElementById(int id) {
+    Element getElementById(long id) {
         return new Element(id, "Skalpel", 5, 5.5f, 1);
     }
 
@@ -18,7 +18,7 @@ class ElementDB {
         return elements;
     }
 
-    List<Element> getElementsByHospitalSectionId(int hospitalSectionId) {
+    List<Element> getElementsByHospitalSectionId(long hospitalSectionId) {
         ArrayList<Element> elements = new ArrayList<>();
         elements.add(new Element(1, "Skalpel", 5, 5.5f, hospitalSectionId));
         elements.add(new Element(2, "Skalpel", 5, 5.5f, hospitalSectionId));

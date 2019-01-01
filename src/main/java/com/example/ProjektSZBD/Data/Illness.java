@@ -12,7 +12,7 @@ public class Illness {
     /**
      * Pole przechowujące id choroby.
      */
-    private int id;
+    private long id;
 
     /**
      * Pole przechowujące nazwę choroby.
@@ -31,7 +31,7 @@ public class Illness {
      * @param name        - nazwa
      * @param description - opis
      */
-    public Illness(int id, String name, String description) {
+    public Illness(long id, String name, String description) {
         this.id = id;
         this.name = name;
         this.description = description;

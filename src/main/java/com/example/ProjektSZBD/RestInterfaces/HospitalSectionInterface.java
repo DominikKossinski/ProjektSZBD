@@ -16,7 +16,7 @@ public interface HospitalSectionInterface {
      * @param id - id szpitala
      * @return (List of HospitalSection) - listę oddziałów w szpitalu o podanym id.
      */
-    List<HospitalSection> getHospitalSectionsByHospitalId(int id);
+    List<HospitalSection> getHospitalSectionsByHospitalId(long id);
 
     /**
      * Metoda zwracająca ordynatora oddziału.
@@ -24,5 +24,5 @@ public interface HospitalSectionInterface {
      * @param hospitalSectionId - id oddziału
      * @return (Ordynator) - ordynatora oddziału.
      */
-    Ordynator getHospitalSectionOrdynator(int hospitalSectionId);
+    Ordynator getHospitalSectionOrdynator(long hospitalSectionId);
 }

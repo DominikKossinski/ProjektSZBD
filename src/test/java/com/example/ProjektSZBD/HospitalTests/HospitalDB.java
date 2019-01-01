@@ -9,11 +9,11 @@ import java.util.List;
 
 public class HospitalDB {
 
-    public Hospital getHospitalById(int id) {
+    public Hospital getHospitalById(long id) {
         return new Hospital(id, "Szpital", "ul. Rolna", "Poznań");
     }
 
-    public Director getHospitalDirector(int hospitalId) {
+    public Director getHospitalDirector(long hospitalId) {
         return new Director(hospitalId, 1, "Jan", "Nowak", 1);
     }
 
@@ -24,7 +24,7 @@ public class HospitalDB {
         return directors;
     }
 
-    public List<Ordynator> getHospitalOrdynators(int hospitalId) {
+    public List<Ordynator> getHospitalOrdynators(long hospitalId) {
         ArrayList<Ordynator> ordynators = new ArrayList<>();
         ordynators.add(new Ordynator("Kardiologia", hospitalId, 1,
                 "Jan", "Nowak", 1));

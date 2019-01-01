@@ -14,7 +14,7 @@ public class Stay {
     /**
      * Pole przechowujące id pobytu.
      */
-    private int id;
+    private long id;
 
     /**
      * Pole przechowujące datę początku pobytu.
@@ -29,17 +29,17 @@ public class Stay {
     /**
      * Pole przechowujące id pokoju.
      */
-    private int roomId;
+    private long roomId;
 
     /**
      * Pole przechowujące id lekarza.
      */
-    private int doctorId;
+    private long doctorId;
 
     /**
      * Pole przechowujące pesel pacjenta.
      */
-    private int pesel;
+    private long pesel;
 
     /**
      * Publiczny konstruktor ustawiający wszystkie pola klasy.
@@ -51,7 +51,7 @@ public class Stay {
      * @param doctorId  - id lekarza
      * @param pesel     - pesel pacjenta
      */
-    public Stay(int id, Date startDate, Date endDate, int roomId, int doctorId, int pesel) {
+    public Stay(long id, Date startDate, Date endDate, long roomId, long doctorId, long pesel) {
         this.id = id;
         this.startDate = startDate;
         this.endDate = endDate;

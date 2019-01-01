@@ -36,15 +36,16 @@ public class HospitalRestController {
         this.hospitalInterface = new HospitalInterface() {
             @Override
             public List<Hospital> getAllHospitals() {
-                return getJdbcTemplate().query("SELECT * FROM SZPITALE", (rs, arg1) -> new Hospital(rs.getInt("id_szpitala"), rs.getString("nazwa_szpitala"),
+                return getJdbcTemplate().query("SELECT * FROM SZPITALE", (rs, arg1) -> new Hospital(
+                        rs.getLong("id_szpitala"), rs.getString("nazwa_szpitala"),
                         rs.getString("adres"), rs.getString("miasto")));
             }
 
             @Override
-            public Hospital getHospitalById(int id) {
+            public Hospital getHospitalById(long id) {
                 try {
                     return getJdbcTemplate().queryForObject("SELECT * FROM SZPITALE WHERE ID_SZPITALA = " + id,
-                            (rs, ag1) -> new Hospital(rs.getInt("id_szpitala"), rs.getString("nazwa_szpitala"),
+                            (rs, ag1) -> new Hospital(rs.getLong("id_szpitala"), rs.getString("nazwa_szpitala"),
                                     rs.getString("adres"), rs.getString("miasto")));
                 } catch (EmptyResultDataAccessException e) {
                     return null;
@@ -52,14 +53,14 @@ public class HospitalRestController {
             }
 
             @Override
-            public Director getHospitalDirector(int hospitalId) {
+            public Director getHospitalDirector(long hospitalId) {
                 try {
                     return getJdbcTemplate().queryForObject("select l.ID_LEKARZA, l.IMIE, l.NAZWISKO, l.id_oddzialu, l.stanowisko " +
                                     "from lekarze l join oddzialy o on l.id_oddzialu = o.id_oddzialu " +
                                     "join SZPITALE s on s.ID_SZPITALA = o.ID_SZPITALA " +
                                     "where  o.ID_SZPITALA = " + hospitalId + " and l.stanowisko = 'Dyrektor' order by s.id_szpitala",
-                            (rs, ag1) -> new Director(hospitalId, rs.getInt("id_lekarza"), rs.getString("imie"),
-                                    rs.getString("nazwisko"), rs.getInt("id_oddzialu"))
+                            (rs, ag1) -> new Director(hospitalId, rs.getLong("id_lekarza"), rs.getString("imie"),
+                                    rs.getString("nazwisko"), rs.getLong("id_oddzialu"))
                     );
                 } catch (EmptyResultDataAccessException e) {
                     return null;
@@ -73,20 +74,20 @@ public class HospitalRestController {
                                 "from lekarze l join oddzialy o on l.id_oddzialu = o.id_oddzialu " +
                                 "join SZPITALE s on s.ID_SZPITALA = o.ID_SZPITALA " +
                                 "where l.stanowisko = 'Dyrektor' order by s.id_szpitala",
-                        (rs, ag1) -> new Director(rs.getInt("id_szpitala"), rs.getInt("id_lekarza"),
+                        (rs, ag1) -> new Director(rs.getLong("id_szpitala"), rs.getLong("id_lekarza"),
                                 rs.getString("imie"),
-                                rs.getString("nazwisko"), rs.getInt("id_oddzialu")));
+                                rs.getString("nazwisko"), rs.getLong("id_oddzialu")));
             }
 
             @Override
-            public List<Ordynator> getHospitalOrdynators(int hospitalId) {
+            public List<Ordynator> getHospitalOrdynators(long hospitalId) {
                 return getJdbcTemplate().query("select o.nazwa, s.id_szpitala, l.ID_LEKARZA, " +
                                 "l.IMIE, l.NAZWISKO, l.id_oddzialu from lekarze l join oddzialy o on l.id_oddzialu = o.id_oddzialu " +
                                 "join SZPITALE s on s.ID_SZPITALA = o.ID_SZPITALA " +
                                 "where  o.ID_SZPITALA = 1 and l.stanowisko = 'Ordynator'",
-                        (rs, arg1) -> new Ordynator(rs.getString("nazwa"), rs.getInt("id_szpitala"),
-                                rs.getInt("id_lekarza"), rs.getString("imie"),
-                                rs.getString("nazwisko"), rs.getInt("id_oddzialu")));
+                        (rs, arg1) -> new Ordynator(rs.getString("nazwa"), rs.getLong("id_szpitala"),
+                                rs.getLong("id_lekarza"), rs.getString("imie"),
+                                rs.getString("nazwisko"), rs.getLong("id_oddzialu")));
             }
         };
     }
@@ -131,7 +132,7 @@ public class HospitalRestController {
      * @See ResponseCreator
      */
     @RequestMapping("/api/hospital")
-    public String getHospitalById(@RequestParam("id") int id) {
+    public String getHospitalById(@RequestParam("id") long id) {
         Hospital hospital = hospitalInterface.getHospitalById(id);
         if (hospital == null) {
             return ResponseCreator.jsonErrorResponse("No hospital with id = " + id);
@@ -154,7 +155,7 @@ public class HospitalRestController {
      */
     @RequestMapping("/api/hospitalDirector")
     public String getHospitalsDirectors(
-            @RequestParam(value = "hospitalId", defaultValue = "-1", required = false) int hospitalId
+            @RequestParam(value = "hospitalId", defaultValue = "-1", required = false) long hospitalId
     ) {
         if (hospitalId != -1) {
             Director director = hospitalInterface.getHospitalDirector(hospitalId);
@@ -191,7 +192,7 @@ public class HospitalRestController {
      * @return (String) - tekst w formacie json zawierający odpowiedź na żądanie.
      */
     @RequestMapping("/api/hospitalOrdynators")
-    public String getHospitalOrdynators(@RequestParam("hospitalId") int hospitalId) {
+    public String getHospitalOrdynators(@RequestParam("hospitalId") long hospitalId) {
         List<Ordynator> ordynators = hospitalInterface.getHospitalOrdynators(hospitalId);
         JSONArray ordynatorsArray = new JSONArray();
         for (Ordynator ordynator : ordynators) {

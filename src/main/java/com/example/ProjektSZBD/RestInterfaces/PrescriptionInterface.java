@@ -15,7 +15,7 @@ public interface PrescriptionInterface {
      * @param pesel - pesel
      * @return (List of Prescription) - lista recept danego pacjenta
      */
-    List<Prescription> getPrescriptionsByPesel(int pesel);
+    List<Prescription> getPrescriptionsByPesel(long pesel);
 
     /**
      * Metoda zawierająca informacje o receptach wyszukiwanych po id pobytu.
@@ -23,7 +23,7 @@ public interface PrescriptionInterface {
      * @param stayId - id pobytu
      * @return (List of Prescription) - lista recept w danym pobycie.
      */
-    List<Prescription> getPrescriptionsByStayId(int stayId);
+    List<Prescription> getPrescriptionsByStayId(long stayId);
 
     /**
      * Metoda zwracająca recepty wystawione przez danego lekarza.
@@ -31,7 +31,7 @@ public interface PrescriptionInterface {
      * @param doctorId - id lekarza
      * @return (List of Prescription) - lista recept wystawionych przez lekarza
      */
-    List<Prescription> getPrescriptionsByDoctorId(int doctorId);
+    List<Prescription> getPrescriptionsByDoctorId(long doctorId);
 
     /**
      * Metoda zwracająca recepty wystawione przez danego lekarza danemu pacjentowi.
@@ -40,7 +40,7 @@ public interface PrescriptionInterface {
      * @param pesel    - pesel
      * @return (List of Prescription) - lista recept wystawionych przez lekarza
      */
-    List<Prescription> getPrescriptionsByDoctorId(int doctorId, int pesel);
+    List<Prescription> getPrescriptionsByDoctorId(long doctorId, long pesel);
 
     /**
      * Metoda zwracająca receptę o podanym id.
@@ -48,7 +48,7 @@ public interface PrescriptionInterface {
      * @param id - id recepty
      * @return (Prescription) - recepta o żądanym id
      */
-    Prescription getPrescriptionById(int id);
+    Prescription getPrescriptionById(long id);
 
 
 }

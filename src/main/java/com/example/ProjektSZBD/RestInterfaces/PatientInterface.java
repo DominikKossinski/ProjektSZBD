@@ -15,7 +15,7 @@ public interface PatientInterface {
      * @param pesel - pesel
      * @return (Patient) - obiekt zawierający pełne dane o pacjencie
      */
-    Patient getPatientByPesel(int pesel);
+    Patient getPatientByPesel(long pesel);
 
     /**
      * Metoda zwracająca pełne informacje o wszystkich pacjentach.
@@ -30,7 +30,7 @@ public interface PatientInterface {
      * @param pesel - pesel
      * @return (Patient) - obiekt zawierający podstawowe dane o pacjencie
      */
-    Patient getPatientInfo(int pesel);
+    Patient getPatientInfo(long pesel);
 
 
     /**
