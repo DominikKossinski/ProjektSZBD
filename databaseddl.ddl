@@ -25,13 +25,13 @@ ALTER TABLE elementy_wyposazenia
 
 CREATE TABLE lekarze
 (
-  id_lekarza  NUMBER        NOT NULL,
-  imie        VARCHAR2(50)  NOT NULL,
-  nazwisko    VARCHAR2(100) NOT NULL,
-  placa       NUMBER        NOT NULL,
-  id_oddzialu NUMBER        NOT NULL,
-  stanowisko  VARCHAR2(50)  NOT NULL,
-  haslo       VARCHAR2(500) NOT NULL,
+  id_lekarza  NUMBER          NOT NULL,
+  imie        VARCHAR2(50)    NOT NULL,
+  nazwisko    VARCHAR2(100)   NOT NULL,
+  placa       NUMERIC(100, 2) NOT NULL,
+  id_oddzialu NUMBER          NOT NULL,
+  stanowisko  VARCHAR2(50)    NOT NULL,
+  haslo       VARCHAR2(500)   NOT NULL,
   CONSTRAINT id_lek_check CHECK ( id_lekarza < 10000000000 and id_lekarza > 0 ),
   CONSTRAINT id_odd_lek_check CHECK ( id_oddzialu > 0 )
 );
@@ -448,3 +448,32 @@ INSERT INTO ELEMENTY_WYPOSAZENIA(ID_ELEMENTU, NAZWA, ILOSC, CENA_JEDNOSTKOWA, ID
 VALUES (3, 'SKALPEL', 25, 25.50, 3);
 INSERT INTO ELEMENTY_WYPOSAZENIA(ID_ELEMENTU, NAZWA, ILOSC, CENA_JEDNOSTKOWA, ID_ODDZIALU)
 VALUES (4, 'SKALPEL', 39, 25.50, 4);
+
+--Funkcja do dodawania lekarza
+CREATE OR REPLACE FUNCTION insertDoctor(firstName IN VARCHAR,
+                                        lastName IN VARCHAR,
+                                        salary IN NUMERIC,
+                                        hospitalSectionId IN NUMBER,
+                                        position IN VARCHAR,
+                                        password IN VARCHAR,
+                                        doctorId OUT NUMBER)
+  RETURN NUMBER
+IS
+
+BEGIN
+
+  INSERT INTO LEKARZE(imie, nazwisko, placa, id_oddzialu, stanowisko, haslo)
+  VALUES (firstName, lastName, salary, hospitalSectionId, position, password) returning ID_LEKARZA into doctorId;
+  RETURN doctorId; --Id n owo utworzonego lekarza
+  EXCEPTION
+  WHEN OTHERS
+  THEN
+    if (SQLCODE = -02291) THEN
+      doctorId := -3; --Naruszenie więzów spójności
+    elsif (SQLCODE = -02290) THEN
+      doctorId := -2; --Naruszenie więzów chceck
+    else
+      doctorId := -1; --Inny błąd
+    end if;
+    RETURN doctorId;
+END;

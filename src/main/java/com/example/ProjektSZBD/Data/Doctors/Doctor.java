@@ -27,7 +27,7 @@ public class Doctor {
     /**
      * Pole przechowujące płacę lekarza.
      */
-    private float salary;
+    private double salary;
 
     /**
      * Pole przechowujące id oddziału, na którym lekarz pracuje.
@@ -55,7 +55,7 @@ public class Doctor {
      * @param position          - stanowisko
      * @param password          - hasło
      */
-    public Doctor(long id, String firstName, String lastName, float salary, long hospitalSectionId,
+    public Doctor(long id, String firstName, String lastName, double salary, long hospitalSectionId,
                   String position, String password) {
         this.id = id;
         this.firstName = firstName;
@@ -127,4 +127,52 @@ public class Doctor {
         JSONParser parser = new JSONParser();
         return (JSONObject) parser.parse(this.toSimpleJSONString());
     }
+
+    /**
+     * Statyczna metoda służąca zwrócenia obiektu klasy Doctor na podstawie tekstu w formacie JSON.
+     *
+     * @param doctorData - tekst w formacie json
+     * @return (Doctor) - obiekt zawierający informacje o lekarzu
+     * @throws ParseException - błąd parsowania do formatu JSON
+     */
+    public static Doctor getInstance(String doctorData) throws ParseException {
+        JSONParser parser = new JSONParser();
+        JSONObject doctor = (JSONObject) parser.parse(doctorData);
+        return new Doctor((long) doctor.get("id"), (String) doctor.get("first_name"), (String) doctor.get("last_name"),
+                Double.valueOf(String.valueOf(doctor.get("salary"))), (long) doctor.get("hospital_section_id"),
+                (String) doctor.get("position"), (String) doctor.get("password"));
+    }
+
+    public double getSalary() {
+        return salary;
+    }
+
+    public long getHospitalSectionId() {
+        return hospitalSectionId;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getPosition() {
+        return position;
+    }
+
 }

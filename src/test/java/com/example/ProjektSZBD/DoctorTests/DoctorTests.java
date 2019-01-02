@@ -64,6 +64,27 @@ public class DoctorTests {
             public List<Doctor> getDoctorsInfoByHospitalSectionId(long hospitalSectionId) {
                 return doctorDB.getDoctorsInfoByHospitalSectionId(hospitalSectionId);
             }
+
+            @Override
+            public long insertDoctor(Doctor doctor) {
+                return 0;
+            }
+
+            @Override
+            public int deleteDoctor(long id) {
+                return 0;
+            }
+
+            @Override
+            public int updateDoctor(Doctor doctor) {
+                return 0;
+            }
+
+            @Override
+            public int updateDoctorNoPassword(Doctor doctor) {
+                return 0;
+            }
+
         };
         this.restController = new DoctorRestController(doctorInterface);
     }

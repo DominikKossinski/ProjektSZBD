@@ -48,10 +48,48 @@ public interface DoctorInterface {
     List<Doctor> getDoctorsInfoByHospitalId(long hospitalId);
 
     /**
-     * Metoda zwracająca podstawowe informacje o lekarzach (imię, nazwisko, stanowisko) o lekarzach na danym oddziale/
+     * Metoda zwracająca podstawowe informacje o lekarzach (imię, nazwisko, stanowisko) o lekarzach na danym oddziale.
      *
      * @param hospitalSectionId - id oddziału
      * @return (List of Doctor) - lista wszystkich lekarzy na danym oddziale     z podstawowymi informacjami
      */
     List<Doctor> getDoctorsInfoByHospitalSectionId(long hospitalSectionId);
+
+    /**
+     * Metoda służąca do dodania lekarza do bazy danych.
+     *
+     * @param doctor - obiekt reprezentujący lekarza
+     * @return (long) - id lekarza, przy pomyślnym zakończeniu op   eracjii,
+     * numer błędu, przy błędzie
+     */
+    long insertDoctor(Doctor doctor);
+
+    /**
+     * Metoda służąca do usunięcia lekarza o podanym id.
+     *
+     * @param id - id lekarza
+     * @return (int) - 0 w przypdaku pomyślnego zakończenia usuwania lekarza,
+     * kod błędu w przypadku błędu
+     */
+    int deleteDoctor(long id);
+
+    /**
+     * Metoda służąca do aktualizowania pełnych danych lekarza.
+     *
+     * @param doctor- obiekt reprezentujący lekarza
+     * @return (int) - 0 w przypadku pomyślnego zakończenia usuwania
+     * kod błędu w przypadku błędu
+     */
+    int updateDoctor(Doctor doctor);
+
+    /**
+     * Metoda służąca do aktualizowania pełnych danych lekarza (bez hasła).
+     *
+     * @param doctor- obiekt reprezentujący lekarza
+     * @return (int) - 0 w przypadku pomyślnego zakończenia usuwania
+     * kod błędu w przypadku błędu
+     */
+    int updateDoctorNoPassword(Doctor doctor);
+
+
 }
