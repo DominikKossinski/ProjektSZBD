@@ -3,14 +3,16 @@ package com.example.ProjektSZBD.RestControllers;
 import com.example.ProjektSZBD.Data.Element;
 import com.example.ProjektSZBD.ResponseCreator;
 import com.example.ProjektSZBD.RestInterfaces.ElementInterface;
+import oracle.jdbc.OracleTypes;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
 
+import java.sql.CallableStatement;
+import java.sql.SQLException;
 import java.util.List;
 
 import static com.example.ProjektSZBD.ProjektSzbdApplication.getJdbcTemplate;
@@ -70,6 +72,59 @@ public class ElementRestController {
                                 rs.getInt("ilosc"), rs.getFloat("cena_jednostkowa"),
                                 rs.getLong("id_oddzialu")));
             }
+
+            @Override
+            public long insertElement(Element element) {
+                CallableStatement call = null;
+                try {
+                    call = getJdbcTemplate().getDataSource().getConnection().prepareCall(
+                            "{? = call insertElement(?, ?, ?, ?, ?)}"
+                    );
+                    call.registerOutParameter(1, OracleTypes.NUMBER);
+                    call.registerOutParameter(6, OracleTypes.NUMBER);
+                    call.setString(2, element.getName());
+                    call.setInt(3, element.getCount());
+                    call.setDouble(4, element.getPrice());
+                    call.setLong(5, element.getHospitalSectionId());
+                    call.execute();
+                    return call.getLong(1);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    return -1;
+                }
+            }
+
+            @Override
+            public int deleteElement(long id) {
+                int rowCount = getJdbcTemplate().update(
+                        "DELETE FROM ELEMENTY_WYPOSAZENIA WHERE ID_ELEMENTU  = " + id);
+                if (rowCount == 1) {
+                    return 0;
+                } else if (rowCount == 0) {
+                    return -1;
+                } else {
+                    return -2;
+                }
+            }
+
+            @Override
+            public int updateElement(Element element) {
+                int rowCount = getJdbcTemplate().update(
+                        "UPDATE ELEMENTY_WYPOSAZENIA SET " +
+                                "nazwa = '" + element.getName() + "', " +
+                                "ilosc = " + element.getCount() + ", " +
+                                "cena_jednostkowa = " + element.getPrice() + ", " +
+                                "id_oddzialu = " + element.getHospitalSectionId() + " " +
+                                "where id_elementu = " + element.getId()
+                );
+                if (rowCount == 1) {
+                    return 0;
+                } else if (rowCount == 0) {
+                    return -1;
+                } else {
+                    return -2;
+                }
+            }
         };
     }
 
@@ -128,6 +183,78 @@ public class ElementRestController {
         }
 
         return ResponseCreator.jsonErrorResponse("You can use only one parameter");
+    }
+
+    /**
+     * Metoda obsługująca żądania wstawiania elementu wyposażenia
+     *
+     * @param elementData - tekst w formacie JSON zawierający dane o elemencie wyposażenia
+     * @return (String) - odpowiedź serwera zawierająca status zakończenia dodawania elementu
+     */
+    @RequestMapping(value = "/api/addElement", method = RequestMethod.PUT,
+            consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public String addElement(@RequestBody String elementData) {
+        try {
+            Element element = Element.getInstance(elementData);
+            long id = elementInterface.insertElement(element);
+            if (id > 0) {
+                element.setId(id);
+                return ResponseCreator.jsonResponse("element", element.toJSONObject(),
+                        "Successful adding element. Id:" + id);
+            } else if (id == -2) {
+                return ResponseCreator.jsonErrorResponse("Check element data");
+            } else if (id == -3) {
+                return ResponseCreator.jsonErrorResponse(
+                        "No hospitalSection with id = " + element.getHospitalSectionId());
+            } else {
+                return ResponseCreator.jsonErrorResponse("Error by adding element");
+            }
+        } catch (ParseException e) {
+            return ResponseCreator.parseErrorResponse(e);
+        }
+    }
+
+    /**
+     * Metoda odpowiadająca za obsługę żądań aktualizowania danych elementu wyposażenia.
+     *
+     * @param elementData - tekst w formacie JSON zawierający dane o elemencie wyposażenia
+     * @return (String) - odpowiedź serwera zawierająca status zakończenia aktualizowania elementu
+     */
+    @RequestMapping(value = "/api/updateElement", method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public String updateElement(@RequestBody String elementData) {
+        try {
+            Element element = Element.getInstance(elementData);
+            int status = elementInterface.updateElement(element);
+            if (status == 0) {
+                return ResponseCreator.jsonResponse("Successful updating element with id = " + element.getId());
+            } else if (status == -1) {
+                return ResponseCreator.jsonErrorResponse("No element with id = " + element.getId());
+            } else {
+                return ResponseCreator.jsonErrorResponse("Error by updating element with id = " + element.getId());
+            }
+        } catch (ParseException e) {
+            return ResponseCreator.parseErrorResponse(e);
+        }
+    }
+
+    /**
+     * Metoda odpowiadająca za obsługę żądań dotyczących usuwania elementu wyposażenia
+     *
+     * @param id - id elementu
+     * @return (String) - odpowiedź serwera zawierająca status zakończenia usuwania elementu
+     */
+    @RequestMapping(value = "/api/deleteElement", method = RequestMethod.DELETE,
+            consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public String deleteElement(@RequestParam("id") long id) {
+        int status = elementInterface.deleteElement(id);
+        if (status == 0) {
+            return ResponseCreator.jsonResponse("Successful deleting element with id = " + id);
+        } else if (status == -1) {
+            return ResponseCreator.jsonErrorResponse("No element with id = " + id);
+        } else {
+            return ResponseCreator.jsonErrorResponse("Error by deleting element with id = " + id);
+        }
     }
 
     /**

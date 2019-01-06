@@ -17,7 +17,9 @@ CREATE TABLE elementy_wyposazenia
   cena_jednostkowa DECIMAL(10, 2),
   id_oddzialu      NUMBER       NOT NULL,
   CONSTRAINT id_elementu_check CHECK ( id_elementu > 0 ),
-  CONSTRAINT id_odd_el_check CHECK ( id_oddzialu > 0 )
+  CONSTRAINT id_odd_el_check CHECK ( id_oddzialu > 0 ),
+  CONSTRAINT ilosc_el_check CHECK ( ilosc > 0),
+  CONSTRAINT cena_el_check CHECK ( cena_jednostkowa > 0 or null )
 );
 
 ALTER TABLE elementy_wyposazenia
@@ -477,3 +479,38 @@ BEGIN
     end if;
     RETURN doctorId;
 END;
+
+--Funkcja do wstawiania elementu wyposażenia
+CREATE OR REPLACE FUNCTION insertElement(name IN VARCHAR,
+                                         count IN NUMERIC,
+                                         price IN NUMERIC,
+                                         hospitalSectionId IN NUMBER,
+                                         elementId OUT NUMBER)
+  RETURN NUMBER
+IS
+
+BEGIN
+
+  INSERT INTO ELEMENTY_WYPOSAZENIA(nazwa, ilosc, cena_jednostkowa, id_oddzialu)
+  VALUES (name, count, price, hospitalSectionId) returning ID_ELEMENTU into elementId;
+  RETURN elementId;
+  EXCEPTION
+  WHEN OTHERS
+  THEN
+    if (SQLCODE = -02291) THEN
+      elementId := -3; /*Naruszenie więzów spójności*/
+    elsif (SQLCODE = -02290) THEN
+      elementId := -2; /*Naruszenie więzów chceck */
+    else
+      elementId := -1;
+    end if;
+    RETURN elementId;
+END;
+insert into LEKARZE(imie, nazwisko, placa, id_oddzialu, stanowisko, haslo)
+values ('Dominik', 'Kossiński', 500, -1, 'Rezydent', 'DomInik');
+declare
+  r number := insertDoctor('Dominik', 'Kossiński', 500, 1, 'Rezydent', 'DomInik');
+begin
+  DBMS_OUTPUT.put_line('Ret ' || to_char(r));
+end;
+

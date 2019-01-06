@@ -27,7 +27,7 @@ public class Element {
     /**
      * Pole przechowujące cenę.
      */
-    private float price;
+    private double price;
 
     /**
      * Pole przechowujące id oddziału.
@@ -43,7 +43,7 @@ public class Element {
      * @param price             - cena jednostkowa
      * @param hospitalSectionId - id oddziału
      */
-    public Element(long id, String name, int count, float price, long hospitalSectionId) {
+    public Element(long id, String name, int count, double price, long hospitalSectionId) {
         this.id = id;
         this.name = name;
         this.count = count;
@@ -70,5 +70,44 @@ public class Element {
     public JSONObject toJSONObject() throws ParseException {
         JSONParser parser = new JSONParser();
         return (JSONObject) parser.parse(this.toJSONString());
+    }
+
+    /**
+     * Statyczna metoda służąca zwrócenia obiektu klasy Element na podstawie tekstu w formacie JSON.
+     *
+     * @param elementData - tekst w formacie json
+     * @return (Element) - obiekt zawierający informacje o lekarzu
+     * @throws ParseException - błąd parsowania do formatu JSON
+     */
+    public static Element getInstance(String elementData) throws ParseException {
+        JSONParser parser = new JSONParser();
+        JSONObject element = (JSONObject) parser.parse(elementData);
+        return new Element((long) element.get("id"), (String) element.get("name"),
+                Integer.parseInt(String.valueOf(element.get("count"))), (double) element.get("price"),
+                (long) element.get("hospital_section_id"));
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public long getHospitalSectionId() {
+        return hospitalSectionId;
     }
 }

@@ -39,4 +39,31 @@ public interface ElementInterface {
      * @return (List of element) - lista obiektów zawierających informacje o elementach wyposażenia
      */
     List<Element> getElementsByHospitalId(long hospitalId);
+
+    /**
+     * Metoda służąca do dodania nowego elementu wyposażenia.
+     *
+     * @param element - obiekt reprezentujący element wyposażenia
+     * @return (long) - 0 w przypadku pomyślnego zakończenia usuwania
+     * * kod błędu w przypadku błędu
+     */
+    long insertElement(Element element);
+
+    /**
+     * Metoda służąca do usuinięcia elementu wyposażenia o podanym id.
+     *
+     * @param id - id elementu wyposażenia
+     * @return (int) - 0 w przypadku pomyślnego zakończenia usuwania
+     * * kod błędu w przypadku błędu
+     */
+    int deleteElement(long id);
+
+    /**
+     * Metoda służąca do aktualizacji danych elementu wyposażenia.
+     *
+     * @param element - obiekt reprezentujący element wyposażenia
+     * @return (int) - 0 w przypadku pomyślnego zakończenia usuwania
+     * * kod błędu w przypadku błędu
+     */
+    int updateElement(Element element);
 }

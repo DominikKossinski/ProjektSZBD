@@ -55,6 +55,21 @@ public class ElementTests {
             public List<Element> getElementsByHospitalId(long hospitalId) {
                 return elementDB.getAllElements();
             }
+
+            @Override
+            public long insertElement(Element element) {
+                return 0;
+            }
+
+            @Override
+            public int deleteElement(long id) {
+                return 0;
+            }
+
+            @Override
+            public int updateElement(Element element) {
+                return 0;
+            }
         };
         restController = new ElementRestController(elementInterface);
     }
