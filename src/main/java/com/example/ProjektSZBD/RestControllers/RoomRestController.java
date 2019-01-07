@@ -142,7 +142,7 @@ public class RoomRestController {
      * @param hospitalSectionId - id oddzialu (jeśli nie zostało podane to przyjmuje wartość -1)
      * @return (String) - tekst w formacie JSON zawierający dane o żądanych pokojach
      */
-    @RequestMapping(value = "/api/rooms", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/api/rooms", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String getRooms(
             @RequestParam(value = "id", defaultValue = "-1", required = false) long id,
             @RequestParam(value = "free", defaultValue = "false", required = false) boolean free,
@@ -257,8 +257,8 @@ public class RoomRestController {
     /**
      * Metoda zwracająca odpowiedź serwera na podstawie listy pokoi i jej opisu.
      *
-     * @param rooms       - lista pokoi
-     * @param description - opis
+     * @param rooms - lista pokoi
+     * @param description   - opis
      * @return (String) - tekst zawierający odpowiedź serwera w formacie JSON
      */
     private String createResponseWithRoomsList(List<Room> rooms, String description) {

@@ -33,5 +33,32 @@ public interface StayInterface {
      */
     List<Stay> getStayByDoctor(long doctorId);
 
+    /**
+     * Metoda do obsługi wstawiania pobytu.
+     *
+     * @param stay - obiekt reprezentujący pobyt
+     * @return (long) - id pobytu w przypadku pomyślnego zakończenia dodawania
+     * kod błędu w przypadku błędu
+     */
+    long insertStay(Stay stay);
+
+    /**
+     * Metoda do obsługi aktualizowania danych pobytu.
+     *
+     * @param stay - obiekt reprezentujący pobyt
+     * @return (int) - 0 w przypadku pomyślnego zakończenia aktualizowania danych pobytu
+     * kod błędu w przypadku błędu
+     */
+    int updateStay(Stay stay);
+
+    /**
+     * Metoda do obsługi usuwania pobytu.
+     *
+     * @param id - id pobytu
+     * @return (int) - 0 w przypadku pomyślnego zakończenia usuwania
+     * kod błędu w przypadku błędu
+     */
+    int deleteStay(long id);
+
 
 }

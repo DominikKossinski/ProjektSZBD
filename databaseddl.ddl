@@ -1160,3 +1160,108 @@ BEGIN
     end if;
 END;
 
+
+
+CREATE OR REPLACE FUNCTION insertStay(startDate IN DATE,
+                                      endDate IN DATE,
+                                      roomId IN NUMBER,
+                                      doctorId IN NUMBER,
+                                      peselV IN NUMBER,
+                                      stayId OUT NUMBER)
+  RETURN NUMBER
+IS
+
+BEGIN
+
+  INSERT INTO POBYTY(TERMIN_PRZYJECIA, TERMIN_WYPISU, ID_POKOJU, ID_LEKARZA, PESEL)
+  VALUES (startDate, endDate, roomId, doctorId, peselV) returning ID_POBYTU into stayId;
+  return stayId;
+  EXCEPTION
+  WHEN OTHERS
+  THEN
+    if (SQLCODE = -02291) THEN
+      stayId := -3; /*Naruszenie więzów spójności*/
+    elsif (SQLCODE = -02290) THEN
+      stayId := -2; /*Naruszenie więzów chceck */
+    else
+      stayId := -1;
+    end if;
+    RETURN stayId;
+END;
+
+
+CREATE OR REPLACE FUNCTION updateStay(stayId IN NUMBER,
+                                      startDate IN DATE,
+                                      endDate IN DATE,
+                                      roomId IN NUMBER,
+                                      doctorId IN NUMBER,
+                                      peselV IN NUMBER,
+                                      rowCount OUT NUMBER)
+  RETURN NUMBER
+IS
+
+BEGIN
+
+  UPDATE POBYTY
+  SET termin_przyjecia = startDate,
+      termin_wypisu    = endDate,
+      id_pokoju        = roomId,
+      id_lekarza       = doctorId,
+      pesel            = peselV
+  where ID_POBYTU = stayId;
+  rowCount := SQL%ROWCOUNT;
+  if (rowCount = 1) then
+    return 0; --Poprawne zakończenie
+  elsif (rowCount = 0) then
+    return -4; --Nie ma id
+  else
+    rollback;
+    return -3; --Nie poprawne update
+  end if;
+
+  EXCEPTION
+  WHEN
+  OTHERS
+  THEN
+    if (SQLCODE = -02291) THEN
+      rollback;
+      return -2; --Naruszenie więzów spójności
+    else
+      rollback;
+      return -1;
+    end if;
+END;
+
+
+CREATE OR REPLACE FUNCTION deleteStay(stayId IN NUMBER,
+                                      rowCount OUT NUMBER)
+  RETURN NUMBER
+IS
+
+BEGIN
+
+  DELETE FROM POBYTY WHERE ID_POBYTU = stayId;
+  rowCount := SQL%ROWCOUNT;
+  if (rowCount = 1) then
+    return 0; --Poprawne zakończenie
+  elsif (rowCount = 0) then
+    return -4; --Nie ma id
+  else
+    rollback;
+    return -3; --Nie poprawne delete
+  end if;
+
+  EXCEPTION
+  WHEN
+  OTHERS
+  THEN
+    if (SQLCODE = -02292) THEN
+      rollback;
+      return -2; --Naruszenie więzów spójności
+    else
+      rollback;
+      return -1;
+    end if;
+END;
+
+

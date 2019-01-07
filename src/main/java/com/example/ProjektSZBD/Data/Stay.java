@@ -82,4 +82,46 @@ public class Stay {
         return (JSONObject) parser.parse(this.toJSONString());
     }
 
+    /**
+     * Statyczna metoda służąca zwrócenia obiektu klasy Stay na podstawie tekstu w formacie JSON.
+     *
+     * @param stayData - tekst w formacie json
+     * @return (Element) - obiekt zawierający informacje o pobycie
+     * @throws ParseException - błąd parsowania do formatu JSON
+     */
+    public static Stay getInstance(String stayData) throws ParseException {
+        JSONParser parser = new JSONParser();
+        JSONObject stay = (JSONObject) parser.parse(stayData);
+        return new Stay((long) stay.get("id"), Date.valueOf((String) stay.get("start_date")),
+                Date.valueOf((String) stay.get("end_date")), (long) stay.get("room_id"),
+                (long) stay.get("doctor_id"), (long) stay.get("pesel"));
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public long getPesel() {
+        return pesel;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public long getDoctorId() {
+        return doctorId;
+    }
+
+    public long getRoomId() {
+        return roomId;
+    }
 }
