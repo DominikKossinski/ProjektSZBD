@@ -867,3 +867,106 @@ BEGIN
       return -1;
     end if;
 END;
+
+
+
+CREATE OR REPLACE FUNCTION insertPrescription(dateP IN date,
+                                              dosage IN VARCHAR,
+                                              illnessId IN NUMBER,
+                                              stayId IN NUMBER,
+                                              prescriptionId OUT NUMBER)
+  RETURN NUMBER
+IS
+
+BEGIN
+
+  INSERT INTO RECEPTY(DATA_WYSTAWIENIA, DAWKOWANIE, ID_CHOROBY, ID_POBYTU)
+  VALUES (dateP, dosage, illnessId, stayId) returning ID_RECEPTY INTO prescriptionId;
+  RETURN prescriptionId;
+  EXCEPTION
+  WHEN OTHERS
+  THEN
+    if (SQLCODE = -02291) THEN
+      prescriptionId := -3; /*Naruszenie więzów spójności*/
+    elsif (SQLCODE = -02290) THEN
+      prescriptionId := -2; /*Naruszenie więzów chceck */
+    else
+      prescriptionId := -1;
+    end if;
+    RETURN prescriptionId;
+END;
+
+
+CREATE OR REPLACE FUNCTION updatePrescription(prescriptionId IN NUMBER,
+                                              dateP IN date,
+                                              dosage IN VARCHAR,
+                                              illnessId IN NUMBER,
+                                              stayId IN NUMBER,
+                                              rowCount OUT NUMBER)
+  RETURN NUMBER
+IS
+
+BEGIN
+
+  UPDATE RECEPTY
+  SET DATA_WYSTAWIENIA = dateP,
+      DAWKOWANIE       = dosage,
+      ID_CHOROBY       = illnessId,
+      ID_POBYTU        = stayId
+  WHERE ID_RECEPTY = prescriptionId;
+  rowCount := SQL%ROWCOUNT;
+  if (rowCount = 1) then
+    return 0; --Poprawne zakończenie
+  elsif (rowCount = 0) then
+    return -4; --Nie ma id
+  else
+    rollback;
+    return -3; --Nie poprawne update
+  end if;
+
+  EXCEPTION
+  WHEN
+  OTHERS
+  THEN
+    if (SQLCODE = -02291) THEN
+      rollback;
+      return -2; --Naruszenie więzów spójności
+    else
+      rollback;
+      return -1;
+    end if;
+END;
+
+
+CREATE OR REPLACE FUNCTION deletePrescription(prescriptionId IN NUMBER,
+                                              rowCount OUT NUMBER)
+  RETURN NUMBER
+IS
+
+BEGIN
+
+  DELETE FROM RECEPTY WHERE ID_RECEPTY = prescriptionId;
+  rowCount := SQL%ROWCOUNT;
+  if (rowCount = 1) then
+    return 0; --Poprawne zakończenie
+  elsif (rowCount = 0) then
+    return -4; --Nie ma id
+  else
+    rollback;
+    return -3; --Nie poprawne delete
+  end if;
+
+  EXCEPTION
+  WHEN
+  OTHERS
+  THEN
+    if (SQLCODE = -02292) THEN
+      rollback;
+      return -2; --Naruszenie więzów spójności
+    else
+      rollback;
+      return -1;
+    end if;
+END;
+
+

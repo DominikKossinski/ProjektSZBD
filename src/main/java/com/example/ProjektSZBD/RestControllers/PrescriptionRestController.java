@@ -3,15 +3,16 @@ package com.example.ProjektSZBD.RestControllers;
 import com.example.ProjektSZBD.Data.Prescription;
 import com.example.ProjektSZBD.ResponseCreator;
 import com.example.ProjektSZBD.RestInterfaces.PrescriptionInterface;
+import oracle.jdbc.OracleTypes;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
 
+import java.sql.CallableStatement;
+import java.sql.SQLException;
 import java.util.List;
 
 import static com.example.ProjektSZBD.ProjektSzbdApplication.getJdbcTemplate;
@@ -87,6 +88,64 @@ public class PrescriptionRestController {
                                     rs.getLong("id_pobytu")));
                 } catch (EmptyResultDataAccessException e) {
                     return null;
+                }
+            }
+
+            @Override
+            public long insertPrescription(Prescription prescription) {
+                try {
+                    CallableStatement call = getJdbcTemplate().getDataSource().getConnection().prepareCall(
+                            "{? = call insertPrescription(?, ?, ?, ?, ?)}"
+                    );
+                    call.registerOutParameter(1, OracleTypes.NUMBER);
+                    call.registerOutParameter(6, OracleTypes.NUMBER);
+                    call.setDate(2, prescription.getDate());
+                    call.setString(3, prescription.getDosage());
+                    call.setLong(4, prescription.getIllnessId());
+                    call.setLong(5, prescription.getStayId());
+                    call.execute();
+                    return call.getLong(1);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    return -5;
+                }
+            }
+
+            @Override
+            public int updatePrescription(Prescription prescription) {
+                try {
+                    CallableStatement call = getJdbcTemplate().getDataSource().getConnection().prepareCall(
+                            "{? = call updatePrescription(?, ?, ?, ?, ?, ?)}"
+                    );
+                    call.registerOutParameter(1, OracleTypes.NUMBER);
+                    call.registerOutParameter(7, OracleTypes.NUMBER);
+                    call.setLong(2, prescription.getId());
+                    call.setDate(3, prescription.getDate());
+                    call.setString(4, prescription.getDosage());
+                    call.setLong(5, prescription.getIllnessId());
+                    call.setLong(6, prescription.getStayId());
+                    call.execute();
+                    return call.getInt(1);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    return -5;
+                }
+            }
+
+            @Override
+            public int deletePrescription(long id) {
+                try {
+                    CallableStatement call = getJdbcTemplate().getDataSource().getConnection().prepareCall(
+                            "{? = call deletePrescription(?, ?)}"
+                    );
+                    call.registerOutParameter(1, OracleTypes.NUMBER);
+                    call.registerOutParameter(3, OracleTypes.NUMBER);
+                    call.setLong(2, id);
+                    call.execute();
+                    return call.getInt(1);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    return -5;
                 }
             }
         };
@@ -185,5 +244,81 @@ public class PrescriptionRestController {
         }
         return ResponseCreator.jsonResponse("prescriptions", prescriptionArray,
                 description);
+    }
+
+    /**
+     * Metoda odpowiadająca za obsługę żądań wstawiania recepty.
+     *
+     * @param prescriptionData - tekst w formacie JSON zawierający dane o recepcie
+     * @return (String) - odpowiedź serwera zawierająca status zakończenia usuwania recepty
+     */
+    @RequestMapping(value = "/api/addPrescription", method = RequestMethod.PUT,
+            consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public String insertPrescription(@RequestBody String prescriptionData) {
+        try {
+            Prescription prescription = Prescription.getInstance(prescriptionData);
+            long id = prescriptionInterface.insertPrescription(prescription);
+            if (id > 0) {
+                prescription.setId(id);
+                return ResponseCreator.jsonResponse("prescription", prescription.toJSONObject(),
+                        "Successful adding prescription. Id:" + id);
+            } else if (id == -2) {
+                return ResponseCreator.jsonErrorResponse("Check prescription data");
+            } else {
+                return ResponseCreator.jsonErrorResponse("Error by adding prescription");
+            }
+        } catch (ParseException e) {
+            return ResponseCreator.parseErrorResponse(e);
+        }
+    }
+
+
+    /**
+     * Metoda odpowiadająca za obsługę żądań aktualizacji danych recepty.
+     *
+     * @param prescriptionData - tekst w formacie JSON zawierający dane o recepcie
+     * @return (String) - odpowiedź serwera zawierająca status zakończenia aktualizowania danych recepty
+     */
+    @RequestMapping(value = "/api/updatePrescription", method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public String updatePrescription(@RequestBody String prescriptionData) {
+        try {
+            Prescription prescription = Prescription.getInstance(prescriptionData);
+            int status = prescriptionInterface.updatePrescription(prescription);
+
+            if (status == 0) {
+                return ResponseCreator.jsonResponse("Successful updating prescription with id = " + prescription.getId());
+            } else if (status == -4) {
+                return ResponseCreator.jsonErrorResponse("No prescription with id = " + prescription.getId());
+            } else if (status == -2) {
+                return ResponseCreator.jsonErrorResponse("SQL Integrity Constraint Violation Exception");
+            } else {
+                return ResponseCreator.jsonErrorResponse(
+                        "Error by updating prescription with id = " + prescription.getId());
+            }
+        } catch (ParseException e) {
+            return ResponseCreator.parseErrorResponse(e);
+        }
+    }
+
+    /**
+     * Metoda odpowiadająca za żądania usunięcia recepty.
+     *
+     * @param id - id recepty
+     * @return (String) - odpowiedź serwera zawierająca status zakończenia usuwania recepty
+     */
+    @RequestMapping(value = "/api/deletePrescription", method = RequestMethod.DELETE,
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public String deletePrescription(@RequestParam("id") long id) {
+        int status = prescriptionInterface.deletePrescription(id);
+        if (status == 0) {
+            return ResponseCreator.jsonResponse("Successful deleting prescription with id = " + id);
+        } else if (status == -4) {
+            return ResponseCreator.jsonErrorResponse("No prescription with id = " + id);
+        } else if (status == -2) {
+            return ResponseCreator.jsonErrorResponse("SQL Integrity Constraint Violation Exception");
+        } else {
+            return ResponseCreator.jsonErrorResponse("Error by deleting prescription with id = " + id);
+        }
     }
 }

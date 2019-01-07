@@ -51,4 +51,32 @@ public interface PrescriptionInterface {
     Prescription getPrescriptionById(long id);
 
 
+    /**
+     * Metoda do obsługi wstawiania recepty.
+     *
+     * @param prescription - obiekt reprezentujący receptę
+     * @return (long) - id recepty w przypadku pomyślnego zakończenia dodawania
+     * kod błędu w przypadku błędu
+     */
+    long insertPrescription(Prescription prescription);
+
+    /**
+     * Metoda do obsługi aktualizowania danych recepty recepty.
+     *
+     * @param prescription - obiekt reprezentujący receptę
+     * @return (long) - 0 w przypadku pomyślnego zakończenia aktualizowania danych recepty
+     * kod błędu w przypadku błędu
+     */
+    int updatePrescription(Prescription prescription);
+
+    /**
+     * Metoda do obsługi usuwania recepty recepty.
+     *
+     * @param id - id recepty
+     * @return (long) - 0 w przypadku pomyślnego zakończenia usuwania
+     * kod błędu w przypadku błędu
+     */
+    int deletePrescription(long id);
+
+
 }
