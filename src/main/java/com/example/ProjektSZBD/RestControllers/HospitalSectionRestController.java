@@ -177,7 +177,7 @@ public class HospitalSectionRestController {
      * @param hospitalSectionData - tekst w formacie JSON zawierający dane o oddziale
      * @return (String) - odpowiedź serwera zawierająca status zakończenia wstawiania oddzialu
      */
-    @RequestMapping(value = "/api/addHospitalSection", method = RequestMethod.PUT,
+    @RequestMapping(value = "/api/addHospi  talSection", method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String addHospitalSection(@RequestBody String hospitalSectionData) {
         try {

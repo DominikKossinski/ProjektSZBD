@@ -30,4 +30,31 @@ public interface IllnessInterface {
      * @return (List of Illness) - lista obiektów zawierających informacje o chorobie
      */
     List<Illness> getAllIllnessesWithPattern(String pattern);
+
+    /**
+     * Metoda do obsługi wstawiania choroby.
+     *
+     * @param illness - obiekt reprezentujący chorobę
+     * @return (long) - id choroby w przypadku pomyślnego zakończenia dodawania
+     * kod błędu w przypadku błędu
+     */
+    long insertIllness(Illness illness);
+
+    /**
+     * Metoda do obsługi aktualizowania danych choroby.
+     *
+     * @param illness - obiekt reprezentujący choroby
+     * @return (long) - 0 w przypadku pomyślnego zakończenia aktualizowania danych
+     * kod błędu w przypadku błędu
+     */
+    int updateIllness(Illness illness);
+
+    /**
+     * Metoda do obsługi usuwania choroby.
+     *
+     * @param id - id choroby
+     * @return (long) - 0 w przypadku pomyślnego zakończenia usuwania
+     * kod błędu w przypadku błędu
+     */
+    int deleteIllness(long id);
 }

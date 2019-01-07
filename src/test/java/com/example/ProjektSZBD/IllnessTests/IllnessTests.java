@@ -51,6 +51,21 @@ public class IllnessTests {
             public List<Illness> getAllIllnessesWithPattern(String pattern) {
                 return illnessDB.getAllIllnessesWithPattern(pattern);
             }
+
+            @Override
+            public long insertIllness(Illness illness) {
+                return 0;
+            }
+
+            @Override
+            public int updateIllness(Illness illness) {
+                return 0;
+            }
+
+            @Override
+            public int deleteIllness(long id) {
+                return 0;
+            }
         };
         restController = new IllnessRestController(illnessInterface);
     }

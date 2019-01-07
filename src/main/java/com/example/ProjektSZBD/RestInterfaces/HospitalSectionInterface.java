@@ -30,7 +30,7 @@ public interface HospitalSectionInterface {
      * Metoda do obsługi wstawiania oddziału.
      *
      * @param hospitalSection - obiekt reprezentujący oddział
-     * @return (long) - 0 w przypadku pomyślnego zakończenia dodawania
+     * @return (long) - id oddziału w przypadku pomyślnego zakończenia dodawania
      * kod błędu w przypadku błędu
      */
     long insertHospitalSection(HospitalSection hospitalSection);

@@ -52,7 +52,7 @@ public interface HospitalInterface {
      * Metoda służąca do dodania nowego szpitala.
      *
      * @param hospital - obiekt reprezentujący szpital
-     * @return (long) - 0 w przypadku pomyślnego zakończenia dodawania
+     * @return (long) - id szpitala w przypadku pomyślnego zakończenia dodawania
      * * kod błędu w przypadku błędu
      */
     long insertHospital(Hospital hospital);

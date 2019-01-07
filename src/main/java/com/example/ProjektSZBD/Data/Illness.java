@@ -57,4 +57,33 @@ public class Illness {
         JSONParser parser = new JSONParser();
         return (JSONObject) parser.parse(this.toJSONString());
     }
+
+    /**
+     * Statyczna metoda służąca zwrócenia obiektu klasy Illness na podstawie tekstu w formacie JSON.
+     *
+     * @param illnessData - tekst w formacie json
+     * @return (Element) - obiekt zawierający informacje o oddziale
+     * @throws ParseException - błąd parsowania do formatu JSON
+     */
+    public static Illness getInstance(String illnessData) throws ParseException {
+        JSONParser parser = new JSONParser();
+        JSONObject illness = (JSONObject) parser.parse(illnessData);
+        return new Illness((long) illness.get("id"), (String) illness.get("name"), (String) illness.get("description"));
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getDescription() {
+        return description;
+    }
 }
