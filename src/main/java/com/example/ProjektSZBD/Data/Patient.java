@@ -99,4 +99,37 @@ public class Patient {
         return (JSONObject) parser.parse(this.toSimpleJSONString());
     }
 
+    /**
+     * Statyczna metoda służąca zwrócenia obiektu klasy Patient na podstawie tekstu w formacie JSON.
+     *
+     * @param patientData - tekst w formacie json
+     * @return (Element) - obiekt zawierający informacje o oddziale
+     * @throws ParseException - błąd parsowania do formatu JSON
+     */
+    public static Patient getInstance(String patientData) throws ParseException {
+        JSONParser parser = new JSONParser();
+        JSONObject patient = (JSONObject) parser.parse(patientData);
+        return new Patient((long) patient.get("pesel"), (String) patient.get("first_name"),
+                (String) patient.get("last_name"), (String) patient.get("password"));
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public long getPesel() {
+        return pesel;
+    }
+
+    public void setPesel(long pesel) {
+        this.pesel = pesel;
+    }
 }

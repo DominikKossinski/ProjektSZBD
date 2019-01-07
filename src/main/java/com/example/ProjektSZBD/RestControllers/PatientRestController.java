@@ -3,14 +3,16 @@ package com.example.ProjektSZBD.RestControllers;
 import com.example.ProjektSZBD.Data.Patient;
 import com.example.ProjektSZBD.ResponseCreator;
 import com.example.ProjektSZBD.RestInterfaces.PatientInterface;
+import oracle.jdbc.OracleTypes;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
 
+import java.sql.CallableStatement;
+import java.sql.SQLException;
 import java.util.List;
 
 import static com.example.ProjektSZBD.ProjektSzbdApplication.getJdbcTemplate;
@@ -68,6 +70,62 @@ public class PatientRestController {
                 return getJdbcTemplate().query("SELECT pesel, imie, nazwisko FROM PACJENCI",
                         (rs, arg1) -> new Patient(rs.getLong("pesel"), rs.getString("imie"),
                                 rs.getString("nazwisko")));
+            }
+
+            @Override
+            public int insertPatient(Patient patient) {
+                try {
+                    CallableStatement call = getJdbcTemplate().getDataSource().getConnection().prepareCall(
+                            "{? = call insertPatient(?, ?, ?, ?)}"
+                    );
+                    call.registerOutParameter(1, OracleTypes.NUMBER);
+                    call.setLong(2, patient.getPesel());
+                    call.setString(3, patient.getFirstName());
+                    call.setString(4, patient.getLastName());
+                    call.setString(5, patient.getPassword());
+                    call.execute();
+                    return call.getInt(1);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    return -5;
+                }
+            }
+
+            @Override
+            public int updatePatient(Patient patient) {
+                try {
+                    CallableStatement call = getJdbcTemplate().getDataSource().getConnection().prepareCall(
+                            "{? = call updatePatient(?, ?, ?, ?, ?)}"
+                    );
+                    call.registerOutParameter(1, OracleTypes.NUMBER);
+                    call.registerOutParameter(6, OracleTypes.NUMBER);
+                    call.setLong(2, patient.getPesel());
+                    call.setString(3, patient.getFirstName());
+                    call.setString(4, patient.getLastName());
+                    call.setString(5, patient.getPassword());
+                    call.execute();
+                    return call.getInt(1);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    return -5;
+                }
+            }
+
+            @Override
+            public int deletePatient(long pesel) {
+                try {
+                    CallableStatement call = getJdbcTemplate().getDataSource().getConnection().prepareCall(
+                            "{? = call deletePatient(?, ?)}"
+                    );
+                    call.registerOutParameter(1, OracleTypes.NUMBER);
+                    call.registerOutParameter(3, OracleTypes.NUMBER);
+                    call.setLong(2, pesel);
+                    call.execute();
+                    return call.getInt(1);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    return -5;
+                }
             }
         };
     }
@@ -146,6 +204,78 @@ public class PatientRestController {
             } else {
                 return ResponseCreator.jsonErrorResponse("No patient with pesel = " + pesel);
             }
+        }
+    }
+
+    /**
+     * Metoda obsługująca żądanie dodania pacjenta.
+     *
+     * @param patientData - tekst w formacie JSON zawierający informacje o pacjencie
+     * @return (String) - odpowiedź serwera zawierająca status zakończenia dodawania pacjenta
+     */
+    @RequestMapping(value = "/api/addPatient", method = RequestMethod.PUT,
+            consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public String insertPatient(@RequestBody String patientData) {
+        try {
+            Patient patient = Patient.getInstance(patientData);
+            int status = patientInterface.insertPatient(patient);
+            if (status == 0) {
+                return ResponseCreator.jsonResponse("patient", patient.toJSONObject(),
+                        "Successful adding patient. Pesel:" + patient.getPesel());
+            } else if (status == -2) {
+                return ResponseCreator.jsonErrorResponse("Check patient data");
+            } else {
+                return ResponseCreator.jsonErrorResponse("Error by adding patient");
+            }
+        } catch (ParseException e) {
+            return ResponseCreator.parseErrorResponse(e);
+        }
+    }
+
+    /**
+     * Metoda obsługująca żądanie aktualizacji danych pacjenta pacjenta.
+     *
+     * @param patientData - tekst w formacie JSON zawierający informacje o pacjencie
+     * @return (String) - odpowiedź serwera zawierająca status zakończenia aktualizowania danych pacjenta
+     */
+    @RequestMapping(value = "/api/updatePatient", method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public String updatePatient(@RequestBody String patientData) {
+        try {
+            Patient patient = Patient.getInstance(patientData);
+            int status = patientInterface.updatePatient(patient);
+            if (status == 0) {
+                return ResponseCreator.jsonResponse(
+                        "Successful updating patient with pesel = " + patient.getPesel());
+            } else if (status == -4) {
+                return ResponseCreator.jsonErrorResponse("No patient with pesel = " + patient.getPesel());
+            } else {
+                return ResponseCreator.jsonErrorResponse(
+                        "Error by updating patient with pesel = " + patient.getPesel());
+            }
+        } catch (ParseException e) {
+            return ResponseCreator.parseErrorResponse(e);
+        }
+    }
+
+    /**
+     * Metoda obsługująca żądanie usuwania pacjenta.
+     *
+     * @param pesel - pesel pacjenta
+     * @return (String) - odpowiedź serwera zawierająca status zakończenia usuwania pacjenta
+     */
+    @RequestMapping(value = "/api/deletePatient", method = RequestMethod.DELETE,
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public String deletePatient(@RequestParam("pesel") long pesel) {
+        int status = patientInterface.deletePatient(pesel);
+        if (status == 0) {
+            return ResponseCreator.jsonResponse("Successful deleting patient with pesel = " + pesel);
+        } else if (status == -4) {
+            return ResponseCreator.jsonErrorResponse("No patient with pesel = " + pesel);
+        } else if (status == -2) {
+            return ResponseCreator.jsonErrorResponse("SQL Integrity Constraint Violation Exception");
+        } else {
+            return ResponseCreator.jsonErrorResponse("Error by deleting patient with pesel = " + pesel);
         }
     }
 }

@@ -778,3 +778,92 @@ BEGIN
       return -1;
     end if;
 END;
+
+CREATE OR REPLACE FUNCTION insertPatient(peselV IN NUMBER,
+                                         firstName IN VARCHAR,
+                                         lastName IN VARCHAR,
+                                         password IN VARCHAR)
+  RETURN NUMBER
+IS
+
+BEGIN
+
+  INSERT INTO PACJENCI(pesel, imie, nazwisko, haslo) VALUES (peselV, firstName, lastName, password);
+  RETURN 0;
+  EXCEPTION
+  WHEN OTHERS
+  THEN
+    if (SQLCODE = -02291) THEN
+      RETURN -3; /*Naruszenie więzów spójności*/
+    elsif (SQLCODE = -02290) THEN
+      RETURN -2; /*Naruszenie więzów chceck */
+    else
+      RETURN -1;
+    end if;
+END;
+
+CREATE OR REPLACE FUNCTION updatePatient(peselV IN NUMBER,
+                                         firstName IN VARCHAR,
+                                         lastName IN VARCHAR,
+                                         password IN VARCHAR,
+                                         rowCount OUT NUMBER)
+  RETURN NUMBER
+IS
+
+BEGIN
+
+  UPDATE PACJENCI SET IMIE = firstName, NAZWISKO = lastName, HASLO = password WHERE PESEL = peselV;
+  rowCount := SQL%ROWCOUNT;
+  if (rowCount = 1) then
+    return 0; --Poprawne zakończenie
+  elsif (rowCount = 0) then
+    return -4; --Nie ma id
+  else
+    rollback;
+    return -3; --Nie poprawne update
+  end if;
+
+  EXCEPTION
+  WHEN
+  OTHERS
+  THEN
+    if (SQLCODE = -02291) THEN
+      rollback;
+      return -2; --Naruszenie więzów spójności
+    else
+      rollback;
+      return -1;
+    end if;
+END;
+
+
+CREATE OR REPLACE FUNCTION deletePatient(peselV IN NUMBER,
+                                         rowCount OUT NUMBER)
+  RETURN NUMBER
+IS
+
+BEGIN
+
+  DELETE FROM PACJENCI WHERE PESEL = peselV;
+  rowCount := SQL%ROWCOUNT;
+  if (rowCount = 1) then
+    return 0; --Poprawne zakończenie
+  elsif (rowCount = 0) then
+    return -4; --Nie ma id
+  else
+    rollback;
+    return -3; --Nie poprawne delete
+  end if;
+
+  EXCEPTION
+  WHEN
+  OTHERS
+  THEN
+    if (SQLCODE = -02292) THEN
+      rollback;
+      return -2; --Naruszenie więzów spójności
+    else
+      rollback;
+      return -1;
+    end if;
+END;

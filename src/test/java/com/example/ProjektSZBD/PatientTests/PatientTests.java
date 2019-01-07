@@ -58,6 +58,21 @@ public class PatientTests {
             public List<Patient> getAllPatientsInfo() {
                 return patientDB.getAllPatientsInfo();
             }
+
+            @Override
+            public int insertPatient(Patient patient) {
+                return 0;
+            }
+
+            @Override
+            public int updatePatient(Patient patient) {
+                return 0;
+            }
+
+            @Override
+            public int deletePatient(long pesel) {
+                return 0;
+            }
         };
         restController = new PatientRestController(patientInterface);
     }
