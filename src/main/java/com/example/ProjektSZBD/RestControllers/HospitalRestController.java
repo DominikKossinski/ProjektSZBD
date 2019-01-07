@@ -5,15 +5,16 @@ import com.example.ProjektSZBD.Data.Doctors.Ordynator;
 import com.example.ProjektSZBD.Data.Hospital;
 import com.example.ProjektSZBD.ResponseCreator;
 import com.example.ProjektSZBD.RestInterfaces.HospitalInterface;
+import oracle.jdbc.OracleTypes;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
 
+import java.sql.CallableStatement;
+import java.sql.SQLException;
 import java.util.List;
 
 import static com.example.ProjektSZBD.ProjektSzbdApplication.getJdbcTemplate;
@@ -89,6 +90,61 @@ public class HospitalRestController {
                                 rs.getLong("id_lekarza"), rs.getString("imie"),
                                 rs.getString("nazwisko"), rs.getLong("id_oddzialu")));
             }
+
+            @Override
+            public long insertHospital(Hospital hospital) {
+                CallableStatement call = null;
+                try {
+                    call = getJdbcTemplate().getDataSource().getConnection().prepareCall(
+                            "{? = call insertHospital(?, ?, ?, ?)}"
+                    );
+                    call.registerOutParameter(1, OracleTypes.NUMBER);
+                    call.registerOutParameter(5, OracleTypes.NUMBER);
+                    call.setString(2, hospital.getName());
+                    call.setString(3, hospital.getAddress());
+                    call.setString(4, hospital.getCity());
+                    call.execute();
+                    return call.getLong(1);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    return -1;
+                }
+            }
+
+            @Override
+            public int deleteHospital(long id) {
+                try {
+                    CallableStatement call = getJdbcTemplate().getDataSource().getConnection().prepareCall(
+                            "{? = call deleteHospital(?, ?)}"
+                    );
+                    call.registerOutParameter(1, OracleTypes.NUMBER);
+                    call.registerOutParameter(3, OracleTypes.NUMBER);
+                    call.setLong(2, id);
+                    call.execute();
+                    return call.getInt(1);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    return -5;
+                }
+            }
+
+            @Override
+            public int updateHospital(Hospital hospital) {
+                int rowCount = getJdbcTemplate().update(
+                        "UPDATE SZPITALE SET " +
+                                "nazwa_szpitala = '" + hospital.getName() + "', " +
+                                "adres = '" + hospital.getAddress() + "', " +
+                                "miasto = '" + hospital.getCity() + "' " +
+                                "where id_szpitala = " + hospital.getId()
+                );
+                if (rowCount == 1) {
+                    return 0;
+                } else if (rowCount == 0) {
+                    return -1;
+                } else {
+                    return -2;
+                }
+            }
         };
     }
 
@@ -108,11 +164,10 @@ public class HospitalRestController {
      * @return (String) - tekst w formacie JSON, który zawiera odpowiedź na żądanie
      * @See ResponseCreator
      */
-    @RequestMapping("/api/allHospitals")
+    @RequestMapping(value = "/api/allHospitals")
     public String getHospitals() {
         JSONArray hospitalsArray = new JSONArray();
         List<Hospital> hospitals = hospitalInterface.getAllHospitals();
-        JSONParser parser = new JSONParser();
         for (Hospital hospital : hospitals) {
             try {
                 JSONObject hospitalJsonObject = hospital.toJSONObject();
@@ -131,7 +186,7 @@ public class HospitalRestController {
      * @return (String) - tekst w formacie JSON, który zawiera odpowiedź na żądanie.
      * @See ResponseCreator
      */
-    @RequestMapping("/api/hospital")
+    @RequestMapping(value = "/api/hospital")
     public String getHospitalById(@RequestParam("id") long id) {
         Hospital hospital = hospitalInterface.getHospitalById(id);
         if (hospital == null) {
@@ -151,9 +206,9 @@ public class HospitalRestController {
      * nie zostanie podane zwraca dyrektorów wszystkich szpitali.
      *
      * @param hospitalId - id szpitala (jeśli nie podane przyjmuje wartość -1)
-     * @return
+     * @return (String) - tekst w formacie JSON, który zawiera odpowiedź na żądanie.
      */
-    @RequestMapping("/api/hospitalDirector")
+    @RequestMapping(value = "/api/hospitalDirector")
     public String getHospitalsDirectors(
             @RequestParam(value = "hospitalId", defaultValue = "-1", required = false) long hospitalId
     ) {
@@ -186,12 +241,12 @@ public class HospitalRestController {
 
 
     /**
-     * Metoda odpowiadająca za obsługę żądania informacjii o wszystkich ordynatorach w danym szpitalu
+     * Metoda odpowiadająca za obsługę żądania informacji o wszystkich ordynatorach w danym szpitalu
      *
      * @param hospitalId - id szpitala
      * @return (String) - tekst w formacie json zawierający odpowiedź na żądanie.
      */
-    @RequestMapping("/api/hospitalOrdynators")
+    @RequestMapping(value = "/api/hospitalOrdynators")
     public String getHospitalOrdynators(@RequestParam("hospitalId") long hospitalId) {
         List<Ordynator> ordynators = hospitalInterface.getHospitalOrdynators(hospitalId);
         JSONArray ordynatorsArray = new JSONArray();
@@ -204,6 +259,62 @@ public class HospitalRestController {
         }
         return ResponseCreator.jsonResponse("ordynators", ordynatorsArray,
                 "List of ordynators in hospital with id = " + hospitalId);
+    }
+
+    @RequestMapping(value = "/api/addHospital", method = RequestMethod.PUT,
+            consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public String addHospital(@RequestBody String hospitalData) {
+        try {
+            Hospital hospital = Hospital.getInstance(hospitalData);
+            long id = hospitalInterface.insertHospital(hospital);
+            if (id > 0) {
+                hospital.setId(id);
+                return ResponseCreator.jsonResponse("hospital", hospital.toJSONObject(),
+                        "Successful adding hospital. Id:" + id);
+            } else if (id == -2) {
+                return ResponseCreator.jsonErrorResponse("Check hospital data");
+            } else {
+                return ResponseCreator.jsonErrorResponse("Error by adding element");
+            }
+        } catch (ParseException e) {
+            return ResponseCreator.parseErrorResponse(e);
+        }
+    }
+
+    @RequestMapping(value = "/api/updateHospital", method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public String updateHospital(@RequestBody String hospitalData) {
+        try {
+            Hospital hospital = Hospital.getInstance(hospitalData);
+            int status = hospitalInterface.updateHospital(hospital);
+
+            if (status == 0) {
+                return ResponseCreator.jsonResponse("Successful updating hospital with id = " + hospital.getId());
+            } else if (status == -1) {
+                return ResponseCreator.jsonErrorResponse("No hospital with id = " + hospital.getId());
+            } else {
+                return ResponseCreator.jsonErrorResponse(
+                        "Error by updating hospital with id = " + hospital.getId());
+            }
+        } catch (ParseException e) {
+            return ResponseCreator.parseErrorResponse(e);
+        }
+    }
+
+
+    @RequestMapping(value = "/api/deleteHospital", method = RequestMethod.DELETE,
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public String deleteHospital(@RequestParam("id") long id) {
+        int status = hospitalInterface.deleteHospital(id);
+        if (status == 0) {
+            return ResponseCreator.jsonResponse("Successful deleting hospital with id = " + id);
+        } else if (status == -4) {
+            return ResponseCreator.jsonErrorResponse("No hospital with id = " + id);
+        } else if (status == -2) {
+            return ResponseCreator.jsonErrorResponse("SQL Integrity Constraint Violation Exception");
+        } else {
+            return ResponseCreator.jsonErrorResponse("Error by deleting hospital with id = " + id);
+        }
     }
 
 

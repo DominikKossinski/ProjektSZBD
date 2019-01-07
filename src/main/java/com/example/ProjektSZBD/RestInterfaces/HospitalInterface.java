@@ -48,4 +48,31 @@ public interface HospitalInterface {
      */
     List<Ordynator> getHospitalOrdynators(long hospitalId);
 
+    /**
+     * Metoda służąca do dodania nowego szpitala.
+     *
+     * @param hospital - obiekt reprezentujący szpital
+     * @return (long) - 0 w przypadku pomyślnego zakończenia dodawania
+     * * kod błędu w przypadku błędu
+     */
+    long insertHospital(Hospital hospital);
+
+    /**
+     * Metoda służąca do usuinięcia szpitala o podanym id.
+     *
+     * @param id - id elementu wyposażenia
+     * @return (int) - 0 w przypadku pomyślnego zakończenia usuwania
+     * * kod błędu w przypadku błędu
+     */
+    int deleteHospital(long id);
+
+    /**
+     * Metoda służąca do aktualizacji danych szpitala.
+     *
+     * @param hospital - obiekt reprezentujący element wyposażenia
+     * @return (int) - 0 w przypadku pomyślnego zakończenia aktualizowania
+     * * kod błędu w przypadku błędu
+     */
+    int updateHospital(Hospital hospital);
+
 }

@@ -44,7 +44,7 @@ public interface ElementInterface {
      * Metoda służąca do dodania nowego elementu wyposażenia.
      *
      * @param element - obiekt reprezentujący element wyposażenia
-     * @return (long) - 0 w przypadku pomyślnego zakończenia usuwania
+     * @return (long) - 0 w przypadku pomyślnego zakończenia dodawania
      * * kod błędu w przypadku błędu
      */
     long insertElement(Element element);
@@ -62,7 +62,7 @@ public interface ElementInterface {
      * Metoda służąca do aktualizacji danych elementu wyposażenia.
      *
      * @param element - obiekt reprezentujący element wyposażenia
-     * @return (int) - 0 w przypadku pomyślnego zakończenia usuwania
+     * @return (int) - 0 w przypadku pomyślnego zakończenia aktualizowania
      * * kod błędu w przypadku błędu
      */
     int updateElement(Element element);

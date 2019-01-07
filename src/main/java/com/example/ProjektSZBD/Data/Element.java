@@ -76,7 +76,7 @@ public class Element {
      * Statyczna metoda służąca zwrócenia obiektu klasy Element na podstawie tekstu w formacie JSON.
      *
      * @param elementData - tekst w formacie json
-     * @return (Element) - obiekt zawierający informacje o lekarzu
+     * @return (Element) - obiekt zawierający informacje o elemencie wyposażenia
      * @throws ParseException - błąd parsowania do formatu JSON
      */
     public static Element getInstance(String elementData) throws ParseException {

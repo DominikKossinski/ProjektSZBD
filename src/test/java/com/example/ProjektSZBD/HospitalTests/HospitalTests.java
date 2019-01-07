@@ -67,6 +67,21 @@ public class HospitalTests {
             public List<Ordynator> getHospitalOrdynators(long hospitalId) {
                 return hospitalDB.getHospitalOrdynators(hospitalId);
             }
+
+            @Override
+            public long insertHospital(Hospital hospital) {
+                return 0;
+            }
+
+            @Override
+            public int deleteHospital(long id) {
+                return 0;
+            }
+
+            @Override
+            public int updateHospital(Hospital hospital) {
+                return 0;
+            }
         };
         this.restController = new HospitalRestController(hospitalInterface);
     }

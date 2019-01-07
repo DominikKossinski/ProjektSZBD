@@ -506,11 +506,101 @@ BEGIN
     end if;
     RETURN elementId;
 END;
-insert into LEKARZE(imie, nazwisko, placa, id_oddzialu, stanowisko, haslo)
-values ('Dominik', 'Kossiński', 500, -1, 'Rezydent', 'DomInik');
-declare
-  r number := insertDoctor('Dominik', 'Kossiński', 500, 1, 'Rezydent', 'DomInik');
-begin
-  DBMS_OUTPUT.put_line('Ret ' || to_char(r));
-end;
 
+CREATE OR REPLACE FUNCTION updateElement(elementId IN NUMBER,
+                                         name IN VARCHAR,
+                                         count IN NUMERIC,
+                                         price IN NUMERIC,
+                                         hospitalSectionId IN NUMBER,
+                                         rowCount OUT NUMBER)
+  RETURN NUMBER
+IS
+
+BEGIN
+
+  UPDATE ELEMENTY_WYPOSAZENIA
+  SET nazwa            = name,
+      ilosc            = count,
+      cena_jednostkowa = price,
+      id_oddzialu      = hospitalSectionId
+  WHERE ID_ELEMENTU = elementId;
+  rowCount := SQL%ROWCOUNT;
+  if (rowCount = 1) then
+    return 0; --Poprawne zakończenie
+  elsif (rowCount = 0) then
+    return -4; --Nie ma id
+  else
+    rollback;
+    return -3; --Nie poprawne upade
+  end if;
+
+  EXCEPTION
+  WHEN
+  OTHERS
+  THEN
+    if (SQLCODE = -02291) THEN
+      rollback;
+      return -2; --Naruszenie więzów spójności
+    else
+      rollback;
+      return -1;
+    end if;
+END;
+
+
+
+CREATE OR REPLACE FUNCTION insertHospital(name IN VARCHAR,
+                                          address IN VARCHAR,
+                                          city IN VARCHAR,
+                                          hospitalId OUT NUMBER)
+  RETURN NUMBER
+IS
+
+BEGIN
+
+  INSERT INTO SZPITALE(NAZWA_SZPITALA, ADRES, MIASTO)
+  VALUES (name, address, city) returning ID_SZPITALA into hospitalId;
+  RETURN hospitalId;
+  EXCEPTION
+  WHEN OTHERS
+  THEN
+    if (SQLCODE = -02291) THEN
+      hospitalId := -3; /*Naruszenie więzów spójności*/
+    elsif (SQLCODE = -02290) THEN
+      hospitalId := -2; /*Naruszenie więzów chceck */
+    else
+      hospitalId := -1;
+    end if;
+    RETURN hospitalId;
+END;
+
+CREATE OR REPLACE FUNCTION deleteHospital(hospitalId IN NUMBER,
+                                          rowC OUT NUMBER)
+  RETURN NUMBER
+IS
+
+BEGIN
+
+  DELETE FROM SZPITALE WHERE ID_SZPITALA = hospitalId;
+  rowC := SQL%ROWCOUNT;
+  if (rowC = 1) then
+    return 0; --Poprawne zakończenie
+  elsif (rowC = 0) then
+    return -4; --Brak id
+  else
+    rollback;
+    return -3; --Nie poprawne usunięcie
+  end if;
+
+  EXCEPTION
+  WHEN
+  OTHERS
+  THEN
+    if (SQLCODE = -02292) THEN
+      rollback;
+      return -2; --Naruszenie więzów spójności
+    else
+      rollback;
+      return -1;
+    end if;
+END;

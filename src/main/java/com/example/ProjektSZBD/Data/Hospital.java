@@ -45,6 +45,20 @@ public class Hospital {
     }
 
     /**
+     * Statyczna metoda służąca zwrócenia obiektu klasy Hospital na podstawie tekstu w formacie JSON.
+     *
+     * @param hospitalData - tekst w formacie json
+     * @return (Element) - obiekt zawierający informacje o szpitalu
+     * @throws ParseException - błąd parsowania do formatu JSON
+     */
+    public static Hospital getInstance(String hospitalData) throws ParseException {
+        JSONParser parser = new JSONParser();
+        JSONObject hospital = (JSONObject) parser.parse(hospitalData);
+        return new Hospital((long) hospital.get("id"),
+                (String) hospital.get("name"), (String) hospital.get("address"), (String) hospital.get("city"));
+    }
+
+    /**
      * Metoda klasy pozwalająca na przedstawienie obiektu w formie tekstu w formacie JSON.
      * * @return (String) - tekst w formacie JSON, zawierający  dane o obiekcie
      */
@@ -63,5 +77,26 @@ public class Hospital {
         JSONParser parser = new JSONParser();
         JSONObject hospital = (JSONObject) parser.parse(this.toJSONString());
         return hospital;
+    }
+
+
+    public String getName() {
+        return name;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public String getCity() {
+        return city;
     }
 }

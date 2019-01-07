@@ -109,20 +109,22 @@ public class ElementRestController {
 
             @Override
             public int updateElement(Element element) {
-                int rowCount = getJdbcTemplate().update(
-                        "UPDATE ELEMENTY_WYPOSAZENIA SET " +
-                                "nazwa = '" + element.getName() + "', " +
-                                "ilosc = " + element.getCount() + ", " +
-                                "cena_jednostkowa = " + element.getPrice() + ", " +
-                                "id_oddzialu = " + element.getHospitalSectionId() + " " +
-                                "where id_elementu = " + element.getId()
-                );
-                if (rowCount == 1) {
-                    return 0;
-                } else if (rowCount == 0) {
+                try {
+                    CallableStatement call = getJdbcTemplate().getDataSource().getConnection().prepareCall(
+                            "{? = call updateElement(?, ?, ?, ?, ?, ?)}"
+                    );
+                    call.registerOutParameter(1, OracleTypes.NUMBER);
+                    call.registerOutParameter(7, OracleTypes.NUMBER);
+                    call.setLong(2, element.getId());
+                    call.setString(3, element.getName());
+                    call.setInt(4, element.getCount());
+                    call.setDouble(5, element.getPrice());
+                    call.setLong(6, element.getHospitalSectionId());
+                    call.execute();
+                    return call.getInt(1);
+                } catch (SQLException e) {
+                    e.printStackTrace();
                     return -1;
-                } else {
-                    return -2;
                 }
             }
         };
@@ -228,8 +230,10 @@ public class ElementRestController {
             int status = elementInterface.updateElement(element);
             if (status == 0) {
                 return ResponseCreator.jsonResponse("Successful updating element with id = " + element.getId());
-            } else if (status == -1) {
+            } else if (status == -4) {
                 return ResponseCreator.jsonErrorResponse("No element with id = " + element.getId());
+            } else if (status == -2) {
+                return ResponseCreator.jsonErrorResponse("SQL Integrity Constraint Violation Exception");
             } else {
                 return ResponseCreator.jsonErrorResponse("Error by updating element with id = " + element.getId());
             }
@@ -245,7 +249,7 @@ public class ElementRestController {
      * @return (String) - odpowiedź serwera zawierająca status zakończenia usuwania elementu
      */
     @RequestMapping(value = "/api/deleteElement", method = RequestMethod.DELETE,
-            consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String deleteElement(@RequestParam("id") long id) {
         int status = elementInterface.deleteElement(id);
         if (status == 0) {
