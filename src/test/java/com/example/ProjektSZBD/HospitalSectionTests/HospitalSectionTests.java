@@ -46,6 +46,21 @@ public class HospitalSectionTests {
                 }
                 return hospitalSectionDB.getHospitalSectionOrdynator(hospitalSectionId);
             }
+
+            @Override
+            public long insertHospitalSection(HospitalSection hospitalSection) {
+                return 0;
+            }
+
+            @Override
+            public int updateHospitalSection(HospitalSection hospitalSection) {
+                return 0;
+            }
+
+            @Override
+            public int deleteHospitalSection(long id) {
+                return 0;
+            }
         };
         this.restController = new HospitalSectionRestController(hospitalSectionInterface);
     }

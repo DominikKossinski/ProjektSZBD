@@ -604,3 +604,89 @@ BEGIN
       return -1;
     end if;
 END;
+
+CREATE OR REPLACE FUNCTION insertHospitalSection(name IN VARCHAR,
+                                                 hospitalId IN NUMERIC,
+                                                 hospitalSectionId OUT NUMBER)
+  RETURN NUMBER
+IS
+
+BEGIN
+
+  INSERT INTO ODDZIALY(nazwa, id_szpitala) VALUES (name, hospitalId) returning ID_ODDZIALU into hospitalSectionId;
+  RETURN hospitalSectionId;
+  EXCEPTION
+  WHEN OTHERS
+  THEN
+    if (SQLCODE = -02291) THEN
+      hospitalSectionId := -3; /*Naruszenie więzów spójności*/
+    elsif (SQLCODE = -02290) THEN
+      hospitalSectionId := -2; /*Naruszenie więzów chceck */
+    else
+      hospitalSectionId := -1;
+    end if;
+    RETURN hospitalSectionId;
+END;
+CREATE OR REPLACE FUNCTION updateHospitalSection(hospitalSectionId IN NUMBER,
+                                                 name IN VARCHAR,
+                                                 hospitalId IN NUMERIC,
+                                                 rowCount OUT NUMBER)
+  RETURN NUMBER
+IS
+
+BEGIN
+
+  UPDATE ODDZIALY SET nazwa = name, id_szpitala = hospitalId WHERE ID_ODDZIALU = hospitalSectionId;
+  rowCount := SQL%ROWCOUNT;
+  if (rowCount = 1) then
+    return 0; --Poprawne zakończenie
+  elsif (rowCount = 0) then
+    return -4; --Nie ma id
+  else
+    rollback;
+    return -3; --Nie poprawne delete
+  end if;
+
+  EXCEPTION
+  WHEN
+  OTHERS
+  THEN
+    if (SQLCODE = -02291) THEN
+      rollback;
+      return -2; --Naruszenie więzów spójności
+    else
+      rollback;
+      return -1;
+    end if;
+END;
+
+CREATE OR REPLACE FUNCTION deleteHospitalSection(hospitalSectionId IN NUMBER,
+                                                 rowCount OUT NUMBER)
+  RETURN NUMBER
+IS
+
+BEGIN
+
+  DELETE FROM ODDZIALY WHERE ID_ODDZIALU = hospitalSectionId;
+  rowCount := SQL%ROWCOUNT;
+  if (rowCount = 1) then
+    return 0; --Poprawne zakończenie
+  elsif (rowCount = 0) then
+    return -4; --Nie ma id
+  else
+    rollback;
+    return -3; --Nie poprawne delete
+  end if;
+
+  EXCEPTION
+  WHEN
+  OTHERS
+  THEN
+    if (SQLCODE = -02292) THEN
+      rollback;
+      return -2; --Naruszenie więzów spójności
+    else
+      rollback;
+      return -1;
+    end if;
+END;

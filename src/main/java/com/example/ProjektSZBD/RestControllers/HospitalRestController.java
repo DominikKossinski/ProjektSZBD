@@ -93,9 +93,8 @@ public class HospitalRestController {
 
             @Override
             public long insertHospital(Hospital hospital) {
-                CallableStatement call = null;
                 try {
-                    call = getJdbcTemplate().getDataSource().getConnection().prepareCall(
+                    CallableStatement call = getJdbcTemplate().getDataSource().getConnection().prepareCall(
                             "{? = call insertHospital(?, ?, ?, ?)}"
                     );
                     call.registerOutParameter(1, OracleTypes.NUMBER);
@@ -261,6 +260,12 @@ public class HospitalRestController {
                 "List of ordynators in hospital with id = " + hospitalId);
     }
 
+    /**
+     * Metoda obsługująca żądania dodania szpitala.
+     *
+     * @param hospitalData - tekst w formacie JSON zawierający dane o szpitalu
+     * @return (String) - odpowiedź serwera zawierająca status zakończenia wstawiania szpitala
+     */
     @RequestMapping(value = "/api/addHospital", method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String addHospital(@RequestBody String hospitalData) {
@@ -274,13 +279,19 @@ public class HospitalRestController {
             } else if (id == -2) {
                 return ResponseCreator.jsonErrorResponse("Check hospital data");
             } else {
-                return ResponseCreator.jsonErrorResponse("Error by adding element");
+                return ResponseCreator.jsonErrorResponse("Error by adding hospital");
             }
         } catch (ParseException e) {
             return ResponseCreator.parseErrorResponse(e);
         }
     }
 
+    /**
+     * Metoda obsługująca żądania aktualizowania danych szpitala.
+     *
+     * @param hospitalData - tekst w formacie JSON zawierający dane o szpitalu
+     * @return (String) - odpowiedź serwera zawierająca status zakończenia aktualizowania danych szpitala
+     */
     @RequestMapping(value = "/api/updateHospital", method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String updateHospital(@RequestBody String hospitalData) {
@@ -302,6 +313,12 @@ public class HospitalRestController {
     }
 
 
+    /**
+     * Metoda obsługująca żądania usunięcia szpitala.
+     *
+     * @param id - id szpitala
+     * @return (String) - odpowiedź serwera zawierająca status zakończenia usuwania szpitala
+     */
     @RequestMapping(value = "/api/deleteHospital", method = RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String deleteHospital(@RequestParam("id") long id) {

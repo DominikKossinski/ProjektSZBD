@@ -56,4 +56,34 @@ public class HospitalSection {
         JSONParser parser = new JSONParser();
         return (JSONObject) parser.parse(this.toJSONString());
     }
+
+    /**
+     * Statyczna metoda służąca zwrócenia obiektu klasy HospitalSection na podstawie tekstu w formacie JSON.
+     *
+     * @param hospitalSectionData - tekst w formacie json
+     * @return (Element) - obiekt zawierający informacje o oddziale
+     * @throws ParseException - błąd parsowania do formatu JSON
+     */
+    public static HospitalSection getInstance(String hospitalSectionData) throws ParseException {
+        JSONParser parser = new JSONParser();
+        JSONObject hospitalSection = (JSONObject) parser.parse(hospitalSectionData);
+        return new HospitalSection((long) hospitalSection.get("id"), (String) hospitalSection.get("name"),
+                (long) hospitalSection.get("hospital_id"));
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public long getHospitalId() {
+        return hospitalId;
+    }
 }

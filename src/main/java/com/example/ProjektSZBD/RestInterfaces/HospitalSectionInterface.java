@@ -25,4 +25,31 @@ public interface HospitalSectionInterface {
      * @return (Ordynator) - ordynatora oddziału.
      */
     Ordynator getHospitalSectionOrdynator(long hospitalSectionId);
+
+    /**
+     * Metoda do obsługi wstawiania oddziału.
+     *
+     * @param hospitalSection - obiekt reprezentujący oddział
+     * @return (long) - 0 w przypadku pomyślnego zakończenia dodawania
+     * kod błędu w przypadku błędu
+     */
+    long insertHospitalSection(HospitalSection hospitalSection);
+
+    /**
+     * Metoda do obsługi aktualizacji danych oddziału
+     *
+     * @param hospitalSection - obiekt reprezentujący oddział
+     * @return (long) - 0 w przypadku pomyślnego zakończenia dodawania
+     * kod błędu w przypadku błędu
+     */
+    int updateHospitalSection(HospitalSection hospitalSection);
+
+    /**
+     * Metoda do obsługi usuwania oddziału.
+     *
+     * @param id - id oddziału
+     * @return (long) - 0 w przypadku pomyślnego zakończenia dodawania
+     * kod błędu w przypadku błędu
+     */
+    int deleteHospitalSection(long id);
 }
