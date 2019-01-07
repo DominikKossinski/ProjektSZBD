@@ -32,4 +32,31 @@ public interface RoomInterface {
      * @return (List of Room) - lista obiektów zawierających informacje o wolnych pokojach
      */
     List<Room> getRoomsWithFreePlaces(long hospitalSectionId);
+
+    /**
+     * Metoda do obsługi wstawiania pokoju.
+     *
+     * @param room - obiekt reprezentujący pokój
+     * @return (long) - id recepty w przypadku pomyślnego zakończenia dodawania
+     * kod błędu w przypadku błędu
+     */
+    long insertRoom(Room room);
+
+    /**
+     * Metoda do obsługi aktualizowania danych pokoju.
+     *
+     * @param room - obiekt reprezentujący pokój
+     * @return (long) - 0 w przypadku pomyślnego zakończenia aktualizowania danych pokoju
+     * kod błędu w przypadku błędu
+     */
+    int updateRoom(Room room);
+
+    /**
+     * Metoda do obsługi usuwania .
+     *
+     * @param id - id pokoju
+     * @return (long) - 0 w przypadku pomyślnego zakończenia usuwania
+     * kod błędu w przypadku błędu
+     */
+    int deleteRoom(long id);
 }

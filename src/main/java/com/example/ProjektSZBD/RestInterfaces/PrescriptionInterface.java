@@ -61,7 +61,7 @@ public interface PrescriptionInterface {
     long insertPrescription(Prescription prescription);
 
     /**
-     * Metoda do obsługi aktualizowania danych recepty recepty.
+     * Metoda do obsługi aktualizowania danych recepty.
      *
      * @param prescription - obiekt reprezentujący receptę
      * @return (long) - 0 w przypadku pomyślnego zakończenia aktualizowania danych recepty
@@ -70,7 +70,7 @@ public interface PrescriptionInterface {
     int updatePrescription(Prescription prescription);
 
     /**
-     * Metoda do obsługi usuwania recepty recepty.
+     * Metoda do obsługi usuwania recepty.
      *
      * @param id - id recepty
      * @return (long) - 0 w przypadku pomyślnego zakończenia usuwania

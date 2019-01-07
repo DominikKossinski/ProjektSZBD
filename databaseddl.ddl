@@ -970,3 +970,104 @@ BEGIN
 END;
 
 
+
+CREATE OR REPLACE FUNCTION insertRoom(floor IN NUMBER,
+                                      numberOfPlaces IN NUMBER,
+                                      hospitalSectionId IN NUMBER,
+                                      actPlacedCount IN NUMBER,
+                                      roomId OUT NUMBER)
+  RETURN NUMBER
+IS
+
+BEGIN
+
+  INSERT INTO POKOJE(PIETRO, LICZBA_MIEJSC, ID_ODDZIALU, ILOSC_ZAJETYCH_MIEJSC)
+  VALUES (floor, numberOfPlaces, hospitalSectionId, actPlacedCount) RETURNING id_pokoju INTO roomId;
+  RETURN roomId;
+  EXCEPTION
+  WHEN OTHERS
+  THEN
+    if (SQLCODE = -02291) THEN
+      roomId := -3; /*Naruszenie więzów spójności*/
+    elsif (SQLCODE = -02290) THEN
+      roomId := -2; /*Naruszenie więzów chceck */
+    else
+      roomId := -1;
+    end if;
+    RETURN roomId;
+END;
+
+
+CREATE OR REPLACE FUNCTION updateRoom(roomId IN NUMBER,
+                                      floor IN NUMBER,
+                                      numberOfPlaces IN NUMBER,
+                                      hospitalSectionId IN NUMBER,
+                                      actPlacedCount IN NUMBER,
+                                      rowCount OUT NUMBER)
+  RETURN NUMBER
+IS
+
+BEGIN
+
+  UPDATE POKOJE
+  SET PIETRO                = floor,
+      LICZBA_MIEJSC         = numberOfPlaces,
+      ID_ODDZIALU           = hospitalSectionId,
+      ILOSC_ZAJETYCH_MIEJSC = actPlacedCount
+  WHERE id_pokoju = roomId;
+  rowCount := SQL%ROWCOUNT;
+  if (rowCount = 1) then
+    return 0; --Poprawne zakończenie
+  elsif (rowCount = 0) then
+    return -4; --Nie ma id
+  else
+    rollback;
+    return -3; --Nie poprawne update
+  end if;
+
+  EXCEPTION
+  WHEN
+  OTHERS
+  THEN
+    if (SQLCODE = -02291) THEN
+      rollback;
+      return -2; --Naruszenie więzów spójności
+    else
+      rollback;
+      return -1;
+    end if;
+END;
+
+
+CREATE OR REPLACE FUNCTION deleteRoom(roomId IN NUMBER,
+                                      rowCount OUT NUMBER)
+  RETURN NUMBER
+IS
+
+BEGIN
+
+  DELETE FROM POKOJE WHERE id_pokoju = roomId;
+  rowCount := SQL%ROWCOUNT;
+  if (rowCount = 1) then
+    return 0; --Poprawne zakończenie
+  elsif (rowCount = 0) then
+    return -4; --Nie ma id
+  else
+    rollback;
+    return -3; --Nie poprawne delete
+  end if;
+
+  EXCEPTION
+  WHEN
+  OTHERS
+  THEN
+    if (SQLCODE = -02292) THEN
+      rollback;
+      return -2; --Naruszenie więzów spójności
+    else
+      rollback;
+      return -1;
+    end if;
+END;
+
+

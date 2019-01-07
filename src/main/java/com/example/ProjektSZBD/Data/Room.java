@@ -51,13 +51,19 @@ public class Room {
     }
 
     /**
-     * Metoda klasy pozwalająca na przedstawienie obiektu zawierającego dane w formie tekstu w formacie JSON.
+     * Statyczna metoda służąca zwrócenia obiektu klasy Room na podstawie tekstu w formacie JSON.
      *
-     * @return (String) - tekst w formacie JSON, zawierający  dane o obiekcie
+     * @param roomData - tekst w formacie json
+     * @return (Element) - obiekt zawierający informacje o pokoju
+     * @throws ParseException - błąd parsowania do formatu JSON
      */
-    private String toJSONString() {
-        return "{\"id\":" + id + ", \"floor\":" + floor + ", \"number_of_paces\":" + numberOfPlaces + ", " +
-                "\"hospital_section_id\":" + hospitalSectionId + ", \"act_placed_count\"" + actPlacedCount + "}";
+    public static Room getInstance(String roomData) throws ParseException {
+        JSONParser parser = new JSONParser();
+        JSONObject room = (JSONObject) parser.parse(roomData);
+        return new Room((long) room.get("id"), Math.toIntExact((long) room.get("floor")),
+                Math.toIntExact((long) room.get("number_of_places")),
+                (long) room.get("hospital_section_id"),
+                Math.toIntExact((long) room.get("act_placed_count")));
     }
 
     /**
@@ -69,5 +75,39 @@ public class Room {
     public JSONObject toJSONObject() throws ParseException {
         JSONParser parser = new JSONParser();
         return (JSONObject) parser.parse(this.toJSONString());
+    }
+
+    /**
+     * Metoda klasy pozwalająca na przedstawienie obiektu zawierającego dane w formie tekstu w formacie JSON.
+     *
+     * @return (String) - tekst w formacie JSON, zawierający  dane o obiekcie
+     */
+    private String toJSONString() {
+        return "{\"id\":" + id + ", \"floor\":" + floor + ", \"number_of_places\":" + numberOfPlaces + ", " +
+                "\"hospital_section_id\":" + hospitalSectionId + ", \"act_placed_count\"" + actPlacedCount + "}";
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public long getHospitalSectionId() {
+        return hospitalSectionId;
+    }
+
+    public int getActPlacedCount() {
+        return actPlacedCount;
+    }
+
+    public int getFloor() {
+        return floor;
+    }
+
+    public int getNumberOfPlaces() {
+        return numberOfPlaces;
     }
 }

@@ -169,7 +169,7 @@ public class PrescriptionRestController {
      * @param id       - id recepty
      * @return (String) - tekst w formacie JSON zawierający dane o żądanych receptach
      */
-    @RequestMapping("/api/prescriptions")
+    @RequestMapping(value = "/api/prescriptions")
     public String getPrescriptions(
             @RequestParam(value = "pesel", defaultValue = "-1", required = false) long pesel,
             @RequestParam(value = "stayId", defaultValue = "-1", required = false) long stayId,
@@ -210,7 +210,7 @@ public class PrescriptionRestController {
                 "You need to specify one of parameters [id, pesel, stayId, doctorId]");
     }
 
-    @RequestMapping("/api/{pesel}/prescriptions")
+    @RequestMapping(value = "/api/{pesel}/prescriptions")
     public String getPrescriptions(
             @PathVariable(name = "pesel") long pesel,
             @RequestParam(name = "doctorId", defaultValue = "-1", required = false) long doctorId
@@ -250,7 +250,7 @@ public class PrescriptionRestController {
      * Metoda odpowiadająca za obsługę żądań wstawiania recepty.
      *
      * @param prescriptionData - tekst w formacie JSON zawierający dane o recepcie
-     * @return (String) - odpowiedź serwera zawierająca status zakończenia usuwania recepty
+     * @return (String) - odpowiedź serwera zawierająca status zakończenia dodawania recepty
      */
     @RequestMapping(value = "/api/addPrescription", method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
