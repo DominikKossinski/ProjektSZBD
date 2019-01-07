@@ -37,7 +37,7 @@ public interface RoomInterface {
      * Metoda do obsługi wstawiania pokoju.
      *
      * @param room - obiekt reprezentujący pokój
-     * @return (long) - id recepty w przypadku pomyślnego zakończenia dodawania
+     * @return (long) - id pokoju w przypadku pomyślnego zakończenia dodawania
      * kod błędu w przypadku błędu
      */
     long insertRoom(Room room);
@@ -46,16 +46,16 @@ public interface RoomInterface {
      * Metoda do obsługi aktualizowania danych pokoju.
      *
      * @param room - obiekt reprezentujący pokój
-     * @return (long) - 0 w przypadku pomyślnego zakończenia aktualizowania danych pokoju
+     * @return (int) - 0 w przypadku pomyślnego zakończenia aktualizowania danych pokoju
      * kod błędu w przypadku błędu
      */
     int updateRoom(Room room);
 
     /**
-     * Metoda do obsługi usuwania .
+     * Metoda do obsługi usuwania pokoju.
      *
      * @param id - id pokoju
-     * @return (long) - 0 w przypadku pomyślnego zakończenia usuwania
+     * @return (int) - 0 w przypadku pomyślnego zakończenia usuwania
      * kod błędu w przypadku błędu
      */
     int deleteRoom(long id);

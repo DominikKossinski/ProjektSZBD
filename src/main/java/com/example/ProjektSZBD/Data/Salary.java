@@ -17,12 +17,12 @@ public class Salary {
     /**
      * Pole przechowujące minimalną płacę.
      */
-    float minSalary;
+    double minSalary;
 
     /**
      * Pole przechowujące maksymalną płacę.
      */
-    float maxSalary;
+    double maxSalary;
 
     /**
      * Publiczny konstruktor ustawiający wszystkie pola klasy.
@@ -31,7 +31,7 @@ public class Salary {
      * @param minSalary - płaca minimalna
      * @param maxSalary - płaca maksymalna
      */
-    public Salary(String position, float minSalary, float maxSalary) {
+    public Salary(String position, double minSalary, double maxSalary) {
         this.position = position;
         this.minSalary = minSalary;
         this.maxSalary = maxSalary;
@@ -56,5 +56,31 @@ public class Salary {
     public JSONObject toJSONObject() throws ParseException {
         JSONParser parser = new JSONParser();
         return (JSONObject) parser.parse(this.toJSONString());
+    }
+
+    /**
+     * Statyczna metoda służąca zwrócenia obiektu klasy Salary na podstawie tekstu w formacie JSON.
+     *
+     * @param salaryData - tekst w formacie json
+     * @return (Element) - obiekt zawierający informacje o płacy
+     * @throws ParseException - błąd parsowania do formatu JSON
+     */
+    public static Salary getInstance(String salaryData) throws ParseException {
+        JSONParser parser = new JSONParser();
+        JSONObject salary = (JSONObject) parser.parse(salaryData);
+        return new Salary((String) salary.get("position"), (double) (long) salary.get("min_salary"),
+                (double) (long) salary.get("max_salary"));
+    }
+
+    public String getPosition() {
+        return position;
+    }
+
+    public double getMaxSalary() {
+        return maxSalary;
+    }
+
+    public double getMinSalary() {
+        return minSalary;
     }
 }

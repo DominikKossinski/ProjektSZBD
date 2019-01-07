@@ -1071,3 +1071,92 @@ BEGIN
 END;
 
 
+
+CREATE OR REPLACE FUNCTION insertSalary(position IN VARCHAR,
+                                        minSalary IN NUMERIC,
+                                        maxSalary IN NUMERIC)
+  RETURN NUMBER
+IS
+
+BEGIN
+
+  INSERT INTO PLACE(stanowisko, placa_min, placa_max) VALUES (position, minSalary, maxSalary);
+  return 1;
+  EXCEPTION
+  WHEN OTHERS
+  THEN
+    if (SQLCODE = -02291) THEN
+      return -3; /*Naruszenie więzów spójności*/
+    elsif (SQLCODE = -02290) THEN
+      return -2; /*Naruszenie więzów chceck */
+    else
+      return -1;
+    end if;
+END;
+
+
+CREATE OR REPLACE FUNCTION updateSalary(position IN VARCHAR,
+                                        minSalary IN NUMERIC,
+                                        maxSalary IN NUMERIC,
+                                        rowCount OUT NUMBER)
+  RETURN NUMBER
+IS
+
+BEGIN
+
+  UPDATE place SET placa_min = minSalary, placa_max = minSalary where stanowisko = position;
+  rowCount := SQL%ROWCOUNT;
+  if (rowCount = 1) then
+    return 0; --Poprawne zakończenie
+  elsif (rowCount = 0) then
+    return -4; --Nie ma id
+  else
+    rollback;
+    return -3; --Nie poprawne update
+  end if;
+
+  EXCEPTION
+  WHEN
+  OTHERS
+  THEN
+    if (SQLCODE = -02291) THEN
+      rollback;
+      return -2; --Naruszenie więzów spójności
+    else
+      rollback;
+      return -1;
+    end if;
+END;
+
+
+CREATE OR REPLACE FUNCTION deleteSalary(position IN VARCHAR,
+                                        rowCount OUT NUMBER)
+  RETURN NUMBER
+IS
+
+BEGIN
+
+  DELETE FROM PLACE WHERE stanowisko = position;
+  rowCount := SQL%ROWCOUNT;
+  if (rowCount = 1) then
+    return 0; --Poprawne zakończenie
+  elsif (rowCount = 0) then
+    return -4; --Nie ma id
+  else
+    rollback;
+    return -3; --Nie poprawne delete
+  end if;
+
+  EXCEPTION
+  WHEN
+  OTHERS
+  THEN
+    if (SQLCODE = -02292) THEN
+      rollback;
+      return -2; --Naruszenie więzów spójności
+    else
+      rollback;
+      return -1;
+    end if;
+END;
+

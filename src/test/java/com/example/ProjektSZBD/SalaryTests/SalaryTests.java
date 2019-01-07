@@ -45,6 +45,21 @@ public class SalaryTests {
             public List<Salary> getAllSalaries() {
                 return salaryDB.getAllSalaries();
             }
+
+            @Override
+            public int insertSalary(Salary salary) {
+                return 0;
+            }
+
+            @Override
+            public int updateSalary(Salary salary) {
+                return 0;
+            }
+
+            @Override
+            public int deleteSalary(String position) {
+                return 0;
+            }
         };
         restController = new SalaryRestController(salaryInterface);
     }

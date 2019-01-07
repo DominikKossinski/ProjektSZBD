@@ -3,14 +3,16 @@ package com.example.ProjektSZBD.RestControllers;
 import com.example.ProjektSZBD.Data.Salary;
 import com.example.ProjektSZBD.ResponseCreator;
 import com.example.ProjektSZBD.RestInterfaces.SalaryInterface;
+import oracle.jdbc.OracleTypes;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
 
+import java.sql.CallableStatement;
+import java.sql.SQLException;
 import java.util.List;
 
 import static com.example.ProjektSZBD.ProjektSzbdApplication.getJdbcTemplate;
@@ -48,6 +50,60 @@ public class SalaryRestController {
                         (rs, arg1) -> new Salary(rs.getString("stanowisko"), rs.getFloat("placa_min"),
                                 rs.getFloat("placa_max")));
             }
+
+            @Override
+            public int insertSalary(Salary salary) {
+                try {
+                    CallableStatement call = getJdbcTemplate().getDataSource().getConnection().prepareCall(
+                            "{? = call insertSalary(?, ?, ?)}"
+                    );
+                    call.registerOutParameter(1, OracleTypes.NUMBER);
+                    call.setString(2, salary.getPosition());
+                    call.setDouble(3, salary.getMinSalary());
+                    call.setDouble(4, salary.getMaxSalary());
+                    call.execute();
+                    return call.getInt(1);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    return -5;
+                }
+            }
+
+            @Override
+            public int updateSalary(Salary salary) {
+                try {
+                    CallableStatement call = getJdbcTemplate().getDataSource().getConnection().prepareCall(
+                            "{? = call updateSalary(?, ?, ?, ?)}"
+                    );
+                    call.registerOutParameter(1, OracleTypes.NUMBER);
+                    call.registerOutParameter(5, OracleTypes.NUMBER);
+                    call.setString(2, salary.getPosition());
+                    call.setDouble(3, salary.getMinSalary());
+                    call.setDouble(4, salary.getMaxSalary());
+                    call.execute();
+                    return call.getInt(1);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    return -5;
+                }
+            }
+
+            @Override
+            public int deleteSalary(String position) {
+                try {
+                    CallableStatement call = getJdbcTemplate().getDataSource().getConnection().prepareCall(
+                            "{? = call deleteSalary(?, ?)}"
+                    );
+                    call.registerOutParameter(1, OracleTypes.NUMBER);
+                    call.registerOutParameter(3, OracleTypes.NUMBER);
+                    call.setString(2, position);
+                    call.execute();
+                    return call.getInt(1);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    return -5;
+                }
+            }
         };
     }
 
@@ -67,7 +123,7 @@ public class SalaryRestController {
      * @param position - stanowisko
      * @return (String) - tekst w formacie JSON zawierający dane o płacach
      */
-    @RequestMapping("/api/salary")
+    @RequestMapping(value = "/api/salary", method = RequestMethod.GET)
     public String getSalary(@RequestParam(value = "position", defaultValue = "", required = false) String position) {
         if (position.isEmpty()) {
             List<Salary> salaries = salaryInterface.getAllSalaries();
@@ -92,6 +148,80 @@ public class SalaryRestController {
             } catch (ParseException e) {
                 return ResponseCreator.parseErrorResponse(e);
             }
+        }
+    }
+
+    /**
+     * Metoda odpowiadająca za obsługę żądań wstawiania płacy.
+     *
+     * @param salaryData - tekst w formacie JSON zawierający dane o płacy
+     * @return (String) - odpowiedź serwera zawierająca status zakończenia dodawania płacy
+     */
+    @RequestMapping(value = "/api/addSalary", method = RequestMethod.PUT,
+            consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public String insertSalary(@RequestBody String salaryData) {
+        try {
+            Salary salary = Salary.getInstance(salaryData);
+            int status = salaryInterface.insertSalary(salary);
+            if (status > 0) {
+                return ResponseCreator.jsonResponse("salary", salary.toJSONObject(),
+                        "Successful adding salary. Position:" + salary.getPosition());
+            } else if (status == -2) {
+                return ResponseCreator.jsonErrorResponse("Check salary data");
+            } else {
+                return ResponseCreator.jsonErrorResponse("Error by adding salary");
+            }
+        } catch (ParseException e) {
+            return ResponseCreator.parseErrorResponse(e);
+        }
+    }
+
+    /**
+     * Metoda odpowiadająca za obsługę żądań aktualizacji danych płacy.
+     *
+     * @param salaryData - tekst w formacie JSON zawierający dane o płacy
+     * @return (String) - odpowiedź serwera zawierająca status zakończenia aktualizowania danych płacy
+     */
+    @RequestMapping(value = "/api/updateSalary", method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public String updateSalary(@RequestBody String salaryData) {
+        try {
+            Salary salary = Salary.getInstance(salaryData);
+            int status = salaryInterface.updateSalary(salary);
+
+            if (status == 0) {
+                return ResponseCreator.jsonResponse("Successful updating salary with position = " + salary.getPosition());
+            } else if (status == -4) {
+                return ResponseCreator.jsonErrorResponse("No salary with position = " + salary.getPosition());
+            } else if (status == -2) {
+                return ResponseCreator.jsonErrorResponse("SQL Integrity Constraint Violation Exception");
+            } else {
+                return ResponseCreator.jsonErrorResponse(
+                        "Error by updating salary with position = " + salary.getPosition());
+            }
+        } catch (ParseException e) {
+            return ResponseCreator.parseErrorResponse(e);
+        }
+    }
+
+    /**
+     * Metoda odpowiadająca za żądania usunięcia płacy.
+     *
+     * @param position - nazwa stanowiska
+     * @return (String) - odpowiedź serwera zawierająca status zakończenia usuwania płacy
+     */
+    @RequestMapping(value = "/api/deleteSalary", method = RequestMethod.DELETE,
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public String deleteSalary(@RequestParam("position") String position) {
+        int status = salaryInterface.deleteSalary(position);
+        if (status == 0) {
+            return ResponseCreator.jsonResponse("Successful deleting salary with position = " + position);
+        } else if (status == -4) {
+            return ResponseCreator.jsonErrorResponse("No salary with position = " + position);
+        } else if (status == -2) {
+            return ResponseCreator.jsonErrorResponse("SQL Integrity Constraint Violation Exception");
+        } else {
+            return ResponseCreator.jsonErrorResponse("Error by deleting salary with position = " + position);
         }
     }
 }
