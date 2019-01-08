@@ -480,6 +480,125 @@ BEGIN
     RETURN doctorId;
 END;
 
+CREATE OR REPLACE FUNCTION deleteDoctor(doctorId IN VARCHAR,
+                                        rowCount OUT NUMBER)
+  RETURN NUMBER
+IS
+
+BEGIN
+
+  DELETE FROM LEKARZE WHERE ID_LEKARZA = doctorId;
+  rowCount := SQL%ROWCOUNT;
+  if (rowCount = 1) then
+    return 0; --Poprawne zakończenie
+  elsif (rowCount = 0) then
+    return -4; --Nie ma id
+  else
+    rollback;
+    return -3; --Nie poprawne delete
+  end if;
+
+  EXCEPTION
+  WHEN
+  OTHERS
+  THEN
+    if (SQLCODE = -02292) THEN
+      rollback;
+      return -2; --Naruszenie więzów spójności
+    else
+      rollback;
+      return -1;
+    end if;
+END;
+
+CREATE OR REPLACE FUNCTION updateDoctor(doctorId IN NUMBER,
+                                        firstName IN VARCHAR,
+                                        lastName IN VARCHAR,
+                                        salary IN NUMERIC,
+                                        hospitalSectionId IN NUMBER,
+                                        position IN VARCHAR,
+                                        password IN VARCHAR,
+                                        rowCount OUT NUMBER)
+  RETURN NUMBER
+IS
+
+BEGIN
+
+  UPDATE LEKARZE
+  SET imie        = firstName,
+      nazwisko    = lastName,
+      placa       = salary,
+      id_oddzialu = hospitalSectionId,
+      stanowisko  = position,
+      haslo       = password
+  WHERE ID_LEKARZA = doctorId;
+  rowCount := SQL%ROWCOUNT;
+  if (rowCount = 1) then
+    return 0; --Poprawne zakończenie
+  elsif (rowCount = 0) then
+    return -4; --Nie ma id
+  else
+    rollback;
+    return -3; --Nie poprawne upade
+  end if;
+
+  EXCEPTION
+  WHEN
+  OTHERS
+  THEN
+    if (SQLCODE = -02291) THEN
+      rollback;
+      return -2; --Naruszenie więzów spójności
+    else
+      rollback;
+      return -1;
+    end if;
+END;
+
+CREATE OR REPLACE FUNCTION updateDoctorNoPassword(doctorId IN NUMBER,
+                                                  firstName IN VARCHAR,
+                                                  lastName IN VARCHAR,
+                                                  salary IN NUMERIC,
+                                                  hospitalSectionId IN NUMBER,
+                                                  position IN VARCHAR,
+                                                  rowCount OUT NUMBER)
+  RETURN NUMBER
+IS
+
+BEGIN
+
+  UPDATE LEKARZE
+  SET imie        = firstName,
+      nazwisko    = lastName,
+      placa       = salary,
+      id_oddzialu = hospitalSectionId,
+      stanowisko  = position
+  WHERE ID_LEKARZA = doctorId;
+  rowCount := SQL%ROWCOUNT;
+  if (rowCount = 1) then
+    return 0; --Poprawne zakończenie
+  elsif (rowCount = 0) then
+    return -4; --Nie ma id
+  else
+    rollback;
+    return -3; --Nie poprawne upade
+  end if;
+
+  EXCEPTION
+  WHEN
+  OTHERS
+  THEN
+    if (SQLCODE = -02291) THEN
+      rollback;
+      return -2; --Naruszenie więzów spójności
+    else
+      rollback;
+      return -1;
+    end if;
+END;
+
+
+
 --Funkcja do wstawiania elementu wyposażenia
 CREATE OR REPLACE FUNCTION insertElement(name IN VARCHAR,
                                          count IN NUMERIC,

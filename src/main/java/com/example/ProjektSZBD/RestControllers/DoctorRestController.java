@@ -115,52 +115,64 @@ public class DoctorRestController {
 
             @Override
             public int deleteDoctor(long id) {
-                int rowCount = getJdbcTemplate().update("DELETE FROM LEKARZE WHERE ID_LEKARZA = " + id);
-                if (rowCount == 1) {
-                    return 0;
-                } else if (rowCount == 0) {
-                    return -1;
-                } else {
-                    getJdbcTemplate().update("rollback");
-                    return -2;
+                try {
+                    CallableStatement call = getJdbcTemplate().getDataSource().getConnection().prepareCall(
+                            "{? = call deleteDoctor(?, ?)}"
+                    );
+                    call.registerOutParameter(1, OracleTypes.NUMBER);
+                    call.registerOutParameter(3, OracleTypes.NUMBER);
+                    call.setLong(2, id);
+                    call.execute();
+                    return call.getInt(1);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    return -5;
                 }
+
             }
 
             @Override
             public int updateDoctor(Doctor doctor) {
-                int rowCount = getJdbcTemplate().update("UPDATE LEKARZE SET " +
-                        "imie = '" + doctor.getFirstName() + "', " +
-                        "nazwisko = '" + doctor.getLastName() + "', " +
-                        "placa = " + doctor.getSalary() + ", " +
-                        "id_oddzialu = " + doctor.getHospitalSectionId() + ", " +
-                        "stanowisko = '" + doctor.getPosition() + "', " +
-                        "haslo = '" + doctor.getPassword() + "' WHERE id_lekarza = " + doctor.getId());
-                if (rowCount == 1) {
-                    return 0;
-                } else if (rowCount == 0) {
-                    return -1;
-                } else {
-                    getJdbcTemplate().update("rollback");
-                    return -2;
+                try {
+                    CallableStatement call = getJdbcTemplate().getDataSource().getConnection().prepareCall(
+                            "{? = call updateDoctor(?, ?, ?, ?, ?, ?, ?, ?)}"
+                    );
+                    call.registerOutParameter(1, OracleTypes.NUMBER);
+                    call.registerOutParameter(9, OracleTypes.NUMBER);
+                    call.setLong(2, doctor.getId());
+                    call.setString(3, doctor.getFirstName());
+                    call.setString(4, doctor.getLastName());
+                    call.setDouble(5, doctor.getSalary());
+                    call.setLong(6, doctor.getHospitalSectionId());
+                    call.setString(7, doctor.getPosition());
+                    call.setString(8, doctor.getPassword());
+                    call.execute();
+                    return call.getInt(1);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    return -5;
                 }
             }
 
             @Override
             public int updateDoctorNoPassword(Doctor doctor) {
-                int rowCount = getJdbcTemplate().update("UPDATE LEKARZE SET " +
-                        "imie = '" + doctor.getFirstName() + "', " +
-                        "nazwisko = '" + doctor.getLastName() + "', " +
-                        "placa = " + doctor.getSalary() + ", " +
-                        "id_oddzialu = " + doctor.getHospitalSectionId() + ", " +
-                        "stanowisko = '" + doctor.getPosition() + "' " +
-                        "WHERE id_lekarza = " + doctor.getId());
-                if (rowCount == 1) {
-                    return 0;
-                } else if (rowCount == 0) {
-                    return -1;
-                } else {
-                    getJdbcTemplate().update("rollback");
-                    return -2;
+                try {
+                    CallableStatement call = getJdbcTemplate().getDataSource().getConnection().prepareCall(
+                            "{? = call updateDoctorNoPassword(?, ?, ?, ?, ?, ?, ?)}"
+                    );
+                    call.registerOutParameter(1, OracleTypes.NUMBER);
+                    call.registerOutParameter(8, OracleTypes.NUMBER);
+                    call.setLong(2, doctor.getId());
+                    call.setString(3, doctor.getFirstName());
+                    call.setString(4, doctor.getLastName());
+                    call.setDouble(5, doctor.getSalary());
+                    call.setLong(6, doctor.getHospitalSectionId());
+                    call.setString(7, doctor.getPosition());
+                    call.execute();
+                    return call.getInt(1);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    return -5;
                 }
             }
 
@@ -274,18 +286,27 @@ public class DoctorRestController {
      * @param id - id lekarza
      * @return (String) - odpowiedź serwera zawierającą status zakończenia opracji usuwania
      */
-    @RequestMapping(value = "/api/deleteDoctor", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/api/deleteDoctor", method = RequestMethod.DELETE,
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String deleteDoctor(@RequestParam("id") long id) {
         int status = doctorInterface.deleteDoctor(id);
         if (status == 0) {
             return ResponseCreator.jsonResponse("Successful deleting doctor with id = " + id);
-        } else if (status == -1) {
+        } else if (status == -4) {
             return ResponseCreator.jsonErrorResponse("No doctor with id = " + id);
+        } else if (status == -2) {
+            return ResponseCreator.jsonErrorResponse("SQL Integrity Constraint Violation Exception");
         } else {
             return ResponseCreator.jsonErrorResponse("Error by deleting doctor with id = " + id);
         }
     }
 
+    /**
+     * Metoda odpowiadająca za obsługę żądań aktualizacji podstawowych danych lekarza.
+     *
+     * @param doctorData - tekst w formacie JSON zawierający podstawowe dane o lekarza
+     * @return (String) - odpowiedź serwera zawierająca status zakończenia aktualizowania podstawowych danych lekarza
+     */
     @RequestMapping(value = "/api/updateDoctor", method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String updateDoctorNoPassword(@RequestBody String doctorData) {
@@ -294,16 +315,25 @@ public class DoctorRestController {
             int status = doctorInterface.updateDoctorNoPassword(doctor);
             if (status == 0) {
                 return ResponseCreator.jsonResponse("Successful updating doctor with id = " + doctor.getId());
-            } else if (status == -1) {
+            } else if (status == -4) {
                 return ResponseCreator.jsonErrorResponse("No doctor with id = " + doctor.getId());
+            } else if (status == -2) {
+                return ResponseCreator.jsonErrorResponse("SQL Integrity Constraint Violation Exception");
             } else {
-                return ResponseCreator.jsonErrorResponse("Error by updating doctor with id = " + doctor.getId());
+                return ResponseCreator.jsonErrorResponse(
+                        "Error by updating doctor with id = " + doctor.getId());
             }
         } catch (ParseException e) {
             return ResponseCreator.parseErrorResponse(e);
         }
     }
 
+    /**
+     * Metoda odpowiadająca za obsługę żądań aktualizacji danych lekarza.
+     *
+     * @param doctorData - tekst w formacie JSON zawierający pełne dane o lekarza
+     * @return (String) - odpowiedź serwera zawierająca status zakończenia aktualizowania pełnych danych lekarza
+     */
     @RequestMapping(value = "/api/admin/updateDoctor", method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String updateDoctor(@RequestBody String doctorData) {
@@ -312,10 +342,13 @@ public class DoctorRestController {
             int status = doctorInterface.updateDoctor(doctor);
             if (status == 0) {
                 return ResponseCreator.jsonResponse("ADMIN: Successful updating doctor with id = " + doctor.getId());
-            } else if (status == -1) {
+            } else if (status == -4) {
                 return ResponseCreator.jsonErrorResponse("ADMIN: No doctor with id = " + doctor.getId());
+            } else if (status == -2) {
+                return ResponseCreator.jsonErrorResponse("SQL Integrity Constraint Violation Exception");
             } else {
-                return ResponseCreator.jsonErrorResponse("ADMIN: Error by updating doctor with id = " + doctor.getId());
+                return ResponseCreator.jsonErrorResponse(
+                        "ADMIN: Error by updating doctor with id = " + doctor.getId());
             }
         } catch (ParseException e) {
             return ResponseCreator.parseErrorResponse(e);
