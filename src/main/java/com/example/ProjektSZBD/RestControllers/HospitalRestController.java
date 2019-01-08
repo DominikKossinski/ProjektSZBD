@@ -1,22 +1,28 @@
 package com.example.ProjektSZBD.RestControllers;
 
 import com.example.ProjektSZBD.Data.Doctors.Director;
+import com.example.ProjektSZBD.Data.Doctors.Doctor;
 import com.example.ProjektSZBD.Data.Doctors.Ordynator;
 import com.example.ProjektSZBD.Data.Hospital;
+import com.example.ProjektSZBD.Data.HospitalSection;
 import com.example.ProjektSZBD.ResponseCreator;
 import com.example.ProjektSZBD.RestInterfaces.HospitalInterface;
 import oracle.jdbc.OracleTypes;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.CallableStatement;
 import java.sql.SQLException;
 import java.util.List;
 
+import static com.example.ProjektSZBD.ProjektSzbdApplication.getInMemoryUserDetailsManager;
 import static com.example.ProjektSZBD.ProjektSzbdApplication.getJdbcTemplate;
 
 /**
@@ -92,21 +98,35 @@ public class HospitalRestController {
             }
 
             @Override
-            public long insertHospital(Hospital hospital) {
+            public long insertHospital(Hospital hospital, HospitalSection hospitalSection, Doctor doctor) {
                 try {
                     CallableStatement call = getJdbcTemplate().getDataSource().getConnection().prepareCall(
-                            "{? = call insertHospital(?, ?, ?, ?)}"
+                            "{? = call insertHospital(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}"
                     );
                     call.registerOutParameter(1, OracleTypes.NUMBER);
-                    call.registerOutParameter(5, OracleTypes.NUMBER);
+                    call.registerOutParameter(10, OracleTypes.NUMBER);
+                    call.registerOutParameter(11, OracleTypes.NUMBER);
+                    call.registerOutParameter(12, OracleTypes.NUMBER);
                     call.setString(2, hospital.getName());
                     call.setString(3, hospital.getAddress());
                     call.setString(4, hospital.getCity());
+                    call.setString(5, hospitalSection.getName());
+                    call.setString(6, doctor.getFirstName());
+                    call.setString(7, doctor.getLastName());
+                    call.setDouble(8, doctor.getSalary());
+                    call.setString(9, doctor.getPassword());
                     call.execute();
+                    System.out.println(call.getLong(1));
+                    if (call.getLong(1) > 0) {
+                        hospital.setId(call.getLong(10));
+                        hospitalSection.setId(call.getLong(11));
+                        doctor.setId(call.getLong(12));
+
+                    }
                     return call.getLong(1);
                 } catch (SQLException e) {
                     e.printStackTrace();
-                    return -1;
+                    return -5;
                 }
             }
 
@@ -263,18 +283,26 @@ public class HospitalRestController {
     /**
      * Metoda obsługująca żądania dodania szpitala.
      *
-     * @param hospitalData - tekst w formacie JSON zawierający dane o szpitalu
+     * @param data - tekst w formacie JSON zawierający dane o szpitalu
      * @return (String) - odpowiedź serwera zawierająca status zakończenia wstawiania szpitala
      */
-    @RequestMapping(value = "/api/addHospital", method = RequestMethod.PUT,
+    @RequestMapping(value = "/api/admin/addHospital", method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public String addHospital(@RequestBody String hospitalData) {
+    public String addHospital(@RequestBody String data) {
         try {
-            Hospital hospital = Hospital.getInstance(hospitalData);
-            long id = hospitalInterface.insertHospital(hospital);
+            JSONObject object = (JSONObject) new JSONParser().parse(data);
+            Hospital hospital = Hospital.getInstance((JSONObject) object.get("hospital"));
+            HospitalSection hospitalSection = HospitalSection.getInstance((JSONObject) object.get("hospital_section"));
+            Doctor doctor = Doctor.getInstance((JSONObject) object.get("doctor"));
+            long id = hospitalInterface.insertHospital(hospital, hospitalSection, doctor);
             if (id > 0) {
-                hospital.setId(id);
-                return ResponseCreator.jsonResponse("hospital", hospital.toJSONObject(),
+                object.put("hospital", hospital.toJSONObject());
+                object.put("hospital_section", hospitalSection.toJSONObject());
+                object.put("doctor", doctor.toJSONObject());
+                UserDetails userDetails = User.withUsername(String.valueOf(doctor.getId()))
+                        .password(doctor.getPassword()).roles(doctor.getPosition()).build();
+                getInMemoryUserDetailsManager().createUser(userDetails);
+                return ResponseCreator.jsonResponse("objects", object,
                         "Successful adding hospital. Id:" + id);
             } else if (id == -2) {
                 return ResponseCreator.jsonErrorResponse("Check hospital data");

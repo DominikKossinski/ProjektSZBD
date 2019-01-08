@@ -138,10 +138,15 @@ public class Doctor {
     public static Doctor getInstance(String doctorData) throws ParseException {
         JSONParser parser = new JSONParser();
         JSONObject doctor = (JSONObject) parser.parse(doctorData);
+        return getInstance(doctor);
+    }
+
+    public static Doctor getInstance(JSONObject doctor) {
         return new Doctor((long) doctor.get("id"), (String) doctor.get("first_name"), (String) doctor.get("last_name"),
                 Double.valueOf(String.valueOf(doctor.get("salary"))), (long) doctor.get("hospital_section_id"),
                 (String) doctor.get("position"), (String) doctor.get("password"));
     }
+
 
     public double getSalary() {
         return salary;

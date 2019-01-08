@@ -2,8 +2,10 @@ package com.example.ProjektSZBD.HospitalTests;
 
 
 import com.example.ProjektSZBD.Data.Doctors.Director;
+import com.example.ProjektSZBD.Data.Doctors.Doctor;
 import com.example.ProjektSZBD.Data.Doctors.Ordynator;
 import com.example.ProjektSZBD.Data.Hospital;
+import com.example.ProjektSZBD.Data.HospitalSection;
 import com.example.ProjektSZBD.RestControllers.HospitalRestController;
 import com.example.ProjektSZBD.RestInterfaces.HospitalInterface;
 import com.example.ProjektSZBD.TestConfig;
@@ -69,7 +71,7 @@ public class HospitalTests {
             }
 
             @Override
-            public long insertHospital(Hospital hospital) {
+            public long insertHospital(Hospital hospital, HospitalSection hospitalSection, Doctor doctor) {
                 return 0;
             }
 

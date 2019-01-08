@@ -671,7 +671,14 @@ END;
 CREATE OR REPLACE FUNCTION insertHospital(name IN VARCHAR,
                                           address IN VARCHAR,
                                           city IN VARCHAR,
-                                          hospitalId OUT NUMBER)
+                                          sectionName IN VARCHAR,
+                                          firstName IN VARCHAR,
+                                          lastName IN VARCHAR,
+                                          salary IN NUMERIC,
+                                          password IN VARCHAR,
+                                          hospitalId OUT NUMBER,
+                                          hospitalSectionId OUT NUMBER,
+                                          doctorId OUT NUMBER)
   RETURN NUMBER
 IS
 
@@ -679,6 +686,10 @@ BEGIN
 
   INSERT INTO SZPITALE(NAZWA_SZPITALA, ADRES, MIASTO)
   VALUES (name, address, city) returning ID_SZPITALA into hospitalId;
+  INSERT INTO ODDZIALY(NAZWA, ID_SZPITALA)
+  VALUES (sectionName, hospitalId) returning ID_ODDZIALU into hospitalSectionId;
+  INSERT INTO LEKARZE(IMIE, NAZWISKO, PLACA, ID_ODDZIALU, STANOWISKO, HASLO)
+  VALUES (firstName, lastName, salary, hospitalSectionId, 'Dyrektor', password) returning ID_LEKARZA into doctorId;
   RETURN hospitalId;
   EXCEPTION
   WHEN OTHERS
@@ -688,7 +699,7 @@ BEGIN
     elsif (SQLCODE = -02290) THEN
       hospitalId := -2; /*Naruszenie więzów chceck */
     else
-      hospitalId := -1;
+      hospitalId := SQLCODE;
     end if;
     RETURN hospitalId;
 END;

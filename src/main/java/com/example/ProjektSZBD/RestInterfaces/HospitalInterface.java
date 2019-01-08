@@ -1,8 +1,10 @@
 package com.example.ProjektSZBD.RestInterfaces;
 
 import com.example.ProjektSZBD.Data.Doctors.Director;
+import com.example.ProjektSZBD.Data.Doctors.Doctor;
 import com.example.ProjektSZBD.Data.Doctors.Ordynator;
 import com.example.ProjektSZBD.Data.Hospital;
+import com.example.ProjektSZBD.Data.HospitalSection;
 
 import java.util.List;
 
@@ -52,10 +54,12 @@ public interface HospitalInterface {
      * Metoda służąca do dodania nowego szpitala.
      *
      * @param hospital - obiekt reprezentujący szpital
+     * @param hospitalSection - obiekt reprezentujący oddział, na którym pracuje dyrektor
+     * @param doctor - obiekt reprezentujący dyrektora szpitala
      * @return (long) - id szpitala w przypadku pomyślnego zakończenia dodawania
      * * kod błędu w przypadku błędu
      */
-    long insertHospital(Hospital hospital);
+    long insertHospital(Hospital hospital, HospitalSection hospitalSection, Doctor doctor);
 
     /**
      * Metoda służąca do usuinięcia szpitala o podanym id.
