@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>NFZ</title>
-    <link rel="stylesheet" type="text/css" href="css/example.css">
+    <link href="css/all/home.css" rel="stylesheet" type="text/css">
 
 
 </head>
@@ -17,7 +17,8 @@
         <input type="button" value="kilkij" onclick="getHello()">
         <label id="text-label">Czesc</label>
         <input type="text" value="" id="text-input">
-
+        <a href="/login" th:if="!${isAuthenticated}">Login</a>
+        <input onclick="logout()" th:if="${isAuthenticated}" type="submit" value="logout">
     </div>
     <footer>
         <div id="footer">
@@ -26,7 +27,7 @@
 
     </footer>
 
-    <script src="js/example.js"></script>
+    <script src="js/all/home.js"></script>
 
 </div>
 </body>

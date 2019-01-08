@@ -9,12 +9,15 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.CallableStatement;
 import java.sql.SQLException;
 import java.util.List;
 
+import static com.example.ProjektSZBD.ProjektSzbdApplication.getInMemoryUserDetailsManager;
 import static com.example.ProjektSZBD.ProjektSzbdApplication.getJdbcTemplate;
 
 /**
@@ -220,6 +223,9 @@ public class PatientRestController {
             Patient patient = Patient.getInstance(patientData);
             int status = patientInterface.insertPatient(patient);
             if (status == 0) {
+                UserDetails userDetails = User.withUsername(String.valueOf(patient.getPesel()))
+                        .password(patient.getPassword()).roles("PATIENT").build();
+                getInMemoryUserDetailsManager().createUser(userDetails);
                 return ResponseCreator.jsonResponse("patient", patient.toJSONObject(),
                         "Successful adding patient. Pesel:" + patient.getPesel());
             } else if (status == -2) {
@@ -245,6 +251,9 @@ public class PatientRestController {
             Patient patient = Patient.getInstance(patientData);
             int status = patientInterface.updatePatient(patient);
             if (status == 0) {
+                UserDetails userDetails =
+                        getInMemoryUserDetailsManager().loadUserByUsername(String.valueOf(patient.getPesel()));
+                getInMemoryUserDetailsManager().updatePassword(userDetails, patient.getPassword());
                 return ResponseCreator.jsonResponse(
                         "Successful updating patient with pesel = " + patient.getPesel());
             } else if (status == -4) {
@@ -269,6 +278,7 @@ public class PatientRestController {
     public String deletePatient(@RequestParam("pesel") long pesel) {
         int status = patientInterface.deletePatient(pesel);
         if (status == 0) {
+            getInMemoryUserDetailsManager().deleteUser(String.valueOf(pesel));
             return ResponseCreator.jsonResponse("Successful deleting patient with pesel = " + pesel);
         } else if (status == -4) {
             return ResponseCreator.jsonErrorResponse("No patient with pesel = " + pesel);

@@ -7,12 +7,15 @@ import oracle.jdbc.OracleTypes;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.ParseException;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.CallableStatement;
 import java.sql.SQLException;
 import java.util.List;
 
+import static com.example.ProjektSZBD.ProjektSzbdApplication.getInMemoryUserDetailsManager;
 import static com.example.ProjektSZBD.ProjektSzbdApplication.getJdbcTemplate;
 
 /**
@@ -264,6 +267,9 @@ public class DoctorRestController {
             long id = doctorInterface.insertDoctor(doctor);
             if (id > 0) {
                 doctor.setId(id);
+                UserDetails userDetails = User.withUsername(String.valueOf(doctor.getId()))
+                        .password(doctor.getPassword()).roles(doctor.getPosition()).build();
+                getInMemoryUserDetailsManager().createUser(userDetails);
                 return ResponseCreator.jsonResponse("doctor", doctor.toJSONObject(),
                         "Successful adding doctor. Id:" + id);
             } else if (id == -2) {
@@ -291,6 +297,7 @@ public class DoctorRestController {
     public String deleteDoctor(@RequestParam("id") long id) {
         int status = doctorInterface.deleteDoctor(id);
         if (status == 0) {
+            getInMemoryUserDetailsManager().deleteUser(String.valueOf(id));
             return ResponseCreator.jsonResponse("Successful deleting doctor with id = " + id);
         } else if (status == -4) {
             return ResponseCreator.jsonErrorResponse("No doctor with id = " + id);
@@ -341,6 +348,9 @@ public class DoctorRestController {
             Doctor doctor = Doctor.getInstance(doctorData);
             int status = doctorInterface.updateDoctor(doctor);
             if (status == 0) {
+                UserDetails userDetails =
+                        getInMemoryUserDetailsManager().loadUserByUsername(String.valueOf(doctor.getId()));
+                getInMemoryUserDetailsManager().updatePassword(userDetails, doctor.getPassword());
                 return ResponseCreator.jsonResponse("ADMIN: Successful updating doctor with id = " + doctor.getId());
             } else if (status == -4) {
                 return ResponseCreator.jsonErrorResponse("ADMIN: No doctor with id = " + doctor.getId());
