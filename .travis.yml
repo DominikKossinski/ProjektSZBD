@@ -9,6 +9,7 @@ addons:
     - oracle-java9-installer
 script:
 - mvn install:install-file -Dfile=src/lib/ojdbc7.jar  -DgroupId=com.oracle -DartifactId=ojdbc7 -Dversion=12.1.0.1 -Dpackaging=jar
+- mvn clean install -P-quality-checks -DskipTests
 - mvn install
 notifications:
   email:

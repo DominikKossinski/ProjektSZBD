@@ -68,4 +68,11 @@ public class ResponseCreator {
         return response.toJSONString();
     }
 
+    public static String jsonResponse(String description) {
+        JSONObject response = new JSONObject();
+        response.put("resp_status", "ok");
+        response.put("description", description);
+        return response.toJSONString();
+    }
+
 }
