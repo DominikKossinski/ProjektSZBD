@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Moj Profil</title>
+    <link href="/css/doctor/doctorProfile.css" rel="stylesheet" type="text/css">
+</head>
+<body onload="getDoctorData()">
+
+<div style="display: block;">
+    <label>Imię:</label>
+    <label id="first-name-label"></label>
+    <label>Nazwisko:</label>
+    <label id="last-name-label"></label>
+    <label>Id:</label>
+    <label id="id-label"></label>
+    <label>Placa:</label>
+    <label id="salary-label"></label>
+    <label>Oddział:</label>
+    <label id="hospital-section-label"></label>
+    <label>Stanowisko:</label>
+    <label id="position-label"></label>
+</div>
+<span id="doctor-id-span" th:text="${id}"></span>
+<script src="/js/doctor/doctorProfile.js"></script>
+</body>
+</html>

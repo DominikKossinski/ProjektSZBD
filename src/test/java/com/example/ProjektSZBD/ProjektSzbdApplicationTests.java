@@ -11,6 +11,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @AutoConfigureMockMvc
 public class ProjektSzbdApplicationTests {
 
+
     @Test
     public void contextLoads() {
         assert (true);

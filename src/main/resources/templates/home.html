@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>NFZ</title>
+    <link href="css/all/home.css" rel="stylesheet" type="text/css">
+
+
+</head>
+<body>
+<div id="wrapper">
+    <div id="header">
+
+    </div>
+
+    <div id="mainArea">
+        <input type="button" value="kilkij" onclick="getHello()">
+        <label id="text-label">Czesc</label>
+        <input type="text" value="" id="text-input">
+        <a href="/login" th:if="!${isAuthenticated}">Login</a>
+        <input onclick="logout()" th:if="${isAuthenticated}" type="submit" value="logout">
+        <h1 th:if="${isAuthenticated}">Rola <h1 th:text="${role}"></h1></h1>
+        <a th:href="@{|/${userId}/doctorProfile|}" th:if="${isDoctor}">Mój Profil</a>
+        <a th:href="@{|/${userId}/patientProfile|}" th:if="${isPatient}">Mój Profil</a>
+    </div>
+    <footer>
+        <div id="footer">
+            <div class="container">Copyright - Site maintained by Cos</div>
+        </div>
+
+    </footer>
+
+    <script src="js/all/home.js"></script>
+
+</div>
+</body>
+</html>
