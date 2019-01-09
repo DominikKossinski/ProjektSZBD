@@ -53,6 +53,7 @@ function addHospital() {
                         var response = JSON.parse(http.responseText);
                         console.log(response);
                         if (response.resp_status === "ok") {
+                            //TODO ładniejsze info
                             alert("Dodano szpital");
                         } else {
                             alert(response.description);

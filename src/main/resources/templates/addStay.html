@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Dodaj Pobyt</title>
+    <link href="/css/doctor/addStay.css" rel="stylesheet">
+</head>
+<body onload="addPesel()">
+<h1>Add stay</h1>
+<label>Pesel:</label>
+<input id="pesel-input" type="text">
+<label>Termin przyjęcia</label>
+<input id="date-input" type="date">
+
+<input onclick="addStay()" type="submit" value="Dodaj Pobyt">
+
+<!--//TODO dodać ładne wybieranie pokoju-->
+<span id="id-span" th:text="${id}"></span>
+<span id="hospital-section-id-span" th:text="${hospitalSectionId}"></span>
+<span id="pesel-span" th:text="${pesel}"></span>
+<script src="/js/doctor/addStay.js"></script>
+</body>
+</html>
