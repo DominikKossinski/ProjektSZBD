@@ -37,7 +37,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/", "/home", "/api/login", "/css/all/*", "/js/all/*", "/api/hospitalSection**").permitAll()
+                .antMatchers("/", "/home", "/api/login", "/css/all/*", "/js/all/*", "/api/hospitalSection**",
+                        "/illnesses", "/api/illness**").permitAll()
                 .antMatchers("/api/logout").authenticated()
 
                 /*.antMatchers("/css/doctor/*", "/js/doctor/*").hasRole("Dyrektor")
@@ -51,9 +52,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .antMatchers("/js/patient/*", "/css/patient/*").access(
                 "@webSecurityConfig.isPatient(authentication)")
-                .antMatchers("/js/doctor/*", "/css/doctor/*").access(
-                "@webSecurityConfig.idDoctor(authentication)")
-                .antMatchers("/api/{userId}/**", "/{userId}/**").access("@webSecurityConfig.checkDoctorId(authentication, #userId)")
+                .antMatchers("/js/doctor/*", "/css/doctor/*", "/addPatient", "/api/addPatient").access(
+                "@webSecurityConfig.isDoctor(authentication)")
+
+                .antMatchers("/api/patient/{pesel}/**", "/patient/{pesel}/**").access(
+                "@webSecurityConfig.checkPatientPesel(authentication, #pesel)")
+                .antMatchers("/api/{userId}/**", "/{userId}/**").access(
+                "@webSecurityConfig.checkDoctorId(authentication, #userId)")
                 // .antMatchers().access("@webSecurityConfig.checkDoctorId(authentication, #userId)")
 
                 .anyRequest().denyAll()
@@ -96,10 +101,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return ProjektSzbdApplication.getInMemoryUserDetailsManager();
     }
 
+    public boolean checkPatientPesel(Authentication authentication, String pesel) {
+        String userName = authentication.getName();
+        System.out.println("Check id name = " + userName + " id = " + pesel);
+        return userName.compareTo(pesel) == 0 && isPatient(authentication);
+    }
+
     public boolean checkDoctorId(Authentication authentication, String id) {
         String userName = authentication.getName();
         System.out.println("Check id name = " + userName + " id = " + id);
-        return userName.compareTo(id) == 0;
+        return userName.compareTo(id) == 0 && isDoctor(authentication);
     }
 
     public boolean isDoctor(Authentication authentication) {

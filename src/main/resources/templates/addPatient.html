@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Dodaj Pacjenta</title>
+    <link href="/css/doctor/addPatient.css" rel="stylesheet">
+</head>
+<body>
+<label>Pesel:</label>
+<input id="pesel-input" type="text">
+<label>Imię:</label>
+<input id="first-name-input" type="text">
+<label>Nazwisko:</label>
+<input id="last-name-input" type="text">
+<label>Hasło</label>
+<input id="password-input" type="password">
+<input onclick="addPatient()" type="submit" value="Dodaj">
+
+
+<input onclick="addStay()" type="submit" value="Dodaj Pobyt">
+<span id="id-span" th:text="${id}"></span>
+<script src="/js/doctor/addPatient.js"></script>
+</body>
+</html>

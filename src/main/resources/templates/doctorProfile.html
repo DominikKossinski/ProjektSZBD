@@ -20,6 +20,9 @@
     <label id="hospital-section-label"></label>
     <label>Stanowisko:</label>
     <label id="position-label"></label>
+
+    <a href="/addPatient">Dodaj Pacjenta</a>
+    <a th:href="@{|/${id}/addStay|}">Dodaj Pobyt</a>
 </div>
 <span id="doctor-id-span" th:text="${id}"></span>
 <script src="/js/doctor/doctorProfile.js"></script>

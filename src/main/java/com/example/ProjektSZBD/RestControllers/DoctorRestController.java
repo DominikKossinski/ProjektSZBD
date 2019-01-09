@@ -424,4 +424,8 @@ public class DoctorRestController {
         }
         return ResponseCreator.jsonResponse("doctors", doctorsArray, description);
     }
+
+    public DoctorInterface getDoctorInterface() {
+        return doctorInterface;
+    }
 }
