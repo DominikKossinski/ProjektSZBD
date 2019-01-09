@@ -44,6 +44,18 @@ public class HospitalSectionRestController {
             }
 
             @Override
+            public HospitalSection getHospitalSectionById(long id) {
+                try {
+                    return getJdbcTemplate().queryForObject(
+                            "SELECT * FROM ODDZIALY WHERE ID_ODDZIALU = " + id,
+                            (rs, arg1) -> new HospitalSection(rs.getLong("id_oddzialu"),
+                                    rs.getString("nazwa"), rs.getLong("id_szpitala")));
+                } catch (EmptyResultDataAccessException e) {
+                    return null;
+                }
+            }
+
+            @Override
             public Ordynator getHospitalSectionOrdynator(long hospitalSectionId) {
                 try {
                     return getJdbcTemplate().queryForObject("select o.nazwa, s.id_szpitala, l.ID_LEKARZA, l.IMIE, l.NAZWISKO, l.id_oddzialu " +
@@ -131,7 +143,8 @@ public class HospitalSectionRestController {
      * @param hospitalId - id szpitala, o którego oddziały żądanie zostało wysłane
      * @return (String) - tekst w formacie json zawierający odpowiedź na żądanie.
      */
-    @GetMapping("/api/hospitalSections")
+    @RequestMapping(value = "/api/hospitalSections", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String getHospitalSectionsByHospitalId(@RequestParam("hospitalId") long hospitalId) {
         List<HospitalSection> hospitalSections = hospitalSectionInterface.getHospitalSectionsByHospitalId(hospitalId);
         JSONArray sectionsArray = new JSONArray();
@@ -146,6 +159,28 @@ public class HospitalSectionRestController {
                 "List of sections in hospital with id = " + hospitalId);
 
 
+    }
+
+    /**
+     * Metoda odpowiadająca za obsługę żądania odziału o podanym id.
+     *
+     * @param id - id oddziału
+     * @return String) - tekst w formacie json zawierający odpowiedź na żądanie.
+     */
+    @RequestMapping(value = "/api/hospitalSection", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public String getHospitalSectionById(@RequestParam("id") long id) {
+        HospitalSection section = hospitalSectionInterface.getHospitalSectionById(id);
+        if (section != null) {
+            try {
+                return ResponseCreator.jsonResponse("hospital_section", section.toJSONObject(),
+                        "Hospital section with id = " + id);
+            } catch (ParseException e) {
+                return ResponseCreator.parseErrorResponse(e);
+            }
+        } else {
+            return ResponseCreator.jsonErrorResponse("No hospital section with id = " + id);
+        }
     }
 
     /**
@@ -177,7 +212,7 @@ public class HospitalSectionRestController {
      * @param hospitalSectionData - tekst w formacie JSON zawierający dane o oddziale
      * @return (String) - odpowiedź serwera zawierająca status zakończenia wstawiania oddzialu
      */
-    @RequestMapping(value = "/api/addHospi  talSection", method = RequestMethod.PUT,
+    @RequestMapping(value = "/api/addHospitalSection", method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String addHospitalSection(@RequestBody String hospitalSectionData) {
         try {

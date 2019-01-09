@@ -9,6 +9,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class LoginController {
 
+    /**
+     * Metoda odpowiedzialna zwracanie widoku strony logowania
+     *
+     * @return "login" - nazwa widoku strony logowania
+     */
     @GetMapping("/login")
     public String getLogin() {
         return "login";

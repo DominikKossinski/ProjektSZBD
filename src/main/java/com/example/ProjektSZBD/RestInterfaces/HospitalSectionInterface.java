@@ -19,6 +19,14 @@ public interface HospitalSectionInterface {
     List<HospitalSection> getHospitalSectionsByHospitalId(long id);
 
     /**
+     * Metoda zwracająca oddział o podanym id.
+     *
+     * @param id - id oddziału
+     * @return (HospitalSection) - oddział o podanym id.
+     */
+    HospitalSection getHospitalSectionById(long id);
+
+    /**
      * Metoda zwracająca ordynatora oddziału.
      *
      * @param hospitalSectionId - id oddziału

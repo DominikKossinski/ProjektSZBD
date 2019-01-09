@@ -40,6 +40,11 @@ public class HospitalSectionTests {
             }
 
             @Override
+            public HospitalSection getHospitalSectionById(long id) {
+                return null;
+            }
+
+            @Override
             public Ordynator getHospitalSectionOrdynator(long hospitalSectionId) {
                 if (hospitalSectionId == 0) {
                     return null;

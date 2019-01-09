@@ -6,6 +6,7 @@ import com.example.ProjektSZBD.RestInterfaces.DoctorInterface;
 import oracle.jdbc.OracleTypes;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.ParseException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -179,6 +180,19 @@ public class DoctorRestController {
                 }
             }
 
+            @Override
+            public Doctor getDoctorsById(long id) {
+                try {
+                    return getJdbcTemplate().queryForObject("SELECT * FROM LEKARZE WHERE ID_LEKARZA = " + id,
+                            (rs, arg1) -> new Doctor(rs.getLong("id_lekarza"), rs.getString("imie"),
+                                    rs.getString("nazwisko"), rs.getDouble("placa"),
+                                    rs.getLong("id_oddzialu"), rs.getString("stanowisko"),
+                                    ""));
+                } catch (EmptyResultDataAccessException e) {
+                    return null;
+                }
+            }
+
 
         };
     }
@@ -221,6 +235,28 @@ public class DoctorRestController {
                     "List of doctors from hospital with id = " + hospitalId, false);
         }
 
+    }
+
+    /**
+     * Metoda zwracająca pełne dane o lekarzu o podanym id.
+     *
+     * @param id - id lekarza
+     * @return (String) - tekst w formacie JSON zawierający pełne dane lekarza
+     */
+    @RequestMapping(value = "/api/{id}/doctor", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public String getDoctor(@PathVariable("id") long id) {
+        Doctor doctor = doctorInterface.getDoctorsById(id);
+        if (doctor != null) {
+            try {
+                return ResponseCreator.jsonResponse("doctor", doctor.toJSONObject(),
+                        "Doctor with id = " + id);
+            } catch (ParseException e) {
+                return ResponseCreator.parseErrorResponse(e);
+            }
+        } else {
+            return ResponseCreator.jsonErrorResponse("No doctor with id  = " + id);
+        }
     }
 
     /**

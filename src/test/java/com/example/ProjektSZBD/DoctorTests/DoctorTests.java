@@ -85,6 +85,11 @@ public class DoctorTests {
                 return 0;
             }
 
+            @Override
+            public Doctor getDoctorsById(long id) {
+                return null;
+            }
+
         };
         this.restController = new DoctorRestController(doctorInterface);
     }

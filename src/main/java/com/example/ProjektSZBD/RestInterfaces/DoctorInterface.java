@@ -92,4 +92,11 @@ public interface DoctorInterface {
     int updateDoctorNoPassword(Doctor doctor);
 
 
+    /**
+     * Metoda zwracająca wszystkie dane o lekarzu.
+     *
+     * @param id - id lekarza
+     * @return (List of Doctor) - obiekt reprezentujący lekarza
+     */
+    Doctor getDoctorsById(long id);
 }

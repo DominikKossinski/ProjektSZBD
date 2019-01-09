@@ -163,17 +163,22 @@ public class PatientRestController {
             return ResponseCreator.jsonResponse("patients", patientsArray, "List of all patients");
         } else {
             Patient patient = patientInterface.getPatientByPesel(pesel);
-            try {
-                if (patient != null) {
-                    JSONObject patientObject = patient.toJSONObject();
-                    return ResponseCreator.jsonResponse("patient", patientObject, "Patient with pesel = " + pesel);
-                } else {
-                    return ResponseCreator.jsonErrorResponse("No patient with pesel = " + pesel);
-                }
-            } catch (ParseException e) {
-                return ResponseCreator.parseErrorResponse(e);
-            }
+            return createResponseWithPatient(patient, pesel);
         }
+    }
+
+    /**
+     * Metoda zwracająca dane pacjenta na podstawie peselu.
+     *
+     * @param pesel - pesel pacjenta
+     * @return (String) - tekst w formacie JSON zawierający pełne dane o pacjencie
+     */
+    @RequestMapping(value = "/api/{pesel}/patient", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public String getPatientByPesel(@PathVariable("pesel") long pesel) {
+        Patient patient = patientInterface.getPatientByPesel(pesel);
+        return createResponseWithPatient(patient, pesel);
+
     }
 
     /**
@@ -286,6 +291,19 @@ public class PatientRestController {
             return ResponseCreator.jsonErrorResponse("SQL Integrity Constraint Violation Exception");
         } else {
             return ResponseCreator.jsonErrorResponse("Error by deleting patient with pesel = " + pesel);
+        }
+    }
+
+    private String createResponseWithPatient(Patient patient, long pesel) {
+        try {
+            if (patient != null) {
+                JSONObject patientObject = patient.toJSONObject();
+                return ResponseCreator.jsonResponse("patient", patientObject, "Patient with pesel = " + pesel);
+            } else {
+                return ResponseCreator.jsonErrorResponse("No patient with pesel = " + pesel);
+            }
+        } catch (ParseException e) {
+            return ResponseCreator.parseErrorResponse(e);
         }
     }
 }

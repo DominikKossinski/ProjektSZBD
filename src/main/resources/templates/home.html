@@ -19,6 +19,9 @@
         <input type="text" value="" id="text-input">
         <a href="/login" th:if="!${isAuthenticated}">Login</a>
         <input onclick="logout()" th:if="${isAuthenticated}" type="submit" value="logout">
+        <h1 th:if="${isAuthenticated}">Rola <h1 th:text="${role}"></h1></h1>
+        <a th:href="@{|/${userId}/doctorProfile|}" th:if="${isDoctor}">Mój Profil</a>
+        <a th:href="@{|/${userId}/patientProfile|}" th:if="${isPatient}">Mój Profil</a>
     </div>
     <footer>
         <div id="footer">
