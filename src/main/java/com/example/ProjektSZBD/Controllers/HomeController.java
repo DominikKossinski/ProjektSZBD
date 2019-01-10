@@ -41,6 +41,8 @@ public class HomeController {
             } else if (list.get(0).compareTo("ROLE_PATIENT") == 0) {
                 model.addAttribute("isPatient", true);
                 model.addAttribute("isDoctor", false);
+            } else if (list.get(0).compareTo("ROLE_ADMIN") == 0) {
+                model.addAttribute("isAdmin", true);
             } else {
                 model.addAttribute("isPatient", false);
                 model.addAttribute("isDoctor", false);

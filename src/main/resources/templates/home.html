@@ -6,50 +6,57 @@
     <link href="css/all/home.css" rel="stylesheet" type="text/css">
     <link href="css/all/login.css" rel="stylesheet" type="text/css">
 
-
 </head>
 <body onload="getHospitals()">
 
-    <div id="logo">
+<div id="logo">
 
-        <a href="/home">
-            <img src="/img/hos_logo.png"/>
-        </a>
+    <a href="/home">
+        <img src="/img/hos_logo.png"/>
+    </a>
 
-        <div id="pasek">
-            <a href="" >
-                <div class="linkref">
-                    Szpitale
-                </div>
-            </a>
-            <a href="">
-                <div class="linkref">
-                    Choroby
-                </div>
-            </a>
-        </div>
-        <div style="clear: both"></div>
-
-    </div>
-
-    <div id="mainArea">
-        <a href="/login" th:if="!${isAuthenticated}">
-            <div id="log">
-                Zaloguj się
+    <div id="pasek">
+        <a href="/hospitals">
+            <div class="linkref">
+                Szpitale
             </div>
         </a>
-
-        <input id="logout" onclick="logout()" th:if="${isAuthenticated}" type="submit" value="logout">
-        <h1 th:if="${isAuthenticated}">Rola <h1 th:text="${role}"></h1></h1>
-        <a th:href="@{|/${userId}/doctorProfile|}" th:if="${isDoctor}">Mój Profil</a>
-        <a th:href="@{|/patient/${userId}/patientProfile|}" th:if="${isPatient}">Mój Profil</a>
-        <a href="/illnesses">Choroby</a>
-
-        <ul id="hospitals-ul"></ul>
+        <a href="/illnesses">
+            <div class="linkref">
+                Choroby
+            </div>
+        </a>
+        <a th:href="@{|/${userId}/doctorProfile|}" th:if="${isDoctor}">
+            <div class="linkref">
+                Mój Profil
+            </div>
+        </a>
+        <a href="/adminPanel" th:if="${isAdmin}">
+            <div class="linkref">
+                Admin Panel
+            </div>
+        </a>
+        <a th:href="@{|/patient/${userId}/patientProfile|}" th:if="${isPatient}">
+            <div class="linkref">Mój Profil</div>
+        </a>
+        <div class="linkref" onclick="logout()" th:if="${isAuthenticated}">
+            Wyloguj
+        </div>
     </div>
+    <div style="clear: both"></div>
+
+</div>
+
+<div id="mainArea">
+    <a href="/login" th:if="!${isAuthenticated}">
+        <div id="log">
+            Zaloguj się
+        </div>
+    </a>
+</div>
 
 
-    <script src="js/all/home.js"></script>
+<script src="js/all/home.js"></script>
 
 </div>
 </body>
