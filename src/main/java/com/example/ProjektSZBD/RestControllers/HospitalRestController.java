@@ -60,6 +60,18 @@ public class HospitalRestController {
             }
 
             @Override
+            public Hospital getHospitalByHospitalSectionId(long hospitalSectionId) {
+                try {
+                    return getJdbcTemplate().queryForObject("SELECT * FROM SZPITALE JOIN ODDZIALY O on SZPITALE.ID_SZPITALA = O.ID_SZPITALA" +
+                                    " WHERE ID_ODDZIALU = " + hospitalSectionId,
+                            (rs, ag1) -> new Hospital(rs.getLong("id_szpitala"), rs.getString("nazwa_szpitala"),
+                                    rs.getString("adres"), rs.getString("miasto")));
+                } catch (EmptyResultDataAccessException e) {
+                    return null;
+                }
+            }
+
+            @Override
             public Director getHospitalDirector(long hospitalId) {
                 try {
                     return getJdbcTemplate().queryForObject("select l.ID_LEKARZA, l.IMIE, l.NAZWISKO, l.id_oddzialu, l.stanowisko " +
@@ -362,5 +374,7 @@ public class HospitalRestController {
         }
     }
 
-
+    public HospitalInterface getHospitalInterface() {
+        return hospitalInterface;
+    }
 }

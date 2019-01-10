@@ -28,6 +28,14 @@ public interface HospitalInterface {
     Hospital getHospitalById(long id);
 
     /**
+     * Metoda zwracająca szpital, którego częścią jest odział o podanym id.
+     *
+     * @param hospitalSectionId - id oddziału
+     * @return (Hospital) - żądany szpital
+     */
+    Hospital getHospitalByHospitalSectionId(long hospitalSectionId);
+
+    /**
      * Metoda zwracająca informacje na temat dyrektora szpitala.
      *
      * @param hospitalId - id szpitala

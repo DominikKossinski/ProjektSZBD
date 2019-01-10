@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Dodaj Lekarza</title>
+    <link href="/css/director/addDoctor.css" rel="stylesheet">
+</head>
+<body onload="loadData()">
+<label>Imię:</label>
+<input id="first-name-input" type="text">
+<label>Nazwisko:</label>
+<input id="last-name-input" type="text">
+<label>Płaca:</label>
+<input id="salary-input" type="number">
+<label>Hasło:</label>
+<input id="password-input" type="password">
+<label>Stanowisko:</label>
+<select id="position-select"></select>
+<label>Oddział:</label>
+<select id="hospital-section-select"></select>
+<input onclick="addDoctor()" type="submit" value="Dodaj Lekarza">
+
+
+<span id="hospital-id-span" th:text="${hospitalId}"></span>
+<script src="/js/director/addDoctor.js"></script>
+</body>
+</html>
