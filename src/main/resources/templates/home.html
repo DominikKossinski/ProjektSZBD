@@ -4,21 +4,42 @@
     <meta charset="UTF-8">
     <title>NFZ</title>
     <link href="css/all/home.css" rel="stylesheet" type="text/css">
+    <link href="css/all/login.css" rel="stylesheet" type="text/css">
 
 
 </head>
 <body onload="getHospitals()">
-<div id="wrapper">
-    <div id="header">
+
+    <div id="logo">
+
+        <a href="/home">
+            <img src="/img/hos_logo.png"/>
+        </a>
+
+        <div id="pasek">
+            <a href="" >
+                <div class="linkref">
+                    Szpitale
+                </div>
+            </a>
+            <a href="">
+                <div class="linkref">
+                    Choroby
+                </div>
+            </a>
+        </div>
+        <div style="clear: both"></div>
 
     </div>
 
     <div id="mainArea">
-        <input type="button" value="kilkij" onclick="getHello()">
-        <label id="text-label">Czesc</label>
-        <input type="text" value="" id="text-input">
-        <a href="/login" th:if="!${isAuthenticated}">Login</a>
-        <input onclick="logout()" th:if="${isAuthenticated}" type="submit" value="logout">
+        <a href="/login" th:if="!${isAuthenticated}">
+            <div id="log">
+                Zaloguj się
+            </div>
+        </a>
+
+        <input id="logout" onclick="logout()" th:if="${isAuthenticated}" type="submit" value="logout">
         <h1 th:if="${isAuthenticated}">Rola <h1 th:text="${role}"></h1></h1>
         <a th:href="@{|/${userId}/doctorProfile|}" th:if="${isDoctor}">Mój Profil</a>
         <a th:href="@{|/patient/${userId}/patientProfile|}" th:if="${isPatient}">Mój Profil</a>
@@ -26,12 +47,7 @@
 
         <ul id="hospitals-ul"></ul>
     </div>
-    <footer>
-        <div id="footer">
-            <div class="container">Copyright - Site maintained by Cos</div>
-        </div>
 
-    </footer>
 
     <script src="js/all/home.js"></script>
 

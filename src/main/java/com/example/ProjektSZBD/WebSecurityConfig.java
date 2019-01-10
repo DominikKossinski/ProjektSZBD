@@ -37,14 +37,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/", "/home", "/api/login", "/css/all/*", "/js/all/*", "/api/hospitalSection**",
-                        "/illnesses", "/api/illness**", "/api/allHospitals", "/api/hospitalSections**   ").permitAll()
+                .antMatchers("/", "/home", "/api/login", "/css/all/*", "/js/all/*","/img/*", "/api/hospitalSection**").permitAll()
                 .antMatchers("/api/logout").authenticated()
 
-                .antMatchers("/css/director/*", "/js/director/*", "/addDoctor", "/api/salary**",
-                        "/api/hospitalSections**", "/api/addDoctor", "/manageHospitalSections",
-                        "/api/updateHospitalSection", "/api/addHospitalSection", "/api/deleteHospitalSection").hasRole("Dyrektor")
-                /*.antMatchers("/css/doctor/*", "/js/doctor/*").hasRole("Ordynator")
+                /*.antMatchers("/css/doctor/*", "/js/doctor/*").hasRole("Dyrektor")
+                .antMatchers("/css/doctor/*", "/js/doctor/*").hasRole("Ordynator")
                 .antMatchers("/css/doctor/*", "/js/doctor/*").hasRole("Lekarz")
                 .antMatchers("/css/doctor/*", "/js/doctor/*").hasRole("Asystent")
                 .antMatchers("/css/doctor/*", "/js/doctor/*").hasRole("Rezydent")
@@ -54,14 +51,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .antMatchers("/js/patient/*", "/css/patient/*", "/myStays", "/myPrescriptions").access(
                 "@webSecurityConfig.isPatient(authentication)")
-                .antMatchers("/api/rooms**", "/js/doctor/*", "/css/doctor/*", "/addPatient", "/api/addPatient",
-                        "/api/addStay", "/api/addIllness", "/addIllness").access(
-                "@webSecurityConfig.isDoctor(authentication)")
-
-                .antMatchers("/api/patient/{pesel}/**", "/patient/{pesel}/**").access(
-                "@webSecurityConfig.checkPatientPesel(authentication, #pesel)")
-                .antMatchers("/api/{userId}/**", "/{userId}/**").access(
-                "@webSecurityConfig.checkDoctorId(authentication, #userId)")
+                .antMatchers("/js/doctor/*", "/css/doctor/*").access(
+                "@webSecurityConfig.idDoctor(authentication)")
+                .antMatchers("/api/{userId}/**", "/{userId}/**").access("@webSecurityConfig.checkDoctorId(authentication, #userId)")
                 // .antMatchers().access("@webSecurityConfig.checkDoctorId(authentication, #userId)")
 
                 .anyRequest().denyAll()
@@ -104,16 +96,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return ProjektSzbdApplication.getInMemoryUserDetailsManager();
     }
 
-    public boolean checkPatientPesel(Authentication authentication, String pesel) {
-        String userName = authentication.getName();
-        System.out.println("Check id name = " + userName + " id = " + pesel);
-        return userName.compareTo(pesel) == 0 && isPatient(authentication);
-    }
-
     public boolean checkDoctorId(Authentication authentication, String id) {
         String userName = authentication.getName();
         System.out.println("Check id name = " + userName + " id = " + id);
-        return userName.compareTo(id) == 0 && isDoctor(authentication);
+        return userName.compareTo(id) == 0;
     }
 
     public boolean isDoctor(Authentication authentication) {

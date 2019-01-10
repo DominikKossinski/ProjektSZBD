@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pl">
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
@@ -7,12 +7,50 @@
 </head>
 <body>
 
-<label>Id lekarza / pesel</label>
-<input id="id-input" type="text">
-<label>Hasło</label>
-<input id="password-input" type="password">
-<label id="error-label"></label>
-<input onclick="login()" type="submit" value="Zaloguj się">
+    <div id="logo">
+
+        <a href="/home">
+            <img src="/img/hos_logo.png"/>
+        </a>
+
+        <div id="pasek">
+            <a href="" >
+                <div class="linkref">
+                    Szpitale
+                </div>
+            </a>
+            <a href="">
+                <div class="linkref">
+                    Choroby
+                </div>
+            </a>
+        </div>
+        <div style="clear: both"></div>
+
+    </div>
+
+	<div class="login-box">
+	
+		<h1>Zaloguj się</h1>
+			
+		<div class="textbox">	
+		    <i class="fas fa-user"></i>
+			<input id="id-input" type="text" placeholder="Pesel/ID">
+		</div>
+			
+		<div class="textbox">
+		    <i class="fas fa-lock"></i>
+			<input id="password-input" type="password" placeholder="Hasło">
+		</div>
+
+        <div id="error-label">
+            Abcd
+        </div>
+
+		<input onclick="login()" class="btn" type="submit" value="Zaloguj się">
+
+	</div>
+
 <script src="js/all/login.js"></script>
 </body>
 </html>
