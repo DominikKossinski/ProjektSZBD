@@ -52,7 +52,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .antMatchers("/admin/*", "/api/admin/*", "/js/admin/*", "/css/admin/*", "/api/salary*").hasRole("ADMIN")
 
-                .antMatchers("/js/patient/*", "/css/patient/*").access(
+                .antMatchers("/js/patient/*", "/css/patient/*", "/myStays", "/myPrescriptions").access(
                 "@webSecurityConfig.isPatient(authentication)")
                 .antMatchers("/api/rooms**", "/js/doctor/*", "/css/doctor/*", "/addPatient", "/api/addPatient",
                         "/api/addStay", "/api/addIllness", "/addIllness").access(

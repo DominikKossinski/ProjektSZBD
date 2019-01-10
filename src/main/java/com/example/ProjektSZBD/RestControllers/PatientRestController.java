@@ -173,7 +173,7 @@ public class PatientRestController {
      * @param pesel - pesel pacjenta
      * @return (String) - tekst w formacie JSON zawierający pełne dane o pacjencie
      */
-    @RequestMapping(value = "/api/{pesel}/patient", method = RequestMethod.GET,
+    @RequestMapping(value = "/api/patient/{pesel}/patient", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String getPatientByPesel(@PathVariable("pesel") long pesel) {
         Patient patient = patientInterface.getPatientByPesel(pesel);

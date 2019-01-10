@@ -18,9 +18,9 @@ public class PatientProfileController {
      * @param model - model widoku
      * @return "doctorProfile" - nazwa widoku strony.
      */
-    @GetMapping("/{id}/patientProfile")
+    @GetMapping("/patient/{id}/patientProfile")
     public String getPatientProfile(@PathVariable("id") String id, Model model) {
         model.addAttribute("id", id);
-        return "patientProfile";
+        return "PatientProfile";
     }
 }

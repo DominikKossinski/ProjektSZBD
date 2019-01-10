@@ -3,7 +3,7 @@ function getPatientData() {
     var firstNameLabel = document.getElementById("first-name-label");
     var lastNameLabel = document.getElementById("last-name-label");
 
-    fetch("/api/" + pesel + "/patient").then(function (value) {
+    fetch("/api/patient/" + pesel + "/patient").then(function (value) {
         return value.json();
     }).then(function (data) {
         if (data.resp_status === "ok") {

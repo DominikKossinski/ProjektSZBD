@@ -37,7 +37,7 @@ public class PrescriptionRestController {
             public List<Prescription> getPrescriptionsByPesel(long pesel) {
                 return getJdbcTemplate().query("select r.id_recepty, r.data_wystawienia, r.dawkowanie, " +
                                 "r.id_choroby, r.id_pobytu" +
-                                " from RECEPTY r join POBYTY p on r.ID_POBYTU = p.POBYTY_ID " +
+                                " from RECEPTY r join POBYTY p on r.ID_POBYTU = p.ID_POBYTU " +
                                 "join pacjenci pa on p.pesel = pa.pesel where pa.pesel = " + pesel,
                         (rs, arg1) -> new Prescription(rs.getLong("id_recepty"),
                                 rs.getDate("data_wystawienia"), rs.getString("dawkowanie"),
@@ -210,7 +210,7 @@ public class PrescriptionRestController {
                 "You need to specify one of parameters [id, pesel, stayId, doctorId]");
     }
 
-    @RequestMapping(value = "/api/{pesel}/prescriptions")
+    @RequestMapping(value = "/api/patient/{pesel}/prescriptions")
     public String getPrescriptions(
             @PathVariable(name = "pesel") long pesel,
             @RequestParam(name = "doctorId", defaultValue = "-1", required = false) long doctorId

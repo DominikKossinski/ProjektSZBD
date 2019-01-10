@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Moje Recepty</title>
+    <link href="/css/patient/MyPrescriptions.css" rel="stylesheet">
+</head>
+<body onload="getPrescriptions()">
+
+<label>Recepty:</label>
+<ul id="prescriptions-ul"></ul>
+
+<span id="pesel-span" th:text="${pesel}"></span>
+<script src="/js/patient/MyPrescriptions.js"></script>
+</body>
+</html>

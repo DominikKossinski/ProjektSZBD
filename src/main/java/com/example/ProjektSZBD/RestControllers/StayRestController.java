@@ -170,6 +170,20 @@ public class StayRestController {
     }
 
     /**
+     * Metoda do obsługi żądania pobytów pacjenta o podanym peselu.
+     *
+     * @param pesel - pesel
+     * @return (String) - tekst w formacie JSON zawierający dane o żądanych pobytach
+     */
+    @RequestMapping(value = "/api/patient/{pesel}/stays", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public String getMyStays(@PathVariable("pesel") long pesel) {
+        List<Stay> stays = stayInterface.getStayByPesel(pesel);
+        return createResponseWithStaysList(stays, "Stays of patient with pesel = " + pesel);
+    }
+
+
+    /**
      * Metoda odpowiadająca za obsługę żądań wstawiania pobytu.
      *
      * @param stayData - tekst w formacie JSON zawierający dane o pobycie
