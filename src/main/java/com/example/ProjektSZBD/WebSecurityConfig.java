@@ -42,7 +42,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/logout").authenticated()
 
                 .antMatchers("/css/director/*", "/js/director/*", "/addDoctor", "/api/salary**",
-                        "/api/hospitalSections**", "/api/addDoctor").hasRole("Dyrektor")
+                        "/api/hospitalSections**", "/api/addDoctor", "/manageHospitalSections",
+                        "/api/updateHospitalSection", "/api/addHospitalSection", "/api/deleteHospitalSection").hasRole("Dyrektor")
                 /*.antMatchers("/css/doctor/*", "/js/doctor/*").hasRole("Ordynator")
                 .antMatchers("/css/doctor/*", "/js/doctor/*").hasRole("Lekarz")
                 .antMatchers("/css/doctor/*", "/js/doctor/*").hasRole("Asystent")

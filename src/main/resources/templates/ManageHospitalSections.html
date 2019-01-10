@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Oddziały</title>
+    <link href="/css/director/ManageHospitalSections.css" rel="stylesheet">
+</head>
+<body onload="getHospitalSections()">
+<label>Nazwa:</label>
+<input id="name-input" type="text">
+<input onclick="addHospitalSection()" type="submit" value="Dodaj oddział">
+
+<ul id="hospital-sections-ul"></ul>
+
+<span id="hospital-id-span" th:text="${hospitalId}"></span>
+<span id="id-span" th:text="${id}"></span>
+<script src="/js/director/ManageHospitalSections.js"></script>
+</body>
+</html>
