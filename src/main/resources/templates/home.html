@@ -7,7 +7,7 @@
 
 
 </head>
-<body>
+<body onload="getHospitals()">
 <div id="wrapper">
     <div id="header">
 
@@ -23,6 +23,8 @@
         <a th:href="@{|/${userId}/doctorProfile|}" th:if="${isDoctor}">Mój Profil</a>
         <a th:href="@{|/${userId}/patientProfile|}" th:if="${isPatient}">Mój Profil</a>
         <a href="/illnesses">Choroby</a>
+
+        <ul id="hospitals-ul"></ul>
     </div>
     <footer>
         <div id="footer">
