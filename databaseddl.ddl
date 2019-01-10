@@ -1302,9 +1302,14 @@ CREATE OR REPLACE FUNCTION insertStay(startDate IN DATE,
 IS
 
 BEGIN
-
   INSERT INTO POBYTY(TERMIN_PRZYJECIA, TERMIN_WYPISU, ID_POKOJU, ID_LEKARZA, PESEL)
   VALUES (startDate, endDate, roomId, doctorId, peselV) returning ID_POBYTU into stayId;
+  update pokoje
+  set ilosc_zajetych_miejsc = (select count(id_pobytu)
+                               from pobyty
+                               where pobyty.id_pokoju = pokoje.id_pokoju
+                                 and termin_wypisu is null)
+  where id_pokoju = roomId;
   return stayId;
   EXCEPTION
   WHEN OTHERS
@@ -1331,7 +1336,6 @@ CREATE OR REPLACE FUNCTION updateStay(stayId IN NUMBER,
 IS
 
 BEGIN
-
   UPDATE POBYTY
   SET termin_przyjecia = startDate,
       termin_wypisu    = endDate,
@@ -1341,6 +1345,12 @@ BEGIN
   where ID_POBYTU = stayId;
   rowCount := SQL%ROWCOUNT;
   if (rowCount = 1) then
+    update pokoje
+    set ilosc_zajetych_miejsc = (select count(id_pobytu)
+                                 from pobyty
+                                 where pobyty.id_pokoju = pokoje.id_pokoju
+                                   and termin_wypisu is null)
+    where id_pokoju = roomId;
     return 0; --Poprawne zakończenie
   elsif (rowCount = 0) then
     return -4; --Nie ma id
@@ -1367,12 +1377,18 @@ CREATE OR REPLACE FUNCTION deleteStay(stayId IN NUMBER,
                                       rowCount OUT NUMBER)
   RETURN NUMBER
 IS
-
+  roomId number;
 BEGIN
-
+  SELECT id_pokoju into roomId from pobyty where id_pobytu = stayId;
   DELETE FROM POBYTY WHERE ID_POBYTU = stayId;
   rowCount := SQL%ROWCOUNT;
   if (rowCount = 1) then
+    update pokoje
+    set ilosc_zajetych_miejsc = (select count(id_pobytu)
+                                 from pobyty
+                                 where pobyty.id_pokoju = pokoje.id_pokoju
+                                   and termin_wypisu is null)
+    where id_pokoju = roomId;
     return 0; --Poprawne zakończenie
   elsif (rowCount = 0) then
     return -4; --Nie ma id
