@@ -26,6 +26,7 @@
     <a href="/addIllness">Dodaj chorobę</a>
     <a href="/addDoctor" th:if="${isDirector}">Dodaj Lekarza</a>
     <a href="/manageHospitalSections" th:if="${isDirector}">Zarządzaj oddziałami</a>
+    <a href="/manageElements" th:if="${isOrdynator}">Zarządzaj elementami wyposażenia</a>
 </div>
 <span id="doctor-id-span" th:text="${id}"></span>
 <script src="/js/doctor/doctorProfile.js"></script>
