@@ -12,7 +12,7 @@ public class AddHospitalController {
     /**
      * Metoda odpowiedzialna zwracanie widoku strony dodawania szpitala.
      *
-     * @return "home" - nazwa widoku strony dodawania szpitala
+     * @return "addHospital" - nazwa widoku strony dodawania szpitala
      */
     @GetMapping("/admin/addHospital")
     public String addHospital() {

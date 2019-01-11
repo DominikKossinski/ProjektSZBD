@@ -18,7 +18,7 @@ public class AddDoctorController {
      * Metoda odpowiedzialna zwracanie widoku strony dodawania lekarza.
      *
      * @param model - model widoku
-     * @return "addIllness" - nazwa widoku strony dodawania lekarza
+     * @return "addDoctor" - nazwa widoku strony dodawania lekarza
      */
     @GetMapping("/addDoctor")
     public String getAddDoctor(Model model) {

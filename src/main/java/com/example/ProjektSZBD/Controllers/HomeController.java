@@ -6,9 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import java.util.ArrayList;
-import java.util.Set;
-import java.util.stream.Collectors;
+import static com.example.ProjektSZBD.DataGetter.getUserRoles;
 
 /**
  * Controler odpowiadajacy za wyświetlanie strony głównej.
@@ -24,7 +22,8 @@ public class HomeController {
     @GetMapping("/home")
     public String getHello(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth.getName().compareTo("anonymousUser") == 0) {
+
+        /*if (auth.getName().compareTo("anonymousUser") == 0) {
             model.addAttribute("isAuthenticated", false);
             model.addAttribute("isPatient", false);
             model.addAttribute("isDoctor", false);
@@ -38,6 +37,11 @@ public class HomeController {
             if (list.get(0).compareTo("ROLE_ADMIN") != 0 && list.get(0).compareTo("ROLE_PATIENT") != 0) {
                 model.addAttribute("isDoctor", true);
                 model.addAttribute("isPatient", false);
+                if(list.get(0).compareTo("ROLE_Dyrektor") == 0) {
+                    model.addAttribute("isDirector", true);
+                } else if(list.get(0).compareTo("ROLE_Ordynator") == 0) {
+                    model.addAttribute("isOrdynator", true);
+                }
             } else if (list.get(0).compareTo("ROLE_PATIENT") == 0) {
                 model.addAttribute("isPatient", true);
                 model.addAttribute("isDoctor", false);
@@ -47,7 +51,8 @@ public class HomeController {
                 model.addAttribute("isPatient", false);
                 model.addAttribute("isDoctor", false);
             }
-        }
+        }*/
+        getUserRoles(model, auth);
         return "home";
 
     }
