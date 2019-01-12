@@ -46,14 +46,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/api/updateHospitalSection", "/api/addHospitalSection", "/api/deleteHospitalSection",
                         "/api/rooms*", "/manageRooms", "/api/addRoom", "/api/updateRoom", "/api/deleteRoom").hasRole("Dyrektor")
                 .antMatchers("/css/ordynator/*", "/js/ordynator/*", "/manageElements", "/api/elements**",
-                        "/api/addElement", "/api/updateElement", "/api/deleteElement").hasRole("Ordynator")
+                        "/api/addElement", "/api/updateElement", "/api/deleteElement**").hasRole("Ordynator")
                 /*.antMatchers("/css/doctor/*", "/js/doctor/*").hasRole("Lekarz")
                 .antMatchers("/css/doctor/*", "/js/doctor/*").hasRole("Asystent")
                 .antMatchers("/css/doctor/*", "/js/doctor/*").hasRole("Rezydent")
                 .antMatchers("/css/doctor/*", "/js/doctor/*").hasRole("Praktykant")*/
 
                 .antMatchers("/admin/*", "/api/admin/*", "/js/admin/*", "/css/admin/*",
-                        "/api/salary*", "/adminPanel").hasRole("ADMIN")
+                        "/api/salary**", "/adminPanel", "/api/addSalary**", "/api/updateSalary",
+                        "/api/deleteSalary").hasRole("ADMIN")
 
                 .antMatchers("/js/patient/*", "/css/patient/*", "/myStays", "/myPrescriptions").access(
                 "@webSecurityConfig.isPatient(authentication)")

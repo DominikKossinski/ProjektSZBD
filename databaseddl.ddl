@@ -1234,7 +1234,7 @@ IS
 
 BEGIN
 
-  UPDATE place SET placa_min = minSalary, placa_max = minSalary where stanowisko = position;
+  UPDATE place SET placa_min = minSalary, placa_max = maxSalary where stanowisko = position;
   rowCount := SQL%ROWCOUNT;
   if (rowCount = 1) then
     return 0; --Poprawne zakończenie

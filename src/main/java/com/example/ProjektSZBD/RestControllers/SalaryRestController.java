@@ -190,6 +190,7 @@ public class SalaryRestController {
             int status = salaryInterface.updateSalary(salary);
 
             if (status == 0) {
+                //TODO wywołanie procedury do korekcji płac
                 return ResponseCreator.jsonResponse("Successful updating salary with position = " + salary.getPosition());
             } else if (status == -4) {
                 return ResponseCreator.jsonErrorResponse("No salary with position = " + salary.getPosition());

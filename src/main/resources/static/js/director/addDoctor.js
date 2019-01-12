@@ -83,7 +83,7 @@ function addDoctor() {
                         if (response.resp_status === "ok") {
                             //TODO ładniejsze info - konieczne bo tylko tu zobaczysz id
                             var doctor = response.doctor;
-                            alert("Dodano Pobyt id:" + doctor.id);
+                            alert("Dodano Lekarza id:" + doctor.id);
                         } else {
                             //TODO lepsze wyswietlanie errora
                             alert(response.description);
