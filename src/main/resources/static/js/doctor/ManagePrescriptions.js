@@ -208,33 +208,38 @@ function addPrescription() {
     illnessId = illnessId.substring(0, illnessId.indexOf("-"));
     var stayId = document.getElementById("stay-input").value;
     stayId = stayId.substring(0, stayId.indexOf("-"));
-
-    var data = JSON.stringify({
-        "id": 0,
-        "date": date,
-        "dosage": dosage,
-        "illness_id": illnessId,
-        "stay_id": stayId
-    });
-    console.log(data);
-    var http = new XMLHttpRequest();
-    var url = "/api/addPrescription";
-    http.open("Put", url, true);
-    http.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
-    http.send(data);
-    http.onreadystatechange = function (e) {
-        if (http.readyState === 4) {
-            var response = JSON.parse(http.responseText);
-            console.log(response);
-            if (response.resp_status === "ok") {
-                //TODO ładniejsze info
-                var prescription = response.prescription;
-                alert("Add Receptę id:" + prescription.id);
-            } else {
-                //TODO lepsze wyswietlanie errora
-                alert(response.description);
+    if (date !== "" && illnessId !== "" && stayId !== "") {
+        var data = JSON.stringify({
+            "id": 0,
+            "date": date,
+            "dosage": dosage,
+            "illness_id": illnessId,
+            "stay_id": stayId
+        });
+        console.log(data);
+        var http = new XMLHttpRequest();
+        var url = "/api/addPrescription";
+        http.open("Put", url, true);
+        http.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
+        http.send(data);
+        http.onreadystatechange = function (e) {
+            if (http.readyState === 4) {
+                var response = JSON.parse(http.responseText);
+                console.log(response);
+                if (response.resp_status === "ok") {
+                    //TODO ładniejsze info
+                    var prescription = response.prescription;
+                    alert("Add Receptę id:" + prescription.id);
+                } else {
+                    //TODO lepsze wyswietlanie errora
+                    alert(response.description);
+                }
+                getPrescriptions();
             }
-            getPrescriptions();
-        }
-    };
+        };
+    } else {
+        //TODO łądniejsza informacja o błędzie
+        alert("błąd");
+
+    }
 }
