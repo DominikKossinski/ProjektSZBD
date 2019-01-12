@@ -62,8 +62,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/js/patient/*", "/css/patient/*", "/myStays", "/myPrescriptions").access(
                 "@webSecurityConfig.isPatient(authentication)")
                 .antMatchers("/api/rooms**", "/js/doctor/*", "/css/doctor/*", "/addPatient", "/api/addPatient",
-                        "/api/addStay", "/api/addIllness", "/addIllness").access(
-                "@webSecurityConfig.isDoctor(authentication)")
+                        "/api/addStay", "/api/addIllness", "/api/updateIllness", "/api/deleteIllness**",
+                        "/manageIllnesses").access("@webSecurityConfig.isDoctor(authentication)")
 
                 .antMatchers("/api/patient/{pesel}/**", "/patient/{pesel}/**").access(
                 "@webSecurityConfig.checkPatientPesel(authentication, #pesel)")

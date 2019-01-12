@@ -23,7 +23,7 @@
 
     <a href="/addPatient">Dodaj Pacjenta</a>
     <a th:href="@{|/${id}/addStay|}">Dodaj Pobyt</a>
-    <a href="/addIllness">Dodaj chorobę</a>
+    <a href="/manageIllnesses">Zarządzaj Chorobami</a>
     <a href="/manageDoctors" th:if="${isDirector}">Zarządzaj Lekarzami</a>
     <a href="/manageHospitalSections" th:if="${isDirector}">Zarządzaj oddziałami</a>
     <a href="/manageRooms" th:if="${isDirector}">Zarządzaj pokojami</a>

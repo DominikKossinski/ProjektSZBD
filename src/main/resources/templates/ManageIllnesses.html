@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dodaj Chorobę</title>
+    <link href="/css/doctor/ManageIllnesses.css" rel="stylesheet">
+</head>
+<body onload="getIllnesses()">
+<label>Nazwa:</label>
+<input id="name-input" type="text">
+<label>Opis:</label>
+<textarea id="description-textarea"></textarea>
+<input onclick="addIllness()" type="submit" value="Dodaj Chorobę">
+
+
+<label>Podaj nazwę:</label>
+<input id="name-search-input" oninput="getIllnesses()" type="text">
+<ul id="illnesses-ul"></ul>
+<script src="/js/doctor/ManageIllnesses.js"></script>
+</body>
+</html>
