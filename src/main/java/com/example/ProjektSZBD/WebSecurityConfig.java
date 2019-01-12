@@ -44,7 +44,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/css/director/*", "/js/director/*", "/addDoctor", "/api/salary**",
                         "/api/hospitalSections**", "/api/addDoctor", "/manageHospitalSections",
                         "/api/updateHospitalSection", "/api/addHospitalSection", "/api/deleteHospitalSection",
-                        "/api/rooms*", "/manageRooms").hasRole("Dyrektor")
+                        "/api/rooms*", "/manageRooms", "/api/addRoom", "/api/updateRoom", "/api/deleteRoom").hasRole("Dyrektor")
                 .antMatchers("/css/ordynator/*", "/js/ordynator/*", "/manageElements", "/api/elements**",
                         "/api/addElement", "/api/updateElement", "/api/deleteElement").hasRole("Ordynator")
                 /*.antMatchers("/css/doctor/*", "/js/doctor/*").hasRole("Lekarz")
