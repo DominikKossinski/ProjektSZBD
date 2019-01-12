@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Recepty</title>
+    <link href="/css/doctor/ManagePrescriptions.css" rel="stylesheet">
+</head>
+<body onload="getData()">
+<label>Data:</label>
+<input id="date-input" type="date">
+<label>Dawkowanie:</label>
+<textarea id="dosage-textarea"></textarea>
+<label>Choroba</label>
+<form>
+    <input id="illness-input" list="illnesses-datalist" type="text">
+    <datalist id="illnesses-datalist"></datalist>
+</form>
+<form>
+    <input id="stay-input" list="stay-datalist" type="text">
+    <datalist id="stay-datalist"></datalist>
+</form>
+<input onclick="addPrescription()" type="submit" value="Dodaj Receptę">
+
+<ul id="prescriptions-ul"></ul>
+
+<span id="doctor-id-span" th:text="${id}"></span>
+<span id="pesel-span" th:text="${pesel}"></span>
+<script src="/js/doctor/ManagePrescriptions.js"></script>
+</body>
+</html>

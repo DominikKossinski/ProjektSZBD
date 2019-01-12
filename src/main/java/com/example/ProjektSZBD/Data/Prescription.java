@@ -63,10 +63,11 @@ public class Prescription {
     public static Prescription getInstance(String prescriptionData) throws ParseException {
         JSONParser parser = new JSONParser();
         JSONObject prescription = (JSONObject) parser.parse(prescriptionData);
-        return new Prescription((long) prescription.get("id"),
-                Date.valueOf((String) prescription.get("date")),
+        return new Prescription(Long.parseLong(String.valueOf(prescription.get("id"))),
+                Date.valueOf(String.valueOf(prescription.get("date"))),
                 (String) prescription.get("dosage"),
-                (long) prescription.get("illness_id"), (long) prescription.get("stay_id"));
+                Long.parseLong(String.valueOf(prescription.get("illness_id"))),
+                Long.parseLong(String.valueOf(prescription.get("stay_id"))));
     }
 
     /**
