@@ -38,7 +38,7 @@ public class PrescriptionRestController {
                 return getJdbcTemplate().query("select r.id_recepty, r.data_wystawienia, r.dawkowanie, " +
                                 "r.id_choroby, r.id_pobytu" +
                                 " from RECEPTY r join POBYTY p on r.ID_POBYTU = p.ID_POBYTU " +
-                                "join pacjenci pa on p.pesel = pa.pesel where pa.pesel = " + pesel,
+                                "join pacjenci pa on p.pesel = pa.pesel where pa.pesel = " + pesel + " order by r.ID_RECEPTY",
                         (rs, arg1) -> new Prescription(rs.getLong("id_recepty"),
                                 rs.getDate("data_wystawienia"), rs.getString("dawkowanie"),
                                 rs.getLong("id_choroby"), rs.getLong("id_pobytu")));
@@ -48,7 +48,8 @@ public class PrescriptionRestController {
             public List<Prescription> getPrescriptionsByStayId(long stayId) {
                 return getJdbcTemplate().query("select r.id_recepty, r.data_wystawienia, r.dawkowanie, " +
                                 "r.id_choroby, r.id_pobytu" +
-                                " from RECEPTY r join POBYTY p on r.ID_POBYTU = p.POBYTY_ID where p.pobyty_id = " + stayId,
+                                " from RECEPTY r join POBYTY p on r.ID_POBYTU = p.POBYTY_ID where p.pobyty_id = " + stayId
+                                + " order by r.ID_RECEPTY",
                         (rs, arg1) -> new Prescription(rs.getLong("id_recepty"),
                                 rs.getDate("data_wystawienia"), rs.getString("dawkowanie"),
                                 rs.getLong("id_choroby"), rs.getLong("id_pobytu")));
@@ -60,7 +61,7 @@ public class PrescriptionRestController {
                                 "r.id_choroby, r.id_pobytu" +
                                 " from RECEPTY r join POBYTY p on r.ID_POBYTU = p.POBYTY_ID " +
                                 "join lekarze l on l.id_lekarza = p.id_lekarza " +
-                                "where l.id_lekarza = " + doctorId,
+                                "where l.id_lekarza = " + doctorId + " order by r.ID_RECEPTY",
                         (rs, arg1) -> new Prescription(rs.getLong("id_recepty"),
                                 rs.getDate("data_wystawienia"), rs.getString("dawkowanie"),
                                 rs.getLong("id_choroby"), rs.getLong("id_pobytu")));
@@ -73,7 +74,7 @@ public class PrescriptionRestController {
                                 " from RECEPTY r join POBYTY p on r.ID_POBYTU = p.POBYTY_ID " +
                                 "join pacjenci pa on p.pesel = pa.pesel " +
                                 "join lekarze l on l.id_lekarza = p.id_lekarza " +
-                                "where pa.pesel = " + pesel + ", l.id_lekarza = " + doctorId,
+                                "where pa.pesel = " + pesel + ", l.id_lekarza = " + doctorId + " order by r.ID_RECEPTY",
                         (rs, arg1) -> new Prescription(rs.getLong("id_recepty"),
                                 rs.getDate("data_wystawienia"), rs.getString("dawkowanie"),
                                 rs.getLong("id_choroby"), rs.getLong("id_pobytu")));

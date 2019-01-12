@@ -42,7 +42,7 @@ public class StayRestController {
 
             @Override
             public List<Stay> getStayByPesel(long pesel) {
-                return getJdbcTemplate().query("SELECT * from pobyty where pesel = " + pesel,
+                return getJdbcTemplate().query("SELECT * from pobyty where pesel = " + pesel + " order by  ID_POBYTU",
                         (rs, arg1) -> new Stay(rs.getLong("id_pobytu"), rs.getDate("termin_przyjecia"),
                                 rs.getDate("termin_wypisu"), rs.getLong("id_pokoju"),
                                 rs.getLong("id_lekarza"), rs.getLong("pesel")));
@@ -50,7 +50,7 @@ public class StayRestController {
 
             @Override
             public List<Stay> getStayByDoctor(long doctorId) {
-                return getJdbcTemplate().query("SELECT * from pobyty where id_lekarza = " + doctorId,
+                return getJdbcTemplate().query("SELECT * from pobyty where id_lekarza = " + doctorId + " order by  ID_POBYTU",
                         (rs, arg1) -> new Stay(rs.getLong("id_pobytu"), rs.getDate("termin_przyjecia"),
                                 rs.getDate("termin_wypisu"), rs.getLong("id_pokoju"),
                                 rs.getLong("id_lekarza"), rs.getLong("pesel")));

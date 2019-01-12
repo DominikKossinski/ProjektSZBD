@@ -43,7 +43,7 @@ public class HospitalRestController {
         this.hospitalInterface = new HospitalInterface() {
             @Override
             public List<Hospital> getAllHospitals() {
-                return getJdbcTemplate().query("SELECT * FROM SZPITALE", (rs, arg1) -> new Hospital(
+                return getJdbcTemplate().query("SELECT * FROM SZPITALE order by ID_SZPITALA", (rs, arg1) -> new Hospital(
                         rs.getLong("id_szpitala"), rs.getString("nazwa_szpitala"),
                         rs.getString("adres"), rs.getString("miasto")));
             }
@@ -51,7 +51,8 @@ public class HospitalRestController {
             @Override
             public Hospital getHospitalById(long id) {
                 try {
-                    return getJdbcTemplate().queryForObject("SELECT * FROM SZPITALE WHERE ID_SZPITALA = " + id,
+                    return getJdbcTemplate().queryForObject("SELECT * FROM SZPITALE WHERE ID_SZPITALA = "
+                                    + id,
                             (rs, ag1) -> new Hospital(rs.getLong("id_szpitala"), rs.getString("nazwa_szpitala"),
                                     rs.getString("adres"), rs.getString("miasto")));
                 } catch (EmptyResultDataAccessException e) {
@@ -77,7 +78,7 @@ public class HospitalRestController {
                     return getJdbcTemplate().queryForObject("select l.ID_LEKARZA, l.IMIE, l.NAZWISKO, l.id_oddzialu, l.stanowisko " +
                                     "from lekarze l join oddzialy o on l.id_oddzialu = o.id_oddzialu " +
                                     "join SZPITALE s on s.ID_SZPITALA = o.ID_SZPITALA " +
-                                    "where  o.ID_SZPITALA = " + hospitalId + " and l.stanowisko = 'Dyrektor' order by s.id_szpitala",
+                                    "where  o.ID_SZPITALA = " + hospitalId + " and l.stanowisko = 'Dyrektor'",
                             (rs, ag1) -> new Director(hospitalId, rs.getLong("id_lekarza"), rs.getString("imie"),
                                     rs.getString("nazwisko"), rs.getLong("id_oddzialu"))
                     );

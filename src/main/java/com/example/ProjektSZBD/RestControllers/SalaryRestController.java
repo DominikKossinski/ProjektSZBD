@@ -46,7 +46,7 @@ public class SalaryRestController {
 
             @Override
             public List<Salary> getAllSalaries() {
-                return getJdbcTemplate().query("SELECT * FROM PLACE",
+                return getJdbcTemplate().query("SELECT * FROM PLACE order by PLACA_MAX desc",
                         (rs, arg1) -> new Salary(rs.getString("stanowisko"), rs.getFloat("placa_min"),
                                 rs.getFloat("placa_max")));
             }

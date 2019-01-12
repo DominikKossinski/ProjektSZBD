@@ -38,7 +38,7 @@ public class HospitalSectionRestController {
             @Override
             public List<HospitalSection> getHospitalSectionsByHospitalId(long id) {
                 return getJdbcTemplate().query(
-                        "SELECT * FROM ODDZIALY WHERE ID_SZPITALA = " + id,
+                        "SELECT * FROM ODDZIALY WHERE ID_SZPITALA = " + id + " order by ID_ODDZIALU",
                         (rs, arg1) -> new HospitalSection(rs.getLong("id_oddzialu"),
                                 rs.getString("nazwa"), rs.getLong("id_szpitala")));
             }

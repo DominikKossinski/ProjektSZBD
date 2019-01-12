@@ -18,7 +18,7 @@ public class ManageSalariesController {
      * Metoda odpowiedzialna zwracanie widoku strony zarządzania płacami.
      *
      * @param model - model widoku
-     * @return "addDoctor" - nazwa widoku strony zarządzania płacami
+     * @return "manageDoctors" - nazwa widoku strony zarządzania płacami
      */
     @GetMapping("/admin/manageSalaries")
     public String getManageSalaries(Model model) {

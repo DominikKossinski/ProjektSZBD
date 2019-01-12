@@ -52,7 +52,7 @@ public class PatientRestController {
             @Override
             public List<Patient> getAllPatients() {
 
-                return getJdbcTemplate().query("SELECT * FROM PACJENCI",
+                return getJdbcTemplate().query("SELECT * FROM PACJENCI" + " order by PESEL",
                         (rs, arg1) -> new Patient(rs.getLong("pesel"), rs.getString("imie"),
                                 rs.getString("nazwisko"), rs.getString("haslo")));
             }
@@ -70,7 +70,7 @@ public class PatientRestController {
 
             @Override
             public List<Patient> getAllPatientsInfo() {
-                return getJdbcTemplate().query("SELECT pesel, imie, nazwisko FROM PACJENCI",
+                return getJdbcTemplate().query("SELECT pesel, imie, nazwisko FROM PACJENCI" + " order by PESEL",
                         (rs, arg1) -> new Patient(rs.getLong("pesel"), rs.getString("imie"),
                                 rs.getString("nazwisko")));
             }

@@ -37,7 +37,7 @@ public class DoctorRestController {
         this.doctorInterface = new DoctorInterface() {
             @Override
             public List<Doctor> getAllDoctors() {
-                return getJdbcTemplate().query("SELECT * FROM LEKARZE",
+                return getJdbcTemplate().query("SELECT * FROM LEKARZE order by ID_LEKARZA",
                         (rs, arg1) -> new Doctor(rs.getLong("id_lekarza"), rs.getString("imie"),
                                 rs.getString("nazwisko"), rs.getDouble("placa"),
                                 rs.getLong("id_oddzialu"), rs.getString("stanowisko"),
@@ -50,7 +50,7 @@ public class DoctorRestController {
                                 "l.stanowisko, l.HASLO " +
                                 "from lekarze l join oddzialy o on l.id_oddzialu = o.id_oddzialu " +
                                 "join SZPITALE s on s.ID_SZPITALA = o.ID_SZPITALA " +
-                                "where  o.ID_SZPITALA = " + hospitalId,
+                                "where  o.ID_SZPITALA = " + hospitalId + " order by l.ID_LEKARZA",
                         (rs, arg1) -> new Doctor(rs.getLong("id_lekarza"), rs.getString("imie"),
                                 rs.getString("nazwisko"), rs.getDouble("placa"),
                                 rs.getLong("id_oddzialu"), rs.getString("stanowisko"),
@@ -59,7 +59,8 @@ public class DoctorRestController {
 
             @Override
             public List<Doctor> getDoctorsByHospitalSectionId(long hospitalSectionId) {
-                return getJdbcTemplate().query("SELECT * FROM LEKARZE WHERE ID_ODDZIALU = " + hospitalSectionId,
+                return getJdbcTemplate().query("SELECT * FROM LEKARZE WHERE ID_ODDZIALU = " + hospitalSectionId
+                                + " order by ID_LEKARZA",
                         (rs, arg1) -> new Doctor(rs.getLong("id_lekarza"), rs.getString("imie"),
                                 rs.getString("nazwisko"), rs.getDouble("placa"),
                                 rs.getLong("id_oddzialu"), rs.getString("stanowisko"),
@@ -68,7 +69,8 @@ public class DoctorRestController {
 
             @Override
             public List<Doctor> getAllDoctorsInfo() {
-                return getJdbcTemplate().query("SELECT id_lekarza, imie, nazwisko, id_oddzialu, stanowisko FROM lekarze",
+                return getJdbcTemplate().query("SELECT id_lekarza, imie, nazwisko, id_oddzialu, stanowisko " +
+                                "FROM lekarze order by ID_LEKARZA",
                         (rs, arg1) -> new Doctor(rs.getLong("id_lekarza"), rs.getString("imie"),
                                 rs.getString("nazwisko"), rs.getLong("id_oddzialu"),
                                 rs.getString("stanowisko")));
@@ -80,7 +82,7 @@ public class DoctorRestController {
                                 "l.stanowisko " +
                                 "from lekarze l join oddzialy o on l.id_oddzialu = o.id_oddzialu " +
                                 "join SZPITALE s on s.ID_SZPITALA = o.ID_SZPITALA " +
-                                "where  o.ID_SZPITALA = " + hospitalId,
+                                "where  o.ID_SZPITALA = " + hospitalId + " order by l.ID_LEKARZA",
                         (rs, arg1) -> new Doctor(rs.getLong("id_lekarza"), rs.getString("imie"),
                                 rs.getString("nazwisko"), rs.getLong("id_oddzialu"),
                                 rs.getString("stanowisko")));
@@ -89,7 +91,7 @@ public class DoctorRestController {
             @Override
             public List<Doctor> getDoctorsInfoByHospitalSectionId(long hospitalSectionId) {
                 return getJdbcTemplate().query("SELECT id_lekarza, imie, nazwisko, id_oddzialu, stanowisko " +
-                                "FROM lekarze WHERE ID_ODDZIALU = " + hospitalSectionId,
+                                "FROM lekarze WHERE ID_ODDZIALU = " + hospitalSectionId + " order by l.ID_LEKARZA",
                         (rs, arg1) -> new Doctor(rs.getLong("id_lekarza"), rs.getString("imie"),
                                 rs.getString("nazwisko"), rs.getLong("id_oddzialu"),
                                 rs.getString("stanowisko")));
