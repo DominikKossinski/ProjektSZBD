@@ -122,6 +122,7 @@ function updateHospital(id, name, address, city) {
 }
 
 function deleteHospital(id) {
+    //TODO potwierdznie woli
     var http = new XMLHttpRequest();
     var url = "/api/admin/deleteHospital?id=" + id;
     http.open("Delete", url, true);
