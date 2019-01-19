@@ -333,7 +333,7 @@ public class HospitalRestController {
      * @param hospitalData - tekst w formacie JSON zawierający dane o szpitalu
      * @return (String) - odpowiedź serwera zawierająca status zakończenia aktualizowania danych szpitala
      */
-    @RequestMapping(value = "/api/updateHospital", method = RequestMethod.POST,
+    @RequestMapping(value = "/api/admin/updateHospital", method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String updateHospital(@RequestBody String hospitalData) {
         try {
@@ -360,7 +360,7 @@ public class HospitalRestController {
      * @param id - id szpitala
      * @return (String) - odpowiedź serwera zawierająca status zakończenia usuwania szpitala
      */
-    @RequestMapping(value = "/api/deleteHospital", method = RequestMethod.DELETE,
+    @RequestMapping(value = "/api/admin/deleteHospital", method = RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String deleteHospital(@RequestParam("id") long id) {
         int status = hospitalInterface.deleteHospital(id);

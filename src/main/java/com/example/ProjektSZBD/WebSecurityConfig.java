@@ -107,7 +107,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .password(patient.getPassword()).roles("PATIENT").build();
             getInMemoryUserDetailsManager().createUser(userDetails);
         }
-        UserDetails userDetails = User.withUsername("Admin")
+        UserDetails userDetails = User.withUsername("admin")
                 .password("admin").roles("ADMIN").build();
         getInMemoryUserDetailsManager().createUser(userDetails);
         return ProjektSzbdApplication.getInMemoryUserDetailsManager();
