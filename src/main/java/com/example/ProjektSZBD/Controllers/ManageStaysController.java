@@ -10,19 +10,19 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- * Controler odpowiadajacy za wyświetlanie strony dodawania pobytu.
+ * Controler odpowiadajacy za wyświetlanie strony zarządzania pobytami.
  */
 @Controller
-public class AddStayController {
+public class ManageStaysController {
 
     /**
-     * Metoda zwracająca nazwę widoku strony dodawania pobytu.
+     * Metoda zwracająca nazwę widoku strony zarządzania pobytami.
      *
      * @param id    - id lekarza
      * @param model - model widoku
-     * @return "addStay" - nazwa widoku strony.
+     * @return "ManageStays" - nazwa widoku strony.
      */
-    @GetMapping("/{id}/addStay")
+    @GetMapping("/{id}/manageStays")
     public String addStay(@PathVariable("id") long id,
                           @RequestParam(value = "pesel", defaultValue = "", required = false) String pesel,
                           Model model) {
@@ -32,6 +32,6 @@ public class AddStayController {
         DoctorInterface doctorInterface = doctorRestController.getDoctorInterface();
         Doctor doctor = doctorInterface.getDoctorsById(id);
         model.addAttribute("hospitalSectionId", doctor.getHospitalSectionId());
-        return "addStay";
+        return "ManageStays";
     }
 }

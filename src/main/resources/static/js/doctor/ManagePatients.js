@@ -111,8 +111,9 @@ function addPatient() {
                     //TODO lepsze wyswietlanie errora
                     alert(response.description);
                 }
+                searchPatients();
             }
-            searchPatients();
+
         };
     } else {
         //TODO ladniej wyswietlac informacje
