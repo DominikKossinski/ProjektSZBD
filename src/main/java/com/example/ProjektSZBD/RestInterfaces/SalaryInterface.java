@@ -50,4 +50,9 @@ public interface SalaryInterface {
      * kod błędu w przypadku błędu
      */
     int deleteSalary(String position);
+
+    /**
+     * Metoda do korekcji wszystkich płac po zmianie płacy.
+     */
+    void updateAllSalaries();
 }

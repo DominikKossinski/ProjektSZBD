@@ -46,7 +46,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/css/director/*", "/js/director/*", "/manageDoctors",
                         "/api/hospitalSections**", "/manageHospitalSections",
                         "/api/updateHospitalSection", "/api/addHospitalSection", "/api/deleteHospitalSection",
-                        "/api/rooms*", "/manageRooms", "/api/addRoom", "/api/updateRoom", "/api/deleteRoom",
+                        "/manageRooms", "/api/addRoom", "/api/updateRoom", "/api/deleteRoom",
                         "/api/doctors**", "/api/addDoctor", "/api/updateDoctor", "/api/deleteDoctor**").hasRole("Dyrektor")
                 .antMatchers("/css/ordynator/*", "/js/ordynator/*", "/manageElements", "/api/elements**",
                         "/api/addElement", "/api/updateElement", "/api/deleteElement**").hasRole("Ordynator")
@@ -65,7 +65,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/api/deletePatient", "/api/updatePatient", "/api/searchPatients**", "/api/patient**",
                         "/api/addStay", "/api/updateStay", "/api/deleteStay", "/api/addIllness", "/api/updateIllness", "/api/deleteIllness**",
                         "/manageIllnesses", "/api/prescriptions**", "/managePrescriptions", "/api/addPrescription", "/api/updatePrescription",
-                        "/api/deletePrescription**", "/api/stays**").access("@webSecurityConfig.isDoctor(authentication)")
+                        "/api/deletePrescription**", "/api/stays**", "/api/rooms*").access("@webSecurityConfig.isDoctor(authentication)")
 
                 .antMatchers("/api/patient/{pesel}/**", "/patient/{pesel}/**").access(
                 "@webSecurityConfig.checkPatientPesel(authentication, #pesel)")

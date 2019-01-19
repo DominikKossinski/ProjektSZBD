@@ -104,6 +104,18 @@ public class SalaryRestController {
                     return -5;
                 }
             }
+
+            @Override
+            public void updateAllSalaries() {
+                try {
+                    CallableStatement call = getJdbcTemplate().getDataSource().getConnection().prepareCall(
+                            "{call updateAllSalaries}"
+                    );
+                    call.execute();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         };
     }
 
@@ -190,7 +202,7 @@ public class SalaryRestController {
             int status = salaryInterface.updateSalary(salary);
 
             if (status == 0) {
-                //TODO wywołanie procedury do korekcji płac
+                salaryInterface.updateAllSalaries();
                 return ResponseCreator.jsonResponse("Successful updating salary with position = " + salary.getPosition());
             } else if (status == -4) {
                 return ResponseCreator.jsonErrorResponse("No salary with position = " + salary.getPosition());

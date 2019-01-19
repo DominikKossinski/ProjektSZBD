@@ -331,6 +331,7 @@ function addDoctor() {
                             //TODO lepsze wyswietlanie errora
                             alert(response.description);
                         }
+                        getDoctors();
                     }
                 };
             } else {

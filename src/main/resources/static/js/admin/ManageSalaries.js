@@ -34,7 +34,7 @@ function getSalaries() {
                     acceptInput.value = "Akceptuj";
                     acceptInput.style.display = "none";
                     acceptInput.onclick = function () {
-                        updateSalary(salary.position, minInput.value, maxInput.value);
+                        updateSalary(salary.position, parseInt(minInput.value), parseInt(maxInput.value));
                     };
                     li.appendChild(acceptInput);
 
