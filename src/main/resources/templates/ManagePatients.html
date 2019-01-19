@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Dodaj Pacjenta</title>
-    <link href="/css/doctor/addPatient.css" rel="stylesheet">
+    <link href="/css/doctor/ManagePatients.css" rel="stylesheet">
 </head>
-<body>
+<body onload="searchPatients()">
 <label>Pesel:</label>
 <input id="pesel-input" type="text">
 <label>Imię:</label>
@@ -15,10 +15,12 @@
 <label>Hasło</label>
 <input id="password-input" type="password">
 <input onclick="addPatient()" type="submit" value="Dodaj">
-
+<br>
+<input id="search-input" oninput="searchPatients()" type="text">
+<ul id="patients-ul"></ul>
 
 <input onclick="addStay()" type="submit" value="Dodaj Pobyt">
 <span id="id-span" th:text="${id}"></span>
-<script src="/js/doctor/addPatient.js"></script>
+<script src="/js/doctor/ManagePatients.js"></script>
 </body>
 </html>

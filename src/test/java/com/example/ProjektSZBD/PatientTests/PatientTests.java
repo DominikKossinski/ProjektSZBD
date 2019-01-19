@@ -60,6 +60,11 @@ public class PatientTests {
             }
 
             @Override
+            public List<Patient> getPatientsByPattern(String pattern) {
+                return null;
+            }
+
+            @Override
             public int insertPatient(Patient patient) {
                 return 0;
             }

@@ -41,6 +41,13 @@ public interface PatientInterface {
     List<Patient> getAllPatientsInfo();
 
     /**
+     * Metoda do wyszukiwania pacjentów po ciągu znaków.
+     *
+     * @return (List of Patient) - lista obiektów zawierających pełne dane o pacjentach
+     */
+    List<Patient> getPatientsByPattern(String pattern);
+
+    /**
      * Metoda obsługująca wstawianie nowego pacjenta.
      *
      * @param patient - obiekt reprezentujący pacjenta

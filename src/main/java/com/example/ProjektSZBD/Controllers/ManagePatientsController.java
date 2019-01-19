@@ -7,21 +7,21 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 /**
- * Controler odpowiadajacy za wyświetlanie strony dodawania pacjenta.
+ * Controler odpowiadajacy za wyświetlanie strony zarządzania pacjentami.
  */
 @Controller
-public class AddPatientController {
+public class ManagePatientsController {
 
     /**
-     * Metoda zwracająca nazwę widoku strony dodawania pacjenta.
+     * Metoda zwracająca nazwę widoku strony zarządzania pacjentami.
      *
      * @param model - model widoku
-     * @return "addPatient" - nazwa widoku strony.
+     * @return "ManagePatients" - nazwa widoku strony.
      */
-    @GetMapping("/addPatient")
+    @GetMapping("/managePatients")
     public String addPatient(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         model.addAttribute("id", auth.getName());
-        return "addPatient";
+        return "ManagePatients";
     }
 }
