@@ -4,18 +4,66 @@
     <meta charset="UTF-8">
     <title>Mój Profil</title>
     <link href="/css/patient/PatientProfile.css" rel="stylesheet" type="text/css">
+    <link href="/css/fontello/css/fontello.css" rel="stylesheet" type="text/css">
 </head>
 <body onload="getPatientData()">
-<div>
-    <label>Pesel:</label>
-    <label id="pesel-label" th:text="${id}"></label>
-    <label>Imię</label>
-    <label id="first-name-label"></label>
-    <label>Nazwisko:</label>
-    <label id="last-name-label"></label>
 
-    <a href="/myStays">Moje pobyty</a>
-    <a href="/myPrescriptions">Moje Recepty</a>
+<div id="logo">
+
+    <a href="/home">
+        <img src="/img/hos_logo.png"/>
+    </a>
+
+    <div id="pasek">
+        <a href="/hospitals">
+            <div class="linkref">
+                Szpitale
+            </div>
+        </a>
+        <a href="/illnesses">
+            <div class="linkref">
+                Choroby
+            </div>
+        </a>
+        <a th:href="@{|/${userId}/doctorProfile|}" th:if="${isDoctor}">
+            <div class="linkref">
+                Mój Profil
+            </div>
+        </a>
+        <a href="/adminPanel" th:if="${isAdmin}">
+            <div class="linkref">
+                Admin Panel
+            </div>
+        </a>
+        <a th:href="@{|/patient/${userId}/patientProfile|}" th:if="${isPatient}">
+            <div class="linkref">Mój Profil</div>
+        </a>
+        <div class="linkref" onclick="logout()" th:if="${isAuthenticated}">
+            Wyloguj
+        </div>
+    </div>
+    <div style="clear: both"></div>
+
+</div>
+<div id="container">
+    <div id="userVis">
+        asidj
+        <i class="icon-user"></i>
+    </div>
+    <div id="slider">
+        <label>Pesel:</label>
+        <label id="pesel-label" th:text="${id}"></label>
+        <label>Imię</label>
+        <label id="first-name-label"></label>
+        <label>Nazwisko:</label>
+        <label id="last-name-label"></label>
+
+        <a href="/myStays">Moje pobyty</a>
+        <a href="/myPrescriptions">Moje Recepty</a>
+
+    </div>
+
+
 </div>
 <script src="/js/patient/PatientProfile.js"></script>
 </body>

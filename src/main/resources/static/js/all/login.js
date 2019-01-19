@@ -3,6 +3,7 @@ function login() {
     var password = document.getElementById("password-input").value;
     var errorLabel = document.getElementById("error-label");
     if (id !== "" && password !== "") {
+        errorLabel.style.display='none';
         var data = JSON.stringify({"id": id, "password": password});
         var http = new XMLHttpRequest();
         var url = "/api/login";
@@ -21,9 +22,12 @@ function login() {
                         document.getElementById("id-input").value = "";
                         document.getElementById("password-input").value = "";
                         errorLabel.innerText = "Podano złe id lub zły pesel lob złe hasło";
+                        errorLabel.style.display='block';
                     }
                 } else {
                     errorLabel.innerText = "Logowanie nie powiodło się";
+                    errorLabel.style.display='block';
+
                 }
             }
         };
