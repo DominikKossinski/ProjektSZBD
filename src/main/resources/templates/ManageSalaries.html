@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Płace</title>
+    <link href="/css/admin/ManageSalaries.css" rel="stylesheet">
+</head>
+<body onload="getSalaries()">
+<label>Nazwa stanowiska:</label>
+<input id="position-input" type="text">
+<label>Płaca minimalna</label>
+<input id="min-salary-input" type="number">
+<label>Płaca maksymalna:</label>
+<input id="max-salary-input" type="number">
+<input onclick="addSalary()" type="submit" value="Dodaj Płacę">
+
+<ul id="salaries-ul"></ul>
+<script src="/js/admin/ManageSalaries.js"></script>
+</body>
+</html>

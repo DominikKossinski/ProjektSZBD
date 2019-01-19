@@ -46,7 +46,7 @@ public class SalaryRestController {
 
             @Override
             public List<Salary> getAllSalaries() {
-                return getJdbcTemplate().query("SELECT * FROM PLACE",
+                return getJdbcTemplate().query("SELECT * FROM PLACE order by PLACA_MAX desc",
                         (rs, arg1) -> new Salary(rs.getString("stanowisko"), rs.getFloat("placa_min"),
                                 rs.getFloat("placa_max")));
             }
@@ -190,6 +190,7 @@ public class SalaryRestController {
             int status = salaryInterface.updateSalary(salary);
 
             if (status == 0) {
+                //TODO wywołanie procedury do korekcji płac
                 return ResponseCreator.jsonResponse("Successful updating salary with position = " + salary.getPosition());
             } else if (status == -4) {
                 return ResponseCreator.jsonErrorResponse("No salary with position = " + salary.getPosition());

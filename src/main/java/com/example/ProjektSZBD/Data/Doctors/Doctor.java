@@ -142,8 +142,8 @@ public class Doctor {
     }
 
     public static Doctor getInstance(JSONObject doctor) {
-        return new Doctor((long) doctor.get("id"), (String) doctor.get("first_name"), (String) doctor.get("last_name"),
-                Double.valueOf(String.valueOf(doctor.get("salary"))), (long) doctor.get("hospital_section_id"),
+        return new Doctor(Long.parseLong(String.valueOf(doctor.get("id"))), (String) doctor.get("first_name"), (String) doctor.get("last_name"),
+                Double.valueOf(String.valueOf(doctor.get("salary"))), Long.parseLong(String.valueOf(doctor.get("hospital_section_id"))),
                 (String) doctor.get("position"), (String) doctor.get("password"));
     }
 

@@ -7,24 +7,26 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import static com.example.ProjektSZBD.DataGetter.getHospitalId;
+import static com.example.ProjektSZBD.DataGetter.getUserRoles;
 
 /**
- * Controler odpowiadajacy za wyświetlanie strony dodawania lekarza.
+ * Controler odpowiadajacy za wyświetlanie strony zarządzania lekarzami.
  */
 @Controller
-public class AddDoctorController {
+public class ManageDoctorsController {
 
     /**
-     * Metoda odpowiedzialna zwracanie widoku strony dodawania lekarza.
+     * Metoda odpowiedzialna zwracanie widoku strony zarządzania lekarzami.
      *
      * @param model - model widoku
-     * @return "addIllness" - nazwa widoku strony dodawania lekarza
+     * @return "manageDoctors" - nazwa widoku strony zarządzania lekarzami
      */
-    @GetMapping("/addDoctor")
+    @GetMapping("/manageDoctors")
     public String getAddDoctor(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        getUserRoles(model, authentication);
         model.addAttribute("id", authentication.getName());
         model.addAttribute("hospitalId", getHospitalId(Long.parseLong(authentication.getName())));
-        return "addDoctor";
+        return "ManageDoctors";
     }
 }

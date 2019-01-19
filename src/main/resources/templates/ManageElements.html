@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Elementy Wyposażenia</title>
+    <link href="/css/ordynator/ManageElements.css" rel="stylesheet">
+</head>
+<body onload="getElements()">
+<label>Nazwa</label>
+<input id="name-input" type="text">
+<label>Ilość:</label>
+<input id="count-input" oninput="countPrice()" type="number">
+<label>Cena:</label>
+<input id="price-input" oninput="countPrice()" step="0.01" type="number">
+<label id="price-label">Łączna cena: 0.00 zł</label>
+<input onclick="addElement()" type="submit" value="Dodaj Element wyposażenia">
+<ul id="elements-ul"></ul>
+<span id="hospital-section-id-span" th:text="${hospitalSectionId}"></span>
+<script src="/js/ordynator/ManageElements.js"></script>
+</body>
+</html>

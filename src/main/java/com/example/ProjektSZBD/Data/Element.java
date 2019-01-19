@@ -83,7 +83,8 @@ public class Element {
         JSONParser parser = new JSONParser();
         JSONObject element = (JSONObject) parser.parse(elementData);
         return new Element((long) element.get("id"), (String) element.get("name"),
-                Integer.parseInt(String.valueOf(element.get("count"))), (double) element.get("price"),
+                Integer.parseInt(String.valueOf(element.get("count"))),
+                Double.valueOf(String.valueOf(element.get("price"))),
                 (long) element.get("hospital_section_id"));
     }
 

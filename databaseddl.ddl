@@ -523,15 +523,24 @@ CREATE OR REPLACE FUNCTION updateDoctor(doctorId IN NUMBER,
 IS
 
 BEGIN
-
-  UPDATE LEKARZE
-  SET imie        = firstName,
-      nazwisko    = lastName,
-      placa       = salary,
-      id_oddzialu = hospitalSectionId,
-      stanowisko  = position,
-      haslo       = password
-  WHERE ID_LEKARZA = doctorId;
+  IF (password != '') then
+    UPDATE LEKARZE
+    SET imie        = firstName,
+        nazwisko    = lastName,
+        placa       = salary,
+        id_oddzialu = hospitalSectionId,
+        stanowisko  = position,
+        haslo       = password
+    WHERE ID_LEKARZA = doctorId;
+  else
+    UPDATE LEKARZE
+    SET imie        = firstName,
+        nazwisko    = lastName,
+        placa       = salary,
+        id_oddzialu = hospitalSectionId,
+        stanowisko  = position
+    WHERE ID_LEKARZA = doctorId;
+  end if;
   rowCount := SQL%ROWCOUNT;
   if (rowCount = 1) then
     return 0; --Poprawne zakończenie
@@ -1234,7 +1243,7 @@ IS
 
 BEGIN
 
-  UPDATE place SET placa_min = minSalary, placa_max = minSalary where stanowisko = position;
+  UPDATE place SET placa_min = minSalary, placa_max = maxSalary where stanowisko = position;
   rowCount := SQL%ROWCOUNT;
   if (rowCount = 1) then
     return 0; --Poprawne zakończenie

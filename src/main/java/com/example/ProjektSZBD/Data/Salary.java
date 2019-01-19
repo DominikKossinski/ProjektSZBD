@@ -68,8 +68,8 @@ public class Salary {
     public static Salary getInstance(String salaryData) throws ParseException {
         JSONParser parser = new JSONParser();
         JSONObject salary = (JSONObject) parser.parse(salaryData);
-        return new Salary((String) salary.get("position"), (double) (long) salary.get("min_salary"),
-                (double) (long) salary.get("max_salary"));
+        return new Salary((String) salary.get("position"), Double.valueOf(String.valueOf(salary.get("min_salary"))),
+                Double.valueOf(String.valueOf(salary.get("max_salary"))));
     }
 
     public String getPosition() {

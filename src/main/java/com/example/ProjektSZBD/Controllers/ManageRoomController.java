@@ -5,28 +5,27 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 
+import static com.example.ProjektSZBD.DataGetter.getHospitalId;
 import static com.example.ProjektSZBD.DataGetter.getUserRoles;
 
 /**
- * Controler odpowiadajacy za wyświetlanie strony profilu lekarza.
+ * Controler odpowiadajacy za wyświetlanie strony zarządzania pokojami.
  */
 @Controller
-public class DoctorProfileController {
+public class ManageRoomController {
 
     /**
-     * Metoda zwracająca nazwę widoku strony profilu lekarza
+     * Metoda odpowiedzialna zwracanie widoku strony zarządzania pokojami.
      *
-     * @param userId - id lekarza
-     * @param model  - model widoku
-     * @return "doctorProfile" - nazwa widoku strony.
+     * @param model - model widoku
+     * @return "ManageRooms" - nazwa widoku strony zarządzania pokojami.
      */
-    @GetMapping("/{userId}/doctorProfile")
-    public String getDoctorProfile(@PathVariable("userId") String userId, Model model) {
-        model.addAttribute("id", userId);
+    @GetMapping("/manageRooms")
+    public String getManageRooms(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         getUserRoles(model, authentication);
-        return "doctorProfile";
+        model.addAttribute("hospitalId", getHospitalId(Long.parseLong(authentication.getName())));
+        return "ManageRooms";
     }
 }

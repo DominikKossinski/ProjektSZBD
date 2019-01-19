@@ -5,28 +5,25 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import static com.example.ProjektSZBD.DataGetter.getUserRoles;
 
 /**
- * Controler odpowiadajacy za wyświetlanie strony profilu lekarza.
+ * Controler odpowiadajacy za wyświetlanie strony zarządzania płacami.
  */
 @Controller
-public class DoctorProfileController {
+public class ManageSalariesController {
 
     /**
-     * Metoda zwracająca nazwę widoku strony profilu lekarza
+     * Metoda odpowiedzialna zwracanie widoku strony zarządzania płacami.
      *
-     * @param userId - id lekarza
-     * @param model  - model widoku
-     * @return "doctorProfile" - nazwa widoku strony.
+     * @param model - model widoku
+     * @return "manageDoctors" - nazwa widoku strony zarządzania płacami
      */
-    @GetMapping("/{userId}/doctorProfile")
-    public String getDoctorProfile(@PathVariable("userId") String userId, Model model) {
-        model.addAttribute("id", userId);
+    @GetMapping("/admin/manageSalaries")
+    public String getManageSalaries(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         getUserRoles(model, authentication);
-        return "doctorProfile";
+        return "ManageSalaries";
     }
 }

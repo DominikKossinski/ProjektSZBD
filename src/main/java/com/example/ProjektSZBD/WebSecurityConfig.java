@@ -41,23 +41,30 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/illnesses", "/api/illness**", "/api/allHospitals", "/api/hospitalSections**", "/hospitals").permitAll()
                 .antMatchers("/api/logout").authenticated()
 
-                .antMatchers("/css/director/*", "/js/director/*", "/addDoctor", "/api/salary**",
-                        "/api/hospitalSections**", "/api/addDoctor", "/manageHospitalSections",
-                        "/api/updateHospitalSection", "/api/addHospitalSection", "/api/deleteHospitalSection").hasRole("Dyrektor")
-                /*.antMatchers("/css/doctor/*", "/js/doctor/*").hasRole("Ordynator")
-                .antMatchers("/css/doctor/*", "/js/doctor/*").hasRole("Lekarz")
+                .antMatchers("/api/salary**").access("@webSecurityConfig.isDirectorOrAdmin(authentication)")
+
+                .antMatchers("/css/director/*", "/js/director/*", "/manageDoctors",
+                        "/api/hospitalSections**", "/manageHospitalSections",
+                        "/api/updateHospitalSection", "/api/addHospitalSection", "/api/deleteHospitalSection",
+                        "/api/rooms*", "/manageRooms", "/api/addRoom", "/api/updateRoom", "/api/deleteRoom",
+                        "/api/doctors**", "/api/addDoctor", "/api/updateDoctor", "/api/deleteDoctor**").hasRole("Dyrektor")
+                .antMatchers("/css/ordynator/*", "/js/ordynator/*", "/manageElements", "/api/elements**",
+                        "/api/addElement", "/api/updateElement", "/api/deleteElement**").hasRole("Ordynator")
+                /*.antMatchers("/css/doctor/*", "/js/doctor/*").hasRole("Lekarz")
                 .antMatchers("/css/doctor/*", "/js/doctor/*").hasRole("Asystent")
                 .antMatchers("/css/doctor/*", "/js/doctor/*").hasRole("Rezydent")
                 .antMatchers("/css/doctor/*", "/js/doctor/*").hasRole("Praktykant")*/
 
                 .antMatchers("/admin/*", "/api/admin/*", "/js/admin/*", "/css/admin/*",
-                        "/api/salary*", "/adminPanel").hasRole("ADMIN")
+                        "/adminPanel", "/api/addSalary**", "/api/updateSalary",
+                        "/api/deleteSalary").hasRole("ADMIN")
 
                 .antMatchers("/js/patient/*", "/css/patient/*", "/myStays", "/myPrescriptions").access(
                 "@webSecurityConfig.isPatient(authentication)")
                 .antMatchers("/api/rooms**", "/js/doctor/*", "/css/doctor/*", "/addPatient", "/api/addPatient",
-                        "/api/addStay", "/api/addIllness", "/addIllness").access(
-                "@webSecurityConfig.isDoctor(authentication)")
+                        "/api/addStay", "/api/addIllness", "/api/updateIllness", "/api/deleteIllness**",
+                        "/manageIllnesses", "/api/prescriptions**", "/managePrescriptions", "/api/addPrescription", "/api/updatePrescription",
+                        "/api/deletePrescription**", "/api/stays**").access("@webSecurityConfig.isDoctor(authentication)")
 
                 .antMatchers("/api/patient/{pesel}/**", "/patient/{pesel}/**").access(
                 "@webSecurityConfig.checkPatientPesel(authentication, #pesel)")
@@ -131,5 +138,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .map(r -> r.getAuthority()).collect(Collectors.toSet());
         ArrayList<String> list = new ArrayList<>(roles);
         return list.get(0).compareTo("ROLE_PATIENT") == 0;
+    }
+
+    public boolean isDirectorOrAdmin(Authentication authentication) {
+        Set<String> roles = authentication.getAuthorities().stream()
+                .map(r -> r.getAuthority()).collect(Collectors.toSet());
+        ArrayList<String> list = new ArrayList<>(roles);
+        System.out.println("is Admin or director" +
+                (list.get(0).compareTo("ROLE_ADMIN") == 0 || list.get(0).compareTo("ROLE_Dyrektor") == 0));
+        return list.get(0).compareTo("ROLE_ADMIN") == 0 || list.get(0).compareTo("ROLE_Dyrektor") == 0;
     }
 }
