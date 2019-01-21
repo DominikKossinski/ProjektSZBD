@@ -262,6 +262,30 @@ public class DoctorRestController {
     }
 
     /**
+     * Metoda zwracająca podstawowe dane o lekarzu o podanym id.
+     *
+     * @param id - id lekarza
+     * @return (String) - tekst w formacie JSON zawierający podstawowe dane lekarza
+     */
+    @RequestMapping(value = "/api/doctorInfo", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public String getDoctorInfo(@RequestParam("id") long id) {
+        Doctor doctor = doctorInterface.getDoctorsById(id);
+        if (doctor != null) {
+            try {
+                doctor.setPassword("");
+                doctor.setSalary(0);
+                return ResponseCreator.jsonResponse("doctor", doctor.toJSONObject(),
+                        "Doctor with id = " + id);
+            } catch (ParseException e) {
+                return ResponseCreator.parseErrorResponse(e);
+            }
+        } else {
+            return ResponseCreator.jsonErrorResponse("No doctor with id  = " + id);
+        }
+    }
+
+    /**
      * Metoda klasy odpowiadająca za obsługę żądania podstawowych danych lekarzy, z możliwością
      * obsługi żądania dotyczącego wszystkich lekarzy (gdy hospitalId oraz hospitalSectionId nie
      * zostało podane), lekarzy z danego szpitala (gdy hospitalId zostało podane) i lekarzy

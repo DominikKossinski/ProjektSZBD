@@ -13,15 +13,16 @@ function getMyStays() {
             stays.map(function (stay) {
 
                 var end_date = stay.end_date;
-                if(end_date === "null"){
+                if (end_date === "null") {
                     end_date = "-";
                 }
 
                 var hosp_id = document.createElement("td");
                 var oddzial = document.createElement("td");
-                var lek_nazw = document.createElement("td");        //TODO dopisz pobieranie nazwiska lekarza
+                var lek_nazw = document.createElement("td");
 
                 getRoomById(stay.id, hosp_id, oddzial);
+                getDoctorById(stay.doctor_id, lek_nazw);
 
                 var row = $('<tr/>')
                     .append($('<td/>', {text: stay.id || ''}))      //ID pobytu
@@ -44,7 +45,7 @@ function getMyStays() {
 
 }
 
-function getRoomById(id, hosp_id, oddzial){
+function getRoomById(id, hosp_id, oddzial) {
     fetch("/api/rooms?id=" + id).then(
         function (value) {
             return value.json();
@@ -76,27 +77,21 @@ function getHospitalSectionById(id, hosp_id, oddzial) {
         } else {
             //TODO ładniesze info o błędzie
             alert(data.description);
-            return null;
         }
     })
 }
 
-
-//TODO dodaj drugi parametr - element przechowujący nazwę szpitala
-function getHospitalById(id) {
-    fetch("/api/hospital?id=" + id).then(
-        function (value) {
-            return value.json();
-        }
-    ).then(function (data) {
+function getDoctorById(id, nameTd) {
+    fetch("/api/doctorInfo?id=" + id).then(function (value) {
+        return value.json();
+    }).then(function (data) {
         console.log(data);
         if (data.resp_status === "ok") {
-            var hospital = data.hospital;
-            //TODO obrobić dane szpitala tutaj
+            var doctor = data.doctor;
+            nameTd.innerText = doctor.last_name;
         } else {
             //TODO ładniesze info o błędzie
             alert(data.description);
-            return null;
         }
     })
 }

@@ -152,6 +152,14 @@ public class Doctor {
         return salary;
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setSalary(double salary) {
+        this.salary = salary;
+    }
+
     public long getHospitalSectionId() {
         return hospitalSectionId;
     }
