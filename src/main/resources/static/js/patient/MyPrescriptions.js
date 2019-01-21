@@ -18,7 +18,7 @@ function getPrescriptions() {
                 ).then(function (data1) {
                     console.log(data1);
                     if (data1.resp_status === "ok") {
-                        
+
                         var row = $('<tr/>')
                             .append($('<td/>', {text: prescription.id || ''}))          // ID recepty
                             .append($('<td/>', {text: prescription.illness_id || ''}))          // ID choroby
