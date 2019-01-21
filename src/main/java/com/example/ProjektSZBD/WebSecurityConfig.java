@@ -39,7 +39,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/", "/home", "/api/login","/css/fontello/css/*", "/css/fontello/font/*", "/css/all/*", "/js/all/*", "/img/*", "/api/hospitalSection**",
                         "/illnesses", "/api/illness**", "/api/allHospitals", "/api/hospitalSections**", "/hospitals",
-                        "/api/rooms**", "/api/hospital**").permitAll()
+                        "/api/rooms**", "/api/hospital**", "/api/hospitalDirector**").permitAll()
                 .antMatchers("/api/logout", "/api/doctorInfo**").authenticated()
 
                 .antMatchers("/api/salary**").access("@webSecurityConfig.isDirectorOrAdmin(authentication)")

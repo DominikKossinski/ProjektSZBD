@@ -125,6 +125,13 @@ a {
     color: #FFFFFF;
 }
 
+.hospital-director-label {
+    color: #FFFFFF;
+    font-size: medium;
+    margin: 5px 5px auto 10px;
+    display: block;
+}
+
 .hospital-section-label {
     color: #FFFFFF;
     font-size: medium;
