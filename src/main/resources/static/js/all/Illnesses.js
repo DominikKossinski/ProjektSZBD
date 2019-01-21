@@ -13,13 +13,30 @@ function getIllnesses() {
 }
 
 function mapIllnesses(illnesses) {
-    var ul = document.getElementById("illnesses-ul");
-    ul.innerHTML = "";
     var i = 0;
+    var illnessesDiv = document.getElementById("illnesses-div");
+    illnessesDiv.innerHTML = "";
     illnesses.map(function (illness) {
-        var li = document.createElement("li");
-        li.innerText = i + ". " + illness.name;
-        ul.appendChild(li);
+        if (i < 10) {
+            var div = document.createElement("div");
+            div.className = "illness-div";
+
+            var label = document.createElement("label");
+            label.className = "illness-name-label";
+            label.innerText = illness.name;
+            div.appendChild(label);
+
+            var p = document.createElement("p");
+            p.className = "illness-description-label";
+            if (illness.description !== "null") {
+                p.innerText = illness.description;
+            } else {
+                p.innerText = "Przypadek nie opisany";
+            }
+            div.appendChild(p);
+
+            illnessesDiv.appendChild(div);
+        }
         i++;
     });
 }
