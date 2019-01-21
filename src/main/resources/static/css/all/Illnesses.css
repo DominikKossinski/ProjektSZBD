@@ -101,10 +101,10 @@ img {
 .search-input {
     padding: 3px;
     font-size: x-large;
-    border: 5px solid #4caf50;
+    border: 5px solid #FFFFFF;
     width: 50vw;
     border-radius: 2px;
-    background: #FFFFFFB0;
+    background: #FFFFFFA0;
 }
 
 .illness-div {

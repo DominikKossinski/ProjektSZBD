@@ -13,64 +13,66 @@ function searchPatients() {
         if (data.resp_status === "ok") {
             var patients = data.patients;
             patients.map(function (patient) {
-                var patientLi = document.createElement("li");
+                for (var a = 0; a < 10; a++) {
+                    var patientLi = document.createElement("li");
 
-                var label = document.createElement("label");
-                label.innerText = patient.pesel + " Imie " + patient.first_name + " nazwisko " + patient.last_name;
-                patientLi.appendChild(label);
+                    var label = document.createElement("label");
+                    label.innerText = patient.pesel + " Imie " + patient.first_name + " nazwisko " + patient.last_name;
+                    patientLi.appendChild(label);
 
-                var firstNameInput = document.createElement("input");
-                firstNameInput.type = "text";
-                firstNameInput.value = patient.first_name;
-                firstNameInput.style.display = "none";
-                patientLi.appendChild(firstNameInput);
+                    var firstNameInput = document.createElement("input");
+                    firstNameInput.type = "text";
+                    firstNameInput.value = patient.first_name;
+                    firstNameInput.style.display = "none";
+                    patientLi.appendChild(firstNameInput);
 
-                var lastNameInput = document.createElement("input");
-                lastNameInput.type = "text";
-                lastNameInput.value = patient.last_name;
-                lastNameInput.style.display = "none";
-                patientLi.appendChild(lastNameInput);
+                    var lastNameInput = document.createElement("input");
+                    lastNameInput.type = "text";
+                    lastNameInput.value = patient.last_name;
+                    lastNameInput.style.display = "none";
+                    patientLi.appendChild(lastNameInput);
 
-                var acceptInput = document.createElement("input");
-                acceptInput.type = "submit";
-                acceptInput.value = "Akceptuj";
-                acceptInput.onclick = function () {
-                    updatePatient(patient.pesel, firstNameInput.value, lastNameInput.value, patient.password);
-                };
-                acceptInput.style.display = "none";
-                patientLi.appendChild(acceptInput);
+                    var acceptInput = document.createElement("input");
+                    acceptInput.type = "submit";
+                    acceptInput.value = "Akceptuj";
+                    acceptInput.onclick = function () {
+                        updatePatient(patient.pesel, firstNameInput.value, lastNameInput.value, patient.password);
+                    };
+                    acceptInput.style.display = "none";
+                    patientLi.appendChild(acceptInput);
 
-                var manageInput = document.createElement("input");
-                manageInput.type = "submit";
-                manageInput.value = "Edytuj";
-                manageInput.onclick = function () {
-                    if (manageInput.value === "Edytuj") {
-                        manageInput.value = "Anuluj";
-                        label.innerText = patient.pesel;
-                        firstNameInput.style.display = "block";
-                        firstNameInput.value = patient.first_name;
-                        lastNameInput.style.display = "block";
-                        lastNameInput.value = patient.last_name;
-                        acceptInput.style.display = "block";
-                    } else {
-                        manageInput.value = "Edytuj";
-                        label.innerText = patient.pesel + " Imie " + patient.first_name + " nazwisko " + patient.last_name;
-                        firstNameInput.style.display = "none";
-                        lastNameInput.style.display = "none";
-                        acceptInput.style.display = "none";
-                    }
-                };
-                patientLi.appendChild(manageInput);
+                    var manageInput = document.createElement("input");
+                    manageInput.type = "submit";
+                    manageInput.value = "Edytuj";
+                    manageInput.onclick = function () {
+                        if (manageInput.value === "Edytuj") {
+                            manageInput.value = "Anuluj";
+                            label.innerText = patient.pesel;
+                            firstNameInput.style.display = "block";
+                            firstNameInput.value = patient.first_name;
+                            lastNameInput.style.display = "block";
+                            lastNameInput.value = patient.last_name;
+                            acceptInput.style.display = "block";
+                        } else {
+                            manageInput.value = "Edytuj";
+                            label.innerText = patient.pesel + " Imie " + patient.first_name + " nazwisko " + patient.last_name;
+                            firstNameInput.style.display = "none";
+                            lastNameInput.style.display = "none";
+                            acceptInput.style.display = "none";
+                        }
+                    };
+                    patientLi.appendChild(manageInput);
 
-                var deleteInput = document.createElement("input");
-                deleteInput.type = "submit";
-                deleteInput.value = "Usuń";
-                deleteInput.onclick = function () {
-                    deletePatient(patient.pesel);
-                };
-                patientLi.appendChild(deleteInput);
+                    var deleteInput = document.createElement("input");
+                    deleteInput.type = "submit";
+                    deleteInput.value = "Usuń";
+                    deleteInput.onclick = function () {
+                        deletePatient(patient.pesel);
+                    };
+                    patientLi.appendChild(deleteInput);
 
-                patientsUl.appendChild(patientLi);
+                    patientsUl.appendChild(patientLi);
+                }
             })
         } else {
             // TODO łdniejsze wyświetlanie błędu
