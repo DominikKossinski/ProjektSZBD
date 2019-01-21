@@ -35,6 +35,10 @@ body {
     position: fixed;
 }
 
+a{
+    text-decoration: none;
+}
+
 img {
     max-width: 100px;
     max-height: 100px;
@@ -95,8 +99,9 @@ img {
 }
 
 .search-input {
+    padding: 3px;
     font-size: x-large;
-    border: 5px solid darkorange;
+    border: 5px solid #4caf50;
     width: 50vw;
     border-radius: 2px;
     background: #FFFFFFB0;

@@ -7,10 +7,70 @@
 </head>
 <body onload="getPrescriptions()">
 
-<label>Recepty:</label>
-<ul id="prescriptions-ul"></ul>
+<div id="logo">
 
-<span id="pesel-span" th:text="${pesel}"></span>
+    <a href="/home">
+        <img src="/img/hos_logo.png"/>
+    </a>
+
+    <div id="pasek">
+        <a href="/hospitals">
+            <div class="linkref">
+                Szpitale
+            </div>
+        </a>
+        <a href="/illnesses">
+            <div class="linkref">
+                Choroby
+            </div>
+        </a>
+        <a th:href="@{|/${userId}/doctorProfile|}" th:if="${isDoctor}">
+            <div class="linkref">
+                Mój Profil
+            </div>
+        </a>
+        <a href="/adminPanel" th:if="${isAdmin}">
+            <div class="linkref">
+                Admin Panel
+            </div>
+        </a>
+        <a th:href="@{|/patient/${userId}/patientProfile|}" th:if="${isPatient}">
+            <div class="linkref">Mój Profil</div>
+        </a>
+        <div class="linkref" onclick="logout()" th:if="${isAuthenticated}">
+            Wyloguj
+        </div>
+    </div>
+    <div style="clear: both"></div>
+
+</div>
+
+<div id="container">
+    <div id="title">
+        Recepty
+    </div>
+    <div id="pobyty">
+
+        <span id="pesel-span" th:text="${pesel}" style="display: none"></span>
+        <table style="border:1px solid white;">
+            <thead>
+            <tr>
+                <th>ID recepty</th>
+                <th>ID choroby</th>
+                <th>ID pobytu</th>
+                <th>Data wystawienia</th>
+                <th>Dawkowanie</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
 <script src="/js/patient/MyPrescriptions.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
 </body>
 </html>

@@ -6,6 +6,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import static com.example.ProjektSZBD.DataGetter.getUserRoles;
+
 /**
  * Controler odpowiadajacy za wyświetlanie strony wyświetlania recept pacjenta.
  */
@@ -20,8 +22,10 @@ public class MyPrescriptionController {
      */
     @GetMapping("/myPrescriptions")
     public String getMyPrescriptions(Model model) {
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         model.addAttribute("pesel", authentication.getName());
+        getUserRoles(model, authentication);
         return "MyPrescriptions";
     }
 }
