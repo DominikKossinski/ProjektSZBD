@@ -1,5 +1,5 @@
 function getHospitals() {
-    var hospitalsUl = document.getElementById("hospitals-ul");
+    var hospitalsDiv = document.getElementById("hospitals-div");
     fetch("/api/allHospitals").then(
         function (value) {
             return value.json();
@@ -10,13 +10,29 @@ function getHospitals() {
             var hospitals = data.hospitals;
             var i = 0;
             hospitals.map(function (hospital) {
-                var li = document.createElement("li");
-                li.innerText = i + ". Id: " + hospital.id + " Nazwa: " + hospital.name + " Adres: " + hospital.address +
-                    " Miasto: " + hospital.city + " Oddziały:";
+                var hospitalDiv = document.createElement("div");
+                hospitalDiv.className = "hospital-div";
+
+                var hospitalNameLabel = document.createElement("label");
+                hospitalNameLabel.className = "hospital-name-label";
+                hospitalNameLabel.innerText = hospital.name;
+                hospitalDiv.appendChild(hospitalNameLabel);
+
+                var hospitalAddressLabel = document.createElement("label");
+                hospitalAddressLabel.className = "hospital-address-label";
+                hospitalAddressLabel.innerText = "Adres: " + hospital.address + " " + hospital.city;
+                hospitalDiv.appendChild(hospitalAddressLabel);
+
+                var hospitalSectionLabel = document.createElement("label");
+                hospitalSectionLabel.className = "hospital-section-label";
+                hospitalSectionLabel.innerText = "Oddziały:";
+                hospitalDiv.appendChild(hospitalSectionLabel);
+
                 var ul = document.createElement("ul");
-                ul.style.marginLeft = 20 + "px";
-                li.appendChild(ul);
-                hospitalsUl.appendChild(li);
+                ul.className = "hospital-sections-ul";
+                hospitalDiv.appendChild(ul);
+
+                hospitalsDiv.appendChild(hospitalDiv);
                 i++;
                 fetch("/api/hospitalSections?hospitalId=" + hospital.id).then(
                     function (value1) {
@@ -26,10 +42,11 @@ function getHospitals() {
                     console.log(data1);
                     if (data1.resp_status === "ok") {
                         var hospitalSections = data1.sections;
-                        var j = 0;
+                        var j = 1;
                         hospitalSections.map(function (hospitalSection) {
                             var sectionLi = document.createElement("li");
-                            sectionLi.innerText = j + ". Nazwa: " + hospitalSection.name;
+                            sectionLi.className = "hospital-section-li";
+                            sectionLi.innerText = hospitalSection.name;
                             ul.appendChild(sectionLi);
                             j++;
                         })
