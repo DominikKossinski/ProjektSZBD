@@ -38,7 +38,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .antMatchers("/", "/home", "/api/login","/css/fontello/css/*", "/css/fontello/font/*", "/css/all/*", "/js/all/*", "/img/*", "/api/hospitalSection**",
-                        "/illnesses", "/api/illness**", "/api/allHospitals", "/api/hospitalSections**", "/hospitals").permitAll()
+                        "/illnesses", "/api/illness**", "/api/allHospitals", "/api/hospitalSections**", "/hospitals",
+                        "/api/rooms**", "/api/hospital**").permitAll()
                 .antMatchers("/api/logout").authenticated()
 
                 .antMatchers("/api/salary**").access("@webSecurityConfig.isDirectorOrAdmin(authentication)")
@@ -61,11 +62,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .antMatchers("/js/patient/*", "/css/patient/*", "/myStays", "/myPrescriptions").access(
                 "@webSecurityConfig.isPatient(authentication)")
-                .antMatchers("/api/rooms**", "/js/doctor/*", "/css/doctor/*", "/managePatients", "/api/addPatient",
+                .antMatchers("/js/doctor/*", "/css/doctor/*", "/managePatients", "/api/addPatient",
                         "/api/deletePatient", "/api/updatePatient", "/api/searchPatients**", "/api/patient**",
                         "/api/addStay", "/api/updateStay", "/api/deleteStay", "/api/addIllness", "/api/updateIllness", "/api/deleteIllness**",
                         "/manageIllnesses", "/api/prescriptions**", "/managePrescriptions", "/api/addPrescription", "/api/updatePrescription",
-                        "/api/deletePrescription**", "/api/stays**", "/api/rooms*").access("@webSecurityConfig.isDoctor(authentication)")
+                        "/api/deletePrescription**", "/api/stays**").access("@webSecurityConfig.isDoctor(authentication)")
 
                 .antMatchers("/api/patient/{pesel}/**", "/patient/{pesel}/**").access(
                 "@webSecurityConfig.checkPatientPesel(authentication, #pesel)")
