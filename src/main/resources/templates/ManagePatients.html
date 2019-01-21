@@ -49,19 +49,19 @@
             <div id="left-div">
                 <div class="inline-div">
                     <label class="input-name-label">Pesel:</label>
-                    <input class="data-input" id="pesel-input" type="text">
+                    <input class="data-input" id="pesel-input" placeholder="PESEL" type="text">
                 </div>
                 <div class="inline-div">
                     <label class="input-name-label">Imię:</label>
-                    <input class="data-input" id="first-name-input" type="text">
+                    <input class="data-input" id="first-name-input" placeholder="IMIĘ" type="text">
                 </div>
                 <div class="inline-div">
                     <label class="input-name-label">Nazwisko:</label>
-                    <input class="data-input" id="last-name-input" type="text">
+                    <input class="data-input" id="last-name-input" placeholder="NAZWISKO" type="text">
                 </div>
                 <div class="inline-div">
                     <label class="input-name-label">Hasło:</label>
-                    <input class="data-input" id="password-input" type="password">
+                    <input class="data-input" id="password-input" placeholder="HASŁO" type="password">
                 </div>
                 <div class="inline-div">
                     <input id="patient-add-input" onclick="addPatient()" type="submit" value="Dodaj Pacjenta">
@@ -70,6 +70,20 @@
             </div>
             <div id="right-div">
                 <input id="search-input" oninput="searchPatients()" placeholder="Wyszukaj pacjenta" type="text">
+                <table id="patients-table" style="border:1px solid white;">
+                    <thead>
+                    <tr>
+                        <th>Lp.</th>
+                        <th>Pesel</th>
+                        <th>Imię</th>
+                        <th>Nazwisko</th>
+                        <th>Edytuj</th>
+                        <th>Usuń</th>
+                    </tr>
+                    </thead>
+                    <tbody id="patients-tbody">
+                    </tbody>
+                </table>
                 <ul id="patients-ul"></ul>
             </div>
         </div>

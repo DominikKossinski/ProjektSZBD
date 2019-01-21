@@ -122,11 +122,57 @@ a {
 }
 
 .data-input {
-    color: #FFFFFF;
+    color: #000000;
     font-size: x-large;
     margin: 0 5% 0 5%;
     float: right;
     width: 90%;
+}
+
+.table-text-label {
+    font-size: large;
+    color: #FFFFFF;
+}
+
+.text-td {
+    font-size: x-large;
+    color: #FFFFFF;
+}
+
+.accept-input {
+    background: #4caf50;
+    color: #FFFFFF;
+    font-size: large;
+    border: none;
+    width: 100%;
+    height: 50%;
+}
+
+.manage-input {
+    background: darkorange;
+    color: #FFFFFF;
+    font-size: large;
+    border: none;
+    width: 100%;
+    height: 100%;
+}
+
+.delete-input {
+    background: #FF0000;
+    color: #FFFFFF;
+    font-size: large;
+    border: none;
+    width: 100%;
+    height: 100%;
+}
+
+.text-input {
+    color: darkorange;
+    background: #00000000;
+    border: none;
+    height: 100%;
+    width: 100%;
+    font-size: large;
 }
 
 #patient-add-input {
@@ -171,3 +217,21 @@ a {
     border: 5px solid #FFFFFF;
     border-radius: 3px;
 }
+
+th {
+    border: 1px solid white;
+    text-align: center;
+    width: 180px;
+}
+
+td {
+    border: 1px solid white;
+    text-align: center;
+    width: 180px;
+}
+
+#patients-table {
+    color: #FFFFFF;
+    margin-top: 10vh;
+}
+
