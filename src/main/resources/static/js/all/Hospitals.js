@@ -23,6 +23,24 @@ function getHospitals() {
                 hospitalAddressLabel.innerText = "Adres: " + hospital.address + " " + hospital.city;
                 hospitalDiv.appendChild(hospitalAddressLabel);
 
+                var hospitalDirectorLabel = document.createElement("label");
+                hospitalDirectorLabel.className = "hospital-director-label";
+                hospitalDirectorLabel.innerText = "";
+                hospitalDiv.appendChild(hospitalDirectorLabel);
+                fetch("/api/hospitalDirector?hospitalId=" + hospital.id).then(
+                    function (value) {
+                        return value.json();
+                    }
+                ).then(function (data) {
+                    console.log(data);
+                    if (data.resp_status === "ok") {
+                        var director = data.director;
+                        var doctor = director.doctor;
+                        hospitalDirectorLabel.innerText = "Dyrektor: " + doctor.first_name + " " + doctor.last_name;
+
+                    }
+                });
+
                 var hospitalSectionLabel = document.createElement("label");
                 hospitalSectionLabel.className = "hospital-section-label";
                 hospitalSectionLabel.innerText = "Oddziały:";
@@ -50,9 +68,6 @@ function getHospitals() {
                             ul.appendChild(sectionLi);
                             j++;
                         })
-                    } else {
-                        //ToDO ładniejsze info obłędzie
-                        alert(data1.description);
                     }
                 })
             })
@@ -62,3 +77,19 @@ function getHospitals() {
         }
     })
 }
+
+function logout() {
+    var url = "/api/logout";
+    fetch(url).then(function (value) {
+        return value.json();
+    }).then(function (data) {
+        if (data.resp_status === "ok") {
+            if (data.logout.logout === true) {
+                console.log("Logged out");
+                window.location.assign("/home");
+            }
+        }
+    });
+
+}
+
