@@ -11,21 +11,40 @@ function getMyStays() {
         if (data.resp_status === "ok") {
             var stays = data.stays;
             stays.map(function (stay) {
-                //ToDO ładniejsze wyświetlanie informacji
-                var li = document.createElement("li");
-                li.innerText = "Id: " + stay.id + " termin: " + stay.start_date + " doctor id: " + stay.doctor_id;
-                ul.appendChild(li);
+
+                var end_date = stay.end_date;
+                if(end_date === "null"){
+                    end_date = "-";
+                }
+
+                var hosp_id = document.createElement("td");
+                var oddzial = document.createElement("td");
+                var lek_nazw = document.createElement("td");        //TODO dopisz pobieranie nazwiska lekarza
+
+                getRoomById(stay.id, hosp_id, oddzial);
+
+                var row = $('<tr/>')
+                    .append($('<td/>', {text: stay.id || ''}))      //ID pobytu
+                    .append(hosp_id)    //ID szpitala
+                    .append(oddzial)        //Oddzial
+                    .append($('<td/>', {text: stay.room_id || ''}))             // nr pokoju
+                    .append($('<td/>', {text: stay.start_date || ''}))        //poczatek
+                    .append($('<td/>', {text: end_date || ''}))      //koniec
+                    .append(lek_nazw);    // nazwisko lekarza
+
+                $('table tbody').append(row);
+
             })
+
         } else {
             //TODO ładniejsze wyświetlanie błędu
             alert(data.description);
         }
     })
-    getRoomById(1);
+
 }
 
-//TODo DODAj dwa parametry - element przechowujący nazwę oddziału i element przechowujący nazwę szpitaka
-function getRoomById(id) {
+function getRoomById(id, hosp_id, oddzial){
     fetch("/api/rooms?id=" + id).then(
         function (value) {
             return value.json();
@@ -34,7 +53,7 @@ function getRoomById(id) {
         console.log(data);
         if (data.resp_status === "ok") {
             var room = data.room;
-            getHospitalSectionById(room.hospital_section_id);
+            getHospitalSectionById(room.hospital_section_id, hosp_id, oddzial);
         } else {
             //TODO ładniesze info o błędzie
             alert(data.description);
@@ -42,8 +61,7 @@ function getRoomById(id) {
     })
 }
 
-//TODO dodać przekazywanie elementu przechowującego nazwę oddziału i szpitala
-function getHospitalSectionById(id) {
+function getHospitalSectionById(id, hosp_id, oddzial) {
     fetch("/api/hospitalSection?id=" + id).then(
         function (value) {
             return value.json();
@@ -52,9 +70,8 @@ function getHospitalSectionById(id) {
         console.log(data);
         if (data.resp_status === "ok") {
             var hospitalSection = data.hospital_section;
-            //ToDO tu musisz obrobić element od oddziału
-
-            //TODO dodaj drugi parametr wywołania
+            hosp_id.innerText = hospitalSection.hospital_id;
+            oddzial.innerText = hospitalSection.name;
             getHospitalById(hospitalSection.hospital_id);
         } else {
             //TODO ładniesze info o błędzie
