@@ -135,60 +135,98 @@ function getStays() {
 }
 
 function mapStays(stays) {
-    var staysUl = document.getElementById("stays-ul");
-    staysUl.innerHTML = "";
+
+    var patientsTbody = document.getElementById("patients-tbody");
+    patientsTbody.innerHTML = "";
+
     stays.map(function (stay) {
-        var stayLi = document.createElement("li");
 
-        var label = document.createElement("label");
-        label.innerText = "id" + stay.id + " pesel" + stay.pesel + " data startu" + stay.start_date +
-            "data konca" + stay.end_date;
-        stayLi.appendChild(label);
+        var row = document.createElement("tr");
 
-        var endDateInput = document.createElement("input");
-        endDateInput.type = "date";
-        endDateInput.value = stay.end_date;
-        endDateInput.style.display = "none";
-        stayLi.appendChild(endDateInput);
+        var numTd = document.createElement("td");
+        numTd.innerText = stay.id;
+        numTd.className = "text-td";
+        row.append(numTd);
 
-        var acceptButton = document.createElement("input");
-        acceptButton.type = "submit";
-        acceptButton.value = "Akceptuj";
-        acceptButton.style.display = "none";
-        acceptButton.onclick = function () {
-            updateStay(stay, endDateInput.value);
+        var peselTd = document.createElement("td");
+        peselTd.className = "text-td";
+        peselTd.innerText = stay.pesel;
+        row.append(peselTd);
+
+        var firstNameTd = document.createElement("td");
+        var firstNameLabel = document.createElement("label");
+        firstNameLabel.className = "table-text-label";
+        firstNameLabel.innerText = stay.start_date;
+        firstNameTd.appendChild(firstNameLabel);
+
+        row.append(firstNameTd);
+
+        var lastNameTd = document.createElement("td");
+        var lastNameLabel = document.createElement("label");
+        lastNameLabel.className = "table-text-label";
+        lastNameLabel.innerText = stay.end_date;
+        lastNameTd.appendChild(lastNameLabel);
+
+        var lastNameInput = document.createElement("input");
+        lastNameInput.type = "date";
+        lastNameInput.value = stay.end_date;
+        lastNameInput.style.display = "none";
+        lastNameInput.className = "text-input";
+        lastNameTd.appendChild(lastNameInput);
+
+        row.append(lastNameTd);
+
+        var editTd = document.createElement("td");
+
+        var acceptInput = document.createElement("input");
+        acceptInput.className = "accept-input";
+        acceptInput.type = "submit";
+        acceptInput.value = "Akceptuj";
+        acceptInput.onclick = function () {
+            updateStay(stay, lastNameInput.value);
         };
-        stayLi.appendChild(acceptButton);
+        acceptInput.style.display = "none";
+        editTd.appendChild(acceptInput);
 
         var manageInput = document.createElement("input");
+        manageInput.className = "manage-input";
         manageInput.type = "submit";
         manageInput.value = "Edytuj";
         manageInput.onclick = function () {
             if (manageInput.value === "Edytuj") {
                 manageInput.value = "Anuluj";
-                label.innerText = "id" + stay.id + " pesel" + stay.pesel + " data startu" + stay.start_date;
-                endDateInput.value = stay.end_date;
-                endDateInput.style.display = "block";
-                acceptButton.style.display = "block";
+                manageInput.style.height = "50%";
+                lastNameInput.style.display = "inline-block";
+                lastNameInput.value = stay.end_date;
+                lastNameLabel.style.display = "none";
+                acceptInput.style.display = "inline-block";
             } else {
                 manageInput.value = "Edytuj";
-                label.innerText = "id" + stay.id + " pesel" + stay.pesel + " data startu" + stay.start_date +
-                    "data konca" + stay.end_date;
-                endDateInput.style.display = "none";
-                acceptButton.style.display = "none";
+                manageInput.style.height = "100%";
+                firstNameLabel.style.display = "inline-block";
+                lastNameInput.style.display = "none";
+                lastNameLabel.style.display = "inline-block";
+                acceptInput.style.display = "none";
             }
+            deleteInput.style.height = "100%";
         };
-        stayLi.appendChild(manageInput);
+        editTd.appendChild(manageInput);
+
+        row.append(editTd);
+
+        var deleteTd = document.createElement("td");
 
         var deleteInput = document.createElement("input");
+        deleteInput.className = "delete-input";
         deleteInput.type = "submit";
         deleteInput.value = "Usuń";
         deleteInput.onclick = function () {
             deleteStay(stay.id);
         };
-        stayLi.appendChild(deleteInput);
+        deleteTd.appendChild(deleteInput);
 
-        staysUl.appendChild(stayLi);
+        row.append(deleteTd);
+        patientsTbody.append(row);
     })
 }
 

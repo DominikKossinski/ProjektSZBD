@@ -6,25 +6,96 @@
     <link href="/css/doctor/ManageStays.css" rel="stylesheet">
 </head>
 <body onload="addPesel()">
-<h1>Add stay</h1>
-<label>Pesel:</label>
-<form>
-    <input id="pesel-input" list="pesel-datalist" type="text">
-    <datalist id="pesel-datalist"></datalist>
-</form>
-<label>Termin przyjęcia</label>
-<input id="date-input" type="date">
-<label>Numer pokoju</label>
-<select id="rooms-id-select"></select>
 
-<input onclick="addStay()" type="submit" value="Dodaj Pobyt">
+<div id="wrapper">
+    <div id="logo">
+
+        <a href="/home">
+            <img src="/img/hos_logo.png"/>
+        </a>
+
+        <div id="pasek">
+            <a href="/hospitals">
+                <div class="linkref">
+                    Szpitale
+                </div>
+            </a>
+            <a href="/illnesses">
+                <div class="linkref">
+                    Choroby
+                </div>
+            </a>
+            <a th:href="@{|/${userId}/doctorProfile|}" th:if="${isDoctor}">
+                <div class="linkref">
+                    Mój Profil
+                </div>
+            </a>
+            <a href="/adminPanel" th:if="${isAdmin}">
+                <div class="linkref">
+                    Admin Panel
+                </div>
+            </a>
+            <a th:href="@{|/patient/${userId}/patientProfile|}" th:if="${isPatient}">
+                <div class="linkref">Mój Profil</div>
+            </a>
+            <div class="linkref" onclick="logout()" th:if="${isAuthenticated}">
+                Wyloguj
+            </div>
+        </div>
+        <div style="clear: both"></div>
+
+    </div>
+    <div id="main-area">
+        <div style="display: flex">
+            <div id="left-div">
+                <div class="inline-div">
+                    <label class="input-name-label" placeholder="PESEL">Pesel:</label>
+                    <form>
+                        <input class="data-input" id="pesel-input" list="pesel-datalist" type="text">
+                        <datalist id="pesel-datalist"></datalist>
+                    </form>
+                </div>
+                <div class="inline-div">
+                    <label class="input-name-label">Termin przyjęcia:</label>
+                    <input class="data-input" id="date-input" type="date">
+                </div>
+                <div class="inline-div">
+                    <label class="input-name-label">Numer pokoju:</label>
+                    <select class="data-input" id="rooms-id-select"></select>
+                </div>
+                <div class="inline-div">
+                    <input id="stay-add-input" onclick="addStay()" type="submit" value="Dodaj Pobyt">
+
+                </div>
+            </div>
+            <div id="right-div">
+                <table id="patients-table" style="border:1px solid white;">
+                    <thead>
+                    <tr>
+                        <th>ID pobytu</th>
+                        <th>Pesel</th>
+                        <th>Data startu</th>
+                        <th>Data końca</th>
+                        <th>Edytuj</th>
+                        <th>Usuń</th>
+                    </tr>
+                    </thead>
+                    <tbody id="patients-tbody">
+                    </tbody>
+                </table>
+                <ul id="patients-ul"></ul>
+            </div>
+        </div>
+
+    </div>
+</div>
 
 <ul id="stays-ul"></ul>
 
 <!--//TODO dodać ładne wybieranie pokoju-->
-<span id="id-span" th:text="${id}"></span>
-<span id="hospital-section-id-span" th:text="${hospitalSectionId}"></span>
-<span id="pesel-span" th:text="${pesel}"></span>
+<span id="id-span" th:text="${id}" style="display: none"></span>
+<span id="hospital-section-id-span" th:text="${hospitalSectionId}" style="display: none"></span>
+<span id="pesel-span" th:text="${pesel}" style="display: none"></span>
 <script src="/js/doctor/ManageStays.js"></script>
 </body>
 </html>
