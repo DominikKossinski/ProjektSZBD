@@ -224,3 +224,40 @@ a {
     color: #FF0000;
     font-size: x-large;
 }
+
+.table-text-label {
+    font-size: large;
+    color: #FFFFFF;
+}
+
+.text-td {
+    font-size: x-large;
+    color: #FFFFFF;
+}
+
+
+.text-input {
+    color: darkorange;
+    background: #00000000;
+    border: none;
+    height: 100%;
+    width: 100%;
+    font-size: large;
+}
+
+th {
+    border: 1px solid white;
+    text-align: center;
+    width: 180px;
+}
+
+td {
+    border: 1px solid white;
+    text-align: center;
+    width: 180px;
+}
+
+.rooms-table {
+    color: #FFFFFF;
+    margin-top: 10vh;
+}

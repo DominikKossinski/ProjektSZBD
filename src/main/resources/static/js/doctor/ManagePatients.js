@@ -149,7 +149,7 @@ function addPatient() {
                 if (response.resp_status === "ok") {
                     //TODO ładniejsze info
                     globalPesel = pesel;
-                    alert("Dodano Pacjenta");
+                    alert("Dodano Pacjenta      ");
                 } else {
                     //TODO lepsze wyswietlanie errora
                     alert(response.description);

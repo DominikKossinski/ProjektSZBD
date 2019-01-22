@@ -1,7 +1,7 @@
 function getRooms() {
     var hospitalId = document.getElementById("hospital-id-span").innerText;
     var sectionsSelect = document.getElementById("hospital-section-select");
-    var roomsUl = document.getElementById("rooms-ul");
+    var roomsDiv = document.getElementById("rooms-div");
     fetch("/api/hospitalSections?hospitalId=" + hospitalId).then(
         function (value) {
             return value.json();
@@ -10,24 +10,22 @@ function getRooms() {
         console.log(data);
         if (data.resp_status === "ok") {
             var sections = data.sections;
-            var i = 0;
-            roomsUl.innerHTML = "";
+            roomsDiv.innerHTML = "";
             sections.map(function (hospitalSection) {
                 var op = document.createElement("option");
                 op.value = hospitalSection.id;
                 op.innerText = hospitalSection.id + "-" + hospitalSection.name;
                 sectionsSelect.appendChild(op);
 
-                var sectionLi = document.createElement("li");
-                roomsUl.appendChild(sectionLi);
+                var sectionDiv = document.createElement("div");
+                sectionDiv.className = "section-div";
+                roomsDiv.appendChild(sectionDiv);
+
                 var nameLabel = document.createElement("label");
-                nameLabel.innerText = i + ". id: " + hospitalSection.id + " " + hospitalSection.name;
-                sectionLi.appendChild(nameLabel);
+                nameLabel.className = "section-name-label";
+                nameLabel.innerText = "Id" + hospitalSection.id + ". " + hospitalSection.name;
+                sectionDiv.appendChild(nameLabel);
 
-
-                var ul = document.createElement("ul");
-                sectionLi.appendChild(ul);
-                i++;
                 fetch("/api/rooms?hospitalSectionId=" + hospitalSection.id).then(
                     function (value1) {
                         return value1.json();
@@ -36,63 +34,138 @@ function getRooms() {
                     console.log(data1);
                     if (data1.resp_status === "ok") {
                         var rooms = data1.rooms;
-                        var j = 0;
-                        rooms.map(function (room) {
-                            var li = document.createElement("li");
+                        if (rooms.length > 0) {
+                            var table = document.createElement("table");
+                            var thead = document.createElement("thead");
+                            var tr = document.createElement("tr");
 
-                            var roomLabel = document.createElement("label");
-                            roomLabel.innerText = j + ". " + room.id + " l miejsc : " + room.number_of_places +
-                                " l zajętyhc: " + room.act_placed_count + " piętro: " + room.floor;
-                            li.appendChild(roomLabel);
+                            var idTh = document.createElement("th");
+                            idTh.innerText = "ID pokoju";
+                            tr.appendChild(idTh);
 
-                            var countInput = document.createElement("input");
-                            countInput.type = "number";
-                            countInput.value = room.number_of_places;
-                            countInput.style.display = "none";
-                            li.appendChild(countInput);
+                            var floorTh = document.createElement("th");
+                            floorTh.innerText = "Piętro";
+                            tr.appendChild(floorTh);
 
-                            var acceptInput = document.createElement("input");
-                            acceptInput.type = "submit";
-                            acceptInput.value = "Akceptuj";
-                            acceptInput.style.display = "none";
-                            acceptInput.onclick = function () {
-                                updateRoom(room.id, countInput.value, room);
-                            };
-                            li.appendChild(acceptInput);
+                            var placesCountTh = document.createElement("th");
+                            placesCountTh.innerText = "Liczba miejsc";
+                            tr.appendChild(placesCountTh);
 
+                            var actPlacedTh = document.createElement("th");
+                            actPlacedTh.innerText = "Zajęte";
+                            tr.appendChild(actPlacedTh);
 
-                            var manageInput = document.createElement("input");
-                            manageInput.type = "submit";
-                            manageInput.value = "Edytuj";
-                            manageInput.onclick = function () {
-                                if (manageInput.value === "Edytuj") {
-                                    manageInput.value = "Anuluj";
-                                    roomLabel.innerText = j + ". " + room.id +
-                                        " l zajętyhc: " + room.act_placed_count + " piętro: " + room.floor;
-                                    countInput.style.display = "block";
-                                    acceptInput.style.display = "block";
-                                } else {
-                                    manageInput.value = "Edytuj";
-                                    roomLabel.innerText = j + ". " + room.id + " l miejsc : " + room.number_of_places +
-                                        " l zajętyhc: " + room.act_placed_count + " piętro: " + room.floor;
-                                    countInput.style.display = "none";
-                                    acceptInput.style.display = "none";
-                                }
-                            };
-                            li.appendChild(manageInput);
+                            var manageTh = document.createElement("th");
+                            manageTh.innerText = "Edytuj";
+                            tr.appendChild(manageTh);
 
-                            var deleteInput = document.createElement("input");
-                            deleteInput.type = "submit";
-                            deleteInput.value = "Usuń";
-                            deleteInput.onclick = function () {
-                                deleteRoom(room.id);
-                            };
-                            li.appendChild(deleteInput);
+                            var deleteTh = document.createElement("th");
+                            deleteTh.innerText = "Usuń";
+                            tr.appendChild(deleteTh);
+
+                            thead.appendChild(tr);
+
+                            table.appendChild(thead);
+
+                            var tbody = document.createElement("tbody");
+                            table.appendChild(tbody);
 
 
-                            ul.appendChild(li);
-                            j++;
-                        })
+                            sectionDiv.appendChild(table);
+
+                            rooms.map(function (room) {
+                                var row = document.createElement("tr");
+
+                                var idTd = document.createElement("td");
+                                idTd.className = "text-td";
+                                idTd.innerText = room.id;
+                                row.appendChild(idTd);
+
+                                var floorTd = document.createElement("td");
+                                floorTd.className = "text-td";
+                                floorTd.innerText = room.floor;
+                                row.appendChild(floorTd);
+
+                                var placesCountTd = document.createElement("td");
+
+                                var countLabel = document.createElement("label");
+                                countLabel.className = "table-text-label";
+                                countLabel.innerText = room.number_of_places;
+                                placesCountTd.appendChild(countLabel);
+
+                                var countInput = document.createElement("input");
+                                countInput.className = "text-input";
+                                countInput.type = "number";
+                                countInput.min = "1";
+                                countInput.step = "1";
+                                countInput.value = room.number_of_places;
+                                countInput.style.display = "none";
+                                placesCountTd.appendChild(countInput);
+
+                                row.appendChild(placesCountTd);
+
+                                var placedTd = document.createElement("td");
+                                placedTd.className = "text-td";
+                                placedTd.innerText = room.act_placed_count;
+                                row.appendChild(placedTd);
+
+                                var manageTd = document.createElement("td");
+
+                                var acceptInput = document.createElement("input");
+                                acceptInput.className = "accept-input";
+                                acceptInput.type = "submit";
+                                acceptInput.value = "Akceptuj";
+                                acceptInput.style.display = "none";
+                                acceptInput.onclick = function () {
+                                    updateRoom(room.id, countInput.value, room);
+                                };
+                                manageTd.appendChild(acceptInput);
+
+
+                                var manageInput = document.createElement("input");
+                                manageInput.className = "manage-input";
+                                manageInput.type = "submit";
+                                manageInput.value = "Edytuj";
+                                manageInput.onclick = function () {
+                                    if (manageInput.value === "Edytuj") {
+                                        manageInput.value = "Anuluj";
+                                        countInput.style.display = "block";
+                                        countInput.value = room.number_of_places;
+                                        countLabel.style.display = "none";
+                                        acceptInput.style.display = "block";
+                                    } else {
+                                        manageInput.value = "Edytuj";
+                                        countInput.style.display = "none";
+                                        countLabel.style.display = "block";
+                                        acceptInput.style.display = "none";
+                                    }
+                                };
+                                manageTd.appendChild(manageInput);
+
+                                row.appendChild(manageTd);
+
+                                var deleteTd = document.createElement("td");
+                                var deleteInput = document.createElement("input");
+                                deleteInput.className = "delete-input";
+                                deleteInput.type = "submit";
+                                deleteInput.value = "Usuń";
+                                deleteInput.onclick = function () {
+                                    deleteRoom(room.id);
+                                };
+                                deleteTd.appendChild(deleteInput);
+
+                                row.appendChild(deleteTd);
+
+                                table.appendChild(row);
+                            })
+                        } else {
+                            //TODO ładny komunikat
+                            sectionDiv.appendChild(document.createElement("br"));
+                            var errorLabel = document.createElement("label");
+                            errorLabel.className = "error-description-label";
+                            errorLabel.innerText = "Ten oddział nie ma jeszcze pokoi!";
+                            sectionDiv.appendChild(errorLabel);
+                        }
                     }
                 })
             })
