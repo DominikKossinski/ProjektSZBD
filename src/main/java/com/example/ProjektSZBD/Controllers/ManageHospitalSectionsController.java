@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import static com.example.ProjektSZBD.DataGetter.getHospitalId;
+import static com.example.ProjektSZBD.DataGetter.getUserRoles;
 
 /**
  * Controler odpowiadajacy za wyświetlanie strony zarządzania oddziałami.
@@ -25,6 +26,7 @@ public class ManageHospitalSectionsController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         model.addAttribute("id", authentication.getName());
         model.addAttribute("hospitalId", getHospitalId(Long.parseLong(authentication.getName())));
+        getUserRoles(model, authentication);
         return "ManageHospitalSections";
     }
 }

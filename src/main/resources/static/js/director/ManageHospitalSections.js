@@ -1,7 +1,7 @@
 function getHospitalSections() {
     var hospitalId = document.getElementById("hospital-id-span").innerText;
-    var sectionsUl = document.getElementById("hospital-sections-ul");
-    sectionsUl.innerHTML = "";
+    var sectionsDiv = document.getElementById("hospital-sections-div");
+    sectionsDiv.innerHTML = "";
     fetch("/api/hospitalSections?hospitalId=" + hospitalId).then(
         function (value) {
             return value.json();
@@ -12,57 +12,62 @@ function getHospitalSections() {
             var hospitalSections = data.sections;
             var j = 0;
             hospitalSections.map(function (hospitalSection) {
-                var sectionLi = document.createElement("li");
-                sectionLi.setAttribute("id", hospitalSection.id + "-section-li");
+                var sectionDiv = document.createElement("div");
+                sectionDiv.className = "hospital-section-div";
 
                 var nameLabel = document.createElement("label");
-                nameLabel.innerText = j + ". Nazwa: " + hospitalSection.name;
-                sectionLi.appendChild(nameLabel);
-
-                var deleteButton = document.createElement("input");
-                deleteButton.type = "submit";
-                deleteButton.value = "Usuń oddział";
-                deleteButton.onclick = function () {
-                    deleteHospitalSection(hospitalSection.id);
-                };
-                sectionLi.appendChild(deleteButton);
+                nameLabel.className = "section-name-label";
+                nameLabel.innerText = hospitalSection.name;
+                sectionDiv.appendChild(nameLabel);
 
                 var nameInput = document.createElement("input");
+                nameInput.className = "section-name-input";
                 nameInput.value = hospitalSection.name;
                 nameInput.type = "text";
                 nameInput.style.display = "none";
-                sectionLi.appendChild(nameInput);
+                sectionDiv.appendChild(nameInput);
 
                 var acceptButton = document.createElement("input");
+                acceptButton.className = "accept-input";
                 acceptButton.value = "Akceptuj";
                 acceptButton.type = "submit";
                 acceptButton.style.display = "none";
                 acceptButton.onclick = function () {
                     changeHospitalSection(hospitalSection.id, nameInput.value);
                 };
-                sectionLi.appendChild(acceptButton);
+                sectionDiv.appendChild(acceptButton);
 
                 var manageButton = document.createElement("input");
+                manageButton.className = "manage-input";
                 manageButton.type = "submit";
-                manageButton.value = "Zmień nazwę";
+                manageButton.value = "Edytuj";
                 manageButton.onclick = function () {
-                    if (manageButton.value === "Zmień nazwę") {
+                    if (manageButton.value === "Edytuj") {
                         manageButton.value = "Anuluj";
                         nameInput.value = hospitalSection.name;
                         nameInput.style.display = "block";
                         acceptButton.style.display = "block";
                         nameLabel.style.display = "none";
                     } else {
-                        manageButton.value = "Zmień nazwę";
+                        manageButton.value = "Edytuj";
                         nameInput.style.display = "none";
                         acceptButton.style.display = "none";
                         nameLabel.style.display = "block";
                     }
 
                 };
-                sectionLi.appendChild(manageButton);
+                sectionDiv.appendChild(manageButton);
 
-                sectionsUl.appendChild(sectionLi);
+                var deleteButton = document.createElement("input");
+                deleteButton.className = "delete-input";
+                deleteButton.type = "submit";
+                deleteButton.value = "Usuń oddział";
+                deleteButton.onclick = function () {
+                    deleteHospitalSection(hospitalSection.id);
+                };
+                sectionDiv.appendChild(deleteButton);
+
+                sectionsDiv.appendChild(sectionDiv);
                 j++;
             })
         } else {
