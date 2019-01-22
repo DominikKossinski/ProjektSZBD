@@ -37,9 +37,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/", "/home", "/api/login","/css/fontello/css/*", "/css/fontello/font/*", "/css/all/*", "/js/all/*", "/img/*", "/api/hospitalSection**",
+                .antMatchers("/home", "/api/login", "/css/fontello/css/*", "/css/fontello/font/*", "/css/all/*",
+                        "/js/all/*", "/img/*", "/api/hospitalSection**",
                         "/illnesses", "/api/illness**", "/api/allHospitals", "/api/hospitalSections**", "/hospitals",
                         "/api/rooms**", "/api/hospital**", "/api/hospitalDirector**").permitAll()
+
                 .antMatchers("/api/logout", "/api/doctorInfo**").authenticated()
 
                 .antMatchers("/api/salary**").access("@webSecurityConfig.isDirectorOrAdmin(authentication)")
@@ -139,6 +141,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         Set<String> roles = authentication.getAuthorities().stream()
                 .map(r -> r.getAuthority()).collect(Collectors.toSet());
         ArrayList<String> list = new ArrayList<>(roles);
+        System.out.println("Role Patient: " + list.get(0));
         return list.get(0).compareTo("ROLE_PATIENT") == 0;
     }
 

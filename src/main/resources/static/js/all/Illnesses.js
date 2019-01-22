@@ -7,7 +7,11 @@ function getIllnesses() {
         if (data.resp_status === "ok") {
             mapIllnesses(data.illnesses);
         } else {
-            alert(data.description);
+            var illnessesDiv = document.getElementById("illnesses-div");
+            var label = document.createElement("label");
+            label.className = "error-description-label";
+            label.innerText = "Natąpił błąd podczas ładowania chorób";
+            illnessesDiv.appendChild(label);
         }
     });
 }
@@ -16,6 +20,12 @@ function mapIllnesses(illnesses) {
     var i = 0;
     var illnessesDiv = document.getElementById("illnesses-div");
     illnessesDiv.innerHTML = "";
+    if (illnesses.length === 0) {
+        var label = document.createElement("label");
+        label.className = "error-description-label";
+        label.innerText = "Nie znaleziono chorób.";
+        illnessesDiv.appendChild(label);
+    }
     illnesses.map(function (illness) {
         if (i < 10) {
             var div = document.createElement("div");

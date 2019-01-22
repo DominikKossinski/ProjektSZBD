@@ -87,6 +87,10 @@ img {
     cursor: pointer;
 }
 
+a {
+    text-decoration: none;
+}
+
 .data-div {
     width: 75vw;
     margin: 0 auto;
@@ -132,4 +136,9 @@ img {
 #main-area {
     position: relative;
     top: 200px;
+}
+
+.error-description-label {
+    color: #FF0000;
+    font-size: x-large;
 }

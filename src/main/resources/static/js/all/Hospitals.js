@@ -9,6 +9,12 @@ function getHospitals() {
         if (data.resp_status === "ok") {
             var hospitals = data.hospitals;
             var i = 0;
+            if (hospitals.length === 0) {
+                var label1 = document.createElement("label");
+                label1.className = "error-description-label";
+                label1.innerText = "Nie znaleziono szpitali.";
+                hospitals.appendChild(label1);
+            }
             hospitals.map(function (hospital) {
                 var hospitalDiv = document.createElement("div");
                 hospitalDiv.className = "hospital-div";
@@ -37,7 +43,6 @@ function getHospitals() {
                         var director = data.director;
                         var doctor = director.doctor;
                         hospitalDirectorLabel.innerText = "Dyrektor: " + doctor.first_name + " " + doctor.last_name;
-
                     }
                 });
 
@@ -72,8 +77,10 @@ function getHospitals() {
                 })
             })
         } else {
-            //TODO ładniejszy komunikat o błędzie
-            alert(data.description)
+            var label = document.createElement("label");
+            label.className = "error-description-label";
+            label.innerText = "Natąpił błąd podczas ładowania chorób";
+            hospitalsDiv.appendChild(label);
         }
     })
 }

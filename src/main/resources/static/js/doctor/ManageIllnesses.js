@@ -1,7 +1,7 @@
 function getIllnesses() {
     var pattern = document.getElementById("name-search-input").value;
-    var illnessesUl = document.getElementById("illnesses-ul");
-    illnessesUl.innerHTML = "";
+    var illnessesDiv = document.getElementById("illnesses-div");
+    illnessesDiv.innerHTML = "";
     fetch("/api/illness?pattern=" + pattern).then(
         function (value) {
             return value.json()
@@ -9,83 +9,108 @@ function getIllnesses() {
     ).then(function (data) {
         if (data.resp_status === "ok") {
             var illnesses = data.illnesses;
-            var i = 0;
-            illnesses.map(function (illness) {
-                var illnessLi = document.createElement("li");
-
+            if (illnesses.length === 0) {
                 var label = document.createElement("label");
-                if (illness.description !== "null") {
-                    label.innerText = i + ". " + illness.name + " - " + illness.description;
-                } else {
-                    label.innerText = i + ". " + illness.name;
-                }
-                illnessLi.appendChild(label);
+                label.className = "error-description-label";
+                label.innerText = "Nie znaleziono chorób. Dodaj chorobę, aby ją wyświetlić";
+                illnessesDiv.appendChild(label);
+            }
+            illnesses.map(function (illness) {
+                var illnessDiv = document.createElement("div");
+                illnessDiv.className = "illness-div";
+
+                var nameLabel = document.createElement("label");
+                nameLabel.className = "illness-name-label";
+                nameLabel.innerText = illness.name;
+                illnessDiv.appendChild(nameLabel);
 
                 var nameInput = document.createElement("input");
+                nameInput.className = "illness-name-input";
                 nameInput.type = "text";
                 nameInput.value = illness.name;
                 nameInput.style.display = "none";
-                illnessLi.appendChild(nameInput);
+                illnessDiv.appendChild(nameInput);
+
+                var descriptionP = document.createElement("p");
+                descriptionP.className = "illness-description-p";
+                if (illness.description !== "null") {
+                    descriptionP.innerText = illness.description;
+                } else {
+                    descriptionP.innerText = "Przypadek nie opisany";
+                }
+                illnessDiv.appendChild(descriptionP);
 
                 var descriptionTextArea = document.createElement("textarea");
-                descriptionTextArea.value = illness.description;
+                descriptionTextArea.className = "illness-description-textarea";
+                if (illness.description !== "null") {
+                    descriptionTextArea.value = illness.description;
+                } else {
+                    descriptionTextArea.value = "";
+                }
                 descriptionTextArea.style.display = "none";
-                illnessLi.appendChild(descriptionTextArea);
+                illnessDiv.appendChild(descriptionTextArea);
 
                 var acceptInput = document.createElement("input");
+                acceptInput.className = "accept-input";
                 acceptInput.type = "submit";
                 acceptInput.value = "Akceptuj";
                 acceptInput.style.display = "none";
-                acceptInput.onclick = function (ev) {
+                acceptInput.onclick = function () {
                     updateIllness(illness.id, nameInput.value, descriptionTextArea.value);
                 };
-                illnessLi.appendChild(acceptInput);
+                illnessDiv.appendChild(acceptInput);
 
                 var manageInput = document.createElement("input");
+                manageInput.className = "manage-input";
                 manageInput.type = "submit";
                 manageInput.value = "Edytuj";
                 manageInput.onclick = function () {
                     if (manageInput.value === "Edytuj") {
-                        label.innerText = i + ". ";
                         manageInput.value = "Anuluj";
                         nameInput.style.display = "block";
+                        nameInput.value = illness.name;
+                        nameLabel.style.display = "none";
                         descriptionTextArea.style.display = "block";
-                        acceptInput.style.display = "block";
-                    } else {
                         if (illness.description !== "null") {
-                            label.innerText = i + ". " + illness.name + " - " + illness.description;
+                            descriptionTextArea.value = illness.description;
                         } else {
-                            label.innerText = i + ". " + illness.name;
+                            descriptionTextArea.value = "";
                         }
+                        descriptionP.style.display = "none";
+                        acceptInput.style.display = "inline-block";
+                    } else {
                         manageInput.value = "Edytuj";
                         nameInput.style.display = "none";
-                        nameInput.value = illness.name;
+                        nameLabel.style.display = "block";
                         descriptionTextArea.style.display = "none";
-                        descriptionTextArea.value = illness.description;
+                        descriptionP.style.display = "block";
                         acceptInput.style.display = "none";
                     }
                 };
-                illnessLi.appendChild(manageInput);
+                illnessDiv.appendChild(manageInput);
 
                 var deleteInput = document.createElement("input");
+                deleteInput.className = "delete-input";
                 deleteInput.type = "submit";
                 deleteInput.value = "Usuń";
                 deleteInput.onclick = function () {
                     deleteIllness(illness.id);
                 };
-                illnessLi.appendChild(deleteInput);
+                illnessDiv.appendChild(deleteInput);
 
-                illnessesUl.appendChild(illnessLi);
-                i++;
+                illnessesDiv.appendChild(illnessDiv);
             })
         } else {
-            //TODO ładniejsze wyświetlanie błędów
-            alert("error");
+            var label = document.createElement("label");
+            label.className = "error-description-label";
+            label.innerText = "Natąpił błąd podczas ładowania chorób";
+            illnessesDiv.appendChild(label);
         }
     })
 }
 
 function updateIllness(id, name, description) {
+    //TODO potwierdzenie woli
     var data = JSON.stringify({
         "id": id,
         "name": name,
@@ -103,8 +128,7 @@ function updateIllness(id, name, description) {
                 var response = JSON.parse(http.responseText);
                 console.log(response);
                 if (response.resp_status === "ok") {
-                    //TODO ładniejsze info
-                    alert("Update Chorobę id:" + id);
+                    alert("Zaktualizowano pomyślnie chorobę " + name);
                 } else {
                     //TODO lepsze wyswietlanie errora
                     alert(response.description);
@@ -116,6 +140,7 @@ function updateIllness(id, name, description) {
 }
 
 function deleteIllness(id) {
+    //TODO potwierdzenie woli
     var http = new XMLHttpRequest();
     var url = "/api/deleteIllness?id=" + id;
     http.open("Delete", url, true);
@@ -126,8 +151,7 @@ function deleteIllness(id) {
             var response = JSON.parse(http.responseText);
             console.log(response);
             if (response.resp_status === "ok") {
-                //TODO ładniejsze info
-                alert("Usunięto chorobę id:" + id);
+                alert("Usunięto chorobę");
             } else {
                 //TODO lepsze wyswietlanie errora
                 alert(response.description);
@@ -157,9 +181,7 @@ function addIllness() {
                 var response = JSON.parse(http.responseText);
                 console.log(response);
                 if (response.resp_status === "ok") {
-                    //TODO ładniejsze info
-                    var illness = response.illness;
-                    alert("Dodano Chorobę id:" + illness.id);
+                    alert("Dodano Chorobę");
                 } else {
                     //TODO lepsze wyswietlanie errora
                     alert(response.description);
