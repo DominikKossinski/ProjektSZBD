@@ -6,32 +6,102 @@
     <link href="/css/admin/AddHospital.css" rel="stylesheet">
 </head>
 <body>
+
+<div id="wrapper">
+    <div id="logo">
+
+        <a href="/home">
+            <img src="/img/hos_logo.png"/>
+        </a>
+
+        <div id="pasek">
+            <a href="/hospitals">
+                <div class="linkref">
+                    Szpitale
+                </div>
+            </a>
+            <a href="/illnesses">
+                <div class="linkref">
+                    Choroby
+                </div>
+            </a>
+            <a href="/adminPanel" ><!--th:if="${isAdmin}">-->
+                <div class="linkref">
+                    Admin Panel
+                </div>
+            </a>
+            <div class="linkref" onclick="logout()"> <!--th:if="${isAuthenticated}"-->
+                Wyloguj
+            </div>
+        </div>
+        <div style="clear: both"></div>
+
+    </div>
+    <div id="main-area">
+        <div style="display:block; padding: 20px">
+            <div class="inline-div">
+
+                <label class="input-name-label">Nazwa Szpitala:</label>
+                <label for="name-input"></label><input class="data-input" id="name-input" type="text">
+
+            </div>
+
+            <div class="inline-div">
+
+                <label class="input-name-label">Adres:</label>
+                <label for="address-input"></label><input class="data-input" id="address-input" type="text">
+
+            </div>
+
+            <div class="inline-div">
+
+                <label class="input-name-label">Miasto</label>
+                <label for="city-input"></label><input class="data-input" id="city-input" type="text">
+
+            </div>
+
+            <br><br>
+
+            <label class="input-name-label" style="width:100%; text-align: center">Oddział dyrektora szpitala</label>
+            <div class="inline-div">
+                <label class="input-name-label">Nazwa oddziału</label>
+                <label for="section-name-input"></label><input class="data-input" id="section-name-input" type="text">
+            </div>
+
+            <br><br>
+
+            <label class="input-name-label" style="width:100%; text-align: center">Dane Dyrektora Szpitala</label>
+
+            <div class="inline-div">
+                <label class="input-name-label">Imię:</label>
+                <label for="first-name-input"></label><input class="data-input" id="first-name-input" type="text">
+            </div>
+
+            <div class="inline-div">
+                <label class="input-name-label">Nazwisko:</label>
+                <label for="last-name-input"></label><input class="data-input" id="last-name-input" type="text">
+            </div>
+
+            <div class="inline-div">
+                <label class="input-name-label">Płaca:</label>
+                <label for="salary-input"></label><input class="data-input" id="salary-input" type="number">
+            </div>
+
+            <div class="inline-div">
+                <label class="input-name-label">Hasło:</label>
+                <label for="password-input"></label><input class="data-input" id="password-input" type="password">
+            </div>
+
+            <div class="inline-div">
+                <input id="stay-add-input" onclick="addHospital()" type="submit" value="Dodaj">
+
+            </div>
+        </div>
+    </div>
+</div>
+
 <div style="display: flex; margin: 50px; width: 300px">
-    <div style="display:block; padding: 50px; width: 200px;">
-        <label>Nazwa Szpitala:</label>
-        <label for="name-input"></label><input id="name-input" type="text">
-        <label>Adres:</label>
-        <label for="address-input"></label><input id="address-input" type="text">
-        <label>Miasto</label>
-        <label for="city-input"></label><input id="city-input" type="text">
-    </div>
-    <div style="display: block; padding: 50px; width: 200px;">
-        <label>Oddział dyrektora szpitala</label>
-        <label>Nazwa oddziału</label>
-        <label for="section-name-input"></label><input id="section-name-input" type="text">
-    </div>
-    <div style="display: block; padding: 50px; width: 200px;">
-        <label>Dane Dyrektora Szpitala</label>
-        <label>Imię:</label>
-        <label for="first-name-input"></label><input id="first-name-input" type="text">
-        <label>Nazwisko:</label>
-        <label for="last-name-input"></label><input id="last-name-input" type="text">
-        <label>Płaca:</label>
-        <label for="salary-input"></label><input id="salary-input" type="number">
-        <label>Hasło</label>
-        <label for="password-input"></label><input id="password-input" type="password">
-        <input onclick="addHospital()" type="submit" value="Dodaj">
-    </div>
+
 </div>
 <script src="/js/admin/AddHospital.js"></script>
 </body>

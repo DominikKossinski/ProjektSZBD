@@ -1,6 +1,11 @@
 function getHospitals() {
     var hospitalsUl = document.getElementById("hospitals-ul");
     hospitalsUl.innerHTML = "";
+
+    var patientsTbody = document.getElementById("patients-tbody");
+    patientsTbody.innerHTML = "";
+
+
     fetch("/api/allHospitals").then(
         function (value) {
             return value.json();
@@ -11,74 +16,116 @@ function getHospitals() {
             var hospitals = data.hospitals;
             hospitals.map(function (hospital) {
                 console.log(hospital);
-                var hospitalLi = document.createElement("li");
 
-                var label = document.createElement("label");
-                label.innerText = "Nazwa " + hospital.name + " adres: " + hospital.address + " miasto: " + hospital.city;
-                hospitalLi.appendChild(label);
+                var row = document.createElement("tr");
 
-                var nameInput = document.createElement("input");
-                nameInput.type = "text";
-                nameInput.value = hospital.name;
-                nameInput.style.display = "none";
-                hospitalLi.appendChild(nameInput);
+                var nameTd = document.createElement("td");
+                var nameTdLabel = document.createElement("label");
+                nameTdLabel.className = "table-text-label";
+                nameTdLabel.innerText = hospital.name;
+                nameTdLabel.style.color = "white";
+                nameTd.appendChild(nameTdLabel);
 
-                var addressInput = document.createElement("input");
-                addressInput.type = "text";
-                addressInput.value = hospital.address;
-                addressInput.style.display = "none";
-                hospitalLi.appendChild(addressInput);
+                var nameTdInput = document.createElement("textarea");
+                nameTdInput.style.display = "none";
+                nameTdInput.innerText = hospital.name;
+                nameTdInput.className = "text-td";
+                nameTdInput.style.color = "black";
+                nameTd.appendChild(nameTdInput);
 
-                var cityInput = document.createElement("input");
-                cityInput.type = "text";
-                cityInput.value = hospital.city;
-                cityInput.style.display = "none";
-                hospitalLi.appendChild(cityInput);
+                row.append(nameTd);
+
+                var adresTd = document.createElement("td");
+                var adresTdLabel = document.createElement("label");
+                adresTdLabel.className = "table-text-label";
+                adresTdLabel.innerText = hospital.address;
+                adresTdLabel.style.color = "white";
+                adresTd.appendChild(adresTdLabel);
+
+                var adresTdInput = document.createElement("textarea");
+                adresTdInput.style.display = "none";
+                adresTdInput.innerText = hospital.address;
+                adresTdInput.className = "text-td";
+                adresTdInput.style.color = "black";
+                adresTd.appendChild(adresTdInput);
+
+                row.append(adresTd);
+
+                var miastoTd = document.createElement("td");
+                var miastoTdLabel = document.createElement("label");
+                miastoTdLabel.className = "table-text-label";
+                miastoTdLabel.innerText = hospital.city;
+                miastoTdLabel.style.color = "white";
+                miastoTd.appendChild(miastoTdLabel);
+
+                var miastoTdInput = document.createElement("textarea");
+                miastoTdInput.style.display = "none";
+                miastoTdInput.innerText = hospital.city;
+                miastoTdInput.className = "text-td";
+                miastoTdInput.style.color = "black";
+                miastoTd.appendChild(miastoTdInput);
+
+                row.append(miastoTd);
+
+                var editTd = document.createElement("td");
 
                 var acceptInput = document.createElement("input");
+                acceptInput.className = "accept-input";
                 acceptInput.type = "submit";
                 acceptInput.value = "Akceptuj";
-                acceptInput.style.display = "none";
                 acceptInput.onclick = function () {
                     updateHospital(hospital.id, nameInput.value, addressInput.value, cityInput.value);
                 };
-                hospitalLi.appendChild(acceptInput);
+                acceptInput.style.display = "none";
+                editTd.appendChild(acceptInput);
 
                 var manageInput = document.createElement("input");
+                manageInput.className = "manage-input";
                 manageInput.type = "submit";
                 manageInput.value = "Edytuj";
                 manageInput.onclick = function () {
                     if (manageInput.value === "Edytuj") {
+
                         manageInput.value = "Anuluj";
-                        label.innerText = "";
-                        nameInput.style.display = "block";
-                        nameInput.value = hospital.name;
-                        addressInput.style.display = "block";
-                        addressInput.value = hospital.address;
-                        cityInput.style.display = "block";
-                        cityInput.value = hospital.city;
-                        acceptInput.style.display = "block";
+                        manageInput.style.height = "50%";
+                        miastoTdInput.style.display = "inline-block";
+                        nameTdInput.style.display = "inline-block";
+                        adresTdInput.style.display = "inline-block";
+                        nameTdLabel.style.display = "none";
+                        miastoTdLabel.style.display = "none";
+                        adresTdLabel.style.display = "none";
+                        acceptInput.style.display = "inline-block";
+
                     } else {
                         manageInput.value = "Edytuj";
-                        label.innerText = "Nazwa " + hospital.name + " adres: " + hospital.address + " miasto: " + hospital.city;
-                        nameInput.style.display = "none";
-                        addressInput.style.display = "none";
-                        cityInput.style.display = "none";
+                        manageInput.style.height = "100%";
+                        miastoTdInput.style.display = "none";
+                        nameTdInput.style.display = "none";
+                        adresTdInput.style.display = "none";
+                        nameTdLabel.style.display = "inline-block";
+                        miastoTdLabel.style.display = "inline-block";
+                        adresTdLabel.style.display = "inline-block";
                         acceptInput.style.display = "none";
                     }
+                    deleteInput.style.height = "100%";
                 };
-                hospitalLi.appendChild(manageInput);
+                editTd.appendChild(manageInput);
 
+                row.append(editTd);
+
+                var deleteTd = document.createElement("td");
 
                 var deleteInput = document.createElement("input");
+                deleteInput.className = "delete-input";
                 deleteInput.type = "submit";
                 deleteInput.value = "Usuń";
                 deleteInput.onclick = function () {
                     deleteHospital(hospital.id);
                 };
-                hospitalLi.appendChild(deleteInput);
+                deleteTd.appendChild(deleteInput);
 
-                hospitalsUl.appendChild(hospitalLi);
+                row.append(deleteTd);
+                patientsTbody.append(row);
             })
         } else {
             //TOdo ładniejsze wyświetlanie błędu
@@ -156,6 +203,5 @@ function logout() {
             }
         }
     });
-
 }
 

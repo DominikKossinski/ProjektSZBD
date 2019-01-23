@@ -37,7 +37,7 @@
             <a th:href="@{|/patient/${userId}/patientProfile|}" th:if="${isPatient}">
                 <div class="linkref">Mój Profil</div>
             </a>
-            <div class="linkref" onclick="logout()" th:if="${isAuthenticated}">
+            <div class="linkref" onclick="logout()">
                 Wyloguj
             </div>
         </div>
