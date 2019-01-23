@@ -2,9 +2,12 @@ var hospitalSections = [];
 var salaries = [];
 
 function loadData() {
+
     var positionSelect = document.getElementById("position-select");
     var hospitalSectionSelect = document.getElementById("hospital-section-select");
     var hospitalId = document.getElementById("hospital-id-span").innerText;
+    var roomsDiv = document.getElementById("rooms-div");
+
     fetch("/api/salary").then(
         function (value) {
             return value.json();
@@ -12,6 +15,10 @@ function loadData() {
     ).then(function (data) {
         console.log(data);
         if (data.resp_status === "ok") {
+
+
+            //TODO pokazywanie lekarzy tak jak w manageRooms
+            /*------------------------------------------------------------------------*/
             salaries = data.salaries;
             salaries.map(function (salary) {
                 if (salary.position !== "Dyrektor") {
