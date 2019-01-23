@@ -1429,3 +1429,14 @@ BEGIN
   SET L.PLACA = (SELECT P.PLACA_MIN FROM PLACE P WHERE P.STANOWISKO = L.STANOWISKO)
   WHERE L.PLACA < (SELECT P.PLACA_MIN FROM PLACE P WHERE P.STANOWISKO = L.STANOWISKO);
 END;
+
+
+/*
+SELECT
+index_name, i.index_type, i.uniqueness, c.column_name
+FROM
+user_indexes i
+JOIN
+user_ind_columns c
+USING (index_name);
+*/
