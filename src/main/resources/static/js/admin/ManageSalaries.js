@@ -1,5 +1,5 @@
 function getSalaries() {
-    var salariesUl = document.getElementById("salaries-ul");
+    var salariesDiv = document.getElementById("salaries-div");
     fetch("/api/salary").then(
         function (value) {
             return value.json()
@@ -9,65 +9,146 @@ function getSalaries() {
             console.log(data);
             if (data.resp_status === "ok") {
                 var salaries = data.salaries;
-                salariesUl.innerHTML = "";
-                salaries.map(function (salary) {
-                    var li = document.createElement("li");
+                salariesDiv.innerHTML = "";
+                if (salaries.length > 0) {
+                    var table = document.createElement("table");
+                    var thead = document.createElement("thead");
+                    var tr = document.createElement("tr");
 
+                    var nameTh = document.createElement("th");
+                    nameTh.innerText = "Stanowisko";
+                    tr.appendChild(nameTh);
+
+                    var minTh = document.createElement("th");
+                    minTh.innerText = "Płaca min";
+                    tr.appendChild(minTh);
+
+                    var maxTh = document.createElement("th");
+                    maxTh.innerText = "Płaca max";
+                    tr.appendChild(maxTh);
+
+                    var manageTh = document.createElement("th");
+                    manageTh.innerText = "Edytuj";
+                    tr.appendChild(manageTh);
+
+                    var deleteTh = document.createElement("th");
+                    deleteTh.innerText = "Usuń";
+                    tr.appendChild(deleteTh);
+
+                    thead.appendChild(tr);
+
+                    table.appendChild(thead);
+
+                    var tbody = document.createElement("tbody");
+                    table.appendChild(tbody);
+
+
+                    salariesDiv.appendChild(table);
+                    salaries.map(function (salary) {
+                        var row = document.createElement("tr");
+
+                        var positionTd = document.createElement("td");
+                        positionTd.className = "text-td";
+                        positionTd.innerText = salary.position;
+                        row.appendChild(positionTd);
+
+                        var minTd = document.createElement("td");
+
+                        var minLabel = document.createElement("label");
+
+                        minLabel.className = "table-text-label";
+                        minLabel.innerText = salary.min_salary;
+                        minTd.appendChild(minLabel);
+
+                        var minInput = document.createElement("input");
+                        minInput.className = "text-input";
+                        minInput.type = "number";
+                        minInput.value = salary.min_salary;
+                        minInput.style.display = "none";
+                        minTd.appendChild(minInput);
+
+                        row.appendChild(minTd);
+
+                        var maxTd = document.createElement("td");
+
+                        var maxLabel = document.createElement("label");
+                        maxLabel.className = "table-text-label";
+                        maxLabel.innerText = salary.max_salary;
+                        maxTd.appendChild(maxLabel);
+
+                        var maxInput = document.createElement("input");
+                        maxInput.className = "text-input";
+                        maxInput.type = "number";
+                        maxInput.value = salary.max_salary;
+                        maxInput.style.display = "none";
+                        maxTd.appendChild(maxInput);
+
+                        row.appendChild(maxTd);
+
+
+                        var manageTd = document.createElement("td");
+
+                        var acceptInput = document.createElement("input");
+                        acceptInput.className = "accept-input";
+                        acceptInput.type = "submit";
+                        acceptInput.value = "Akceptuj";
+                        acceptInput.style.display = "none";
+                        acceptInput.onclick = function () {
+                            updateSalary(salary.position, parseInt(minInput.value), parseInt(maxInput.value));
+                        };
+                        manageTd.appendChild(acceptInput);
+                        console.log("99");
+                        var manageInput = document.createElement("input");
+                        manageInput.className = "manage-input";
+                        manageInput.type = "submit";
+                        manageInput.value = "Edytuj";
+                        manageInput.onclick = function () {
+                            if (manageInput.value === "Edytuj") {
+                                manageInput.value = "Anuluj";
+                                minInput.style.display = "block";
+                                minInput.value = salary.min_salary;
+                                maxInput.style.display = "block";
+                                maxInput.value = salary.max_salary;
+                                maxLabel.style.display = "none";
+                                minLabel.style.display = "none";
+                                acceptInput.style.display = "block";
+                            } else {
+                                manageInput.value = "Edytuj";
+                                minInput.style.display = "none";
+                                maxInput.style.display = "none";
+                                acceptInput.style.display = "none";
+                                maxLabel.style.display = "block";
+                                minLabel.style.display = "block";
+                            }
+                        };
+                        manageTd.appendChild(manageInput);
+
+                        row.appendChild(manageTd);
+                        var deleteTd = document.createElement("td");
+
+                        var deleteInput = document.createElement("input");
+                        deleteInput.className = "delete-input";
+                        deleteInput.type = "submit";
+                        deleteInput.value = "Usuń";
+                        deleteInput.onclick = function () {
+                            deleteSalary(salary.position);
+                        };
+                        deleteTd.appendChild(deleteInput);
+                        row.appendChild(deleteTd);
+
+                        tbody.appendChild(row);
+                    })
+                } else {
                     var label = document.createElement("label");
-                    label.innerText = salary.position + " min: " + salary.min_salary + " max: " + salary.max_salary;
-                    li.appendChild(label);
-
-                    var minInput = document.createElement("input");
-                    minInput.type = "number";
-                    minInput.value = salary.min_salary;
-                    minInput.style.display = "none";
-                    li.appendChild(minInput);
-
-                    var maxInput = document.createElement("input");
-                    maxInput.type = "number";
-                    maxInput.value = salary.max_salary;
-                    maxInput.style.display = "none";
-                    li.appendChild(maxInput);
-
-                    var acceptInput = document.createElement("input");
-                    acceptInput.type = "submit";
-                    acceptInput.value = "Akceptuj";
-                    acceptInput.style.display = "none";
-                    acceptInput.onclick = function () {
-                        updateSalary(salary.position, parseInt(minInput.value), parseInt(maxInput.value));
-                    };
-                    li.appendChild(acceptInput);
-
-                    var manageInput = document.createElement("input");
-                    manageInput.type = "submit";
-                    manageInput.value = "Edytuj";
-                    manageInput.onclick = function () {
-                        if (manageInput.value === "Edytuj") {
-                            manageInput.value = "Anuluj";
-                            minInput.style.display = "block";
-                            maxInput.style.display = "block";
-                            acceptInput.style.display = "block";
-                        } else {
-                            manageInput.value = "Edytuj";
-                            minInput.style.display = "none";
-                            maxInput.style.display = "none";
-                            acceptInput.style.display = "none";
-                        }
-                    };
-                    li.appendChild(manageInput);
-
-                    var deleteInput = document.createElement("input");
-                    deleteInput.type = "submit";
-                    deleteInput.value = "Usuń";
-                    deleteInput.onclick = function () {
-                        deleteSalary(salary.position);
-                    };
-                    li.appendChild(deleteInput);
-                    salariesUl.appendChild(li);
-                })
+                    label.className = "error-description-label";
+                    label.innerText = "Brak stanowisk. Dodaj stanowisko używając panelu po lewej stronie";
+                    salariesDiv.appendChild(label);
+                }
             } else {
-                //TODO ładniejsze info o błędzie
-                alert("error")
+                var label1 = document.createElement("label");
+                label1.className = "error-description-label";
+                label1.innerText = "Nastąpił błąd podczas ładowania stanowisk.";
+                salariesDiv.appendChild(label1);
             }
         }
     )
@@ -90,8 +171,7 @@ function updateSalary(position, minSalary, maxSalary) {
                 var response = JSON.parse(http.responseText);
                 console.log(response);
                 if (response.resp_status === "ok") {
-                    //TODO ładniejsze info
-                    alert("Update stanowisko: " + position);
+                    alert("Zaktualizowano stanowisko: " + position);
                 } else {
                     //TODO lepsze wyswietlanie errora
                     alert(response.description);
@@ -100,8 +180,7 @@ function updateSalary(position, minSalary, maxSalary) {
             }
         };
     } else {
-        //todo ładniejsze wyświetlanie błędu
-        alert("błąd");
+        alert("Błąd. Sprawdź czy płaca maksymalne jest większa od minimalnej!");
     }
 }
 
@@ -117,7 +196,6 @@ function deleteSalary(position) {
             var response = JSON.parse(http.responseText);
             console.log(response);
             if (response.resp_status === "ok") {
-                //TODO ładniejsze info
                 alert("Usunięto stanowisko: " + position);
             } else {
                 //TODO lepsze wyswietlanie errora

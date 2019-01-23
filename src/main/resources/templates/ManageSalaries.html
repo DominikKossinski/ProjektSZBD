@@ -1,20 +1,75 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Płace</title>
     <link href="/css/admin/ManageSalaries.css" rel="stylesheet">
 </head>
 <body onload="getSalaries()">
-<label>Nazwa stanowiska:</label>
-<input id="position-input" type="text">
-<label>Płaca minimalna</label>
-<input id="min-salary-input" type="number">
-<label>Płaca maksymalna:</label>
-<input id="max-salary-input" type="number">
-<input onclick="addSalary()" type="submit" value="Dodaj Płacę">
+<div id="wrapper">
+    <div id="logo">
 
-<ul id="salaries-ul"></ul>
+        <a href="/home">
+            <img src="/img/hos_logo.png"/>
+        </a>
+
+        <div id="pasek">
+            <a href="/hospitals">
+                <div class="linkref">
+                    Szpitale
+                </div>
+            </a>
+            <a href="/illnesses">
+                <div class="linkref">
+                    Choroby
+                </div>
+            </a>
+            <a th:href="@{|/${userId}/doctorProfile|}" th:if="${isDoctor}">
+                <div class="linkref">
+                    Mój Profil
+                </div>
+            </a>
+            <a href="/adminPanel" th:if="${isAdmin}">
+                <div class="linkref">
+                    Admin Panel
+                </div>
+            </a>
+            <a th:href="@{|/patient/${userId}/patientProfile|}" th:if="${isPatient}">
+                <div class="linkref">Mój Profil</div>
+            </a>
+            <div class="linkref" onclick="logout()" th:if="${isAuthenticated}">
+                Wyloguj
+            </div>
+        </div>
+        <div style="clear: both"></div>
+
+    </div>
+    <div id="main-area">
+        <div id="left-div">
+            <div class="inline-div">
+                <label class="input-name-label">Nazwa stanowiska:</label>
+                <input class="data-input" id="position-input" type="text">
+            </div>
+            <div class="inline-div">
+                <label class="input-name-label">Płaca minimalna:</label>
+                <input class="data-input" id="min-salary-input" min="0" step="1" type="number">
+            </div>
+            <div class="inline-div">
+                <label class="input-name-label">Płaca maksymalna:</label>
+                <input class="data-input" id="max-salary-input" min="0" step="1" type="number">
+            </div>
+            <div class="inline-div">
+                <input class="add-input" onclick="addSalary()" type="submit" value="Dodaj Płacę">
+            </div>
+        </div>
+
+        <div id="right-div">
+            <br>
+            <div id="salaries-div"></div>
+            <ul id="salaries-ul"></ul>
+        </div>
+    </div>
+</div>
 <script src="/js/admin/ManageSalaries.js"></script>
 </body>
 </html>
