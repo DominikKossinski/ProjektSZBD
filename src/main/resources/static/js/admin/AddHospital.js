@@ -17,7 +17,6 @@ function addHospital() {
         if (response.resp_status === "ok") {
             minSalary = response.salary.min_salary;
             maxSalary = response.salary.max_salary;
-            //TODO sprawdznie poprawności danych
             if (hospitalName !== "" && address !== "" && city !== "" && sectionName !== "" && firstName !== "" &&
                 lastName !== "" && salary <= maxSalary && salary >= minSalary && password !== "") {
                 var data = JSON.stringify({
@@ -53,19 +52,19 @@ function addHospital() {
                         var response = JSON.parse(http.responseText);
                         console.log(response);
                         if (response.resp_status === "ok") {
-                            //TODO ładniejsze info
                             alert("Dodano szpital");
                         } else {
-                            alert(response.description);
+                            alert("Nastąpił błąd podczas dodawania szpitala," +
+                                " spróbuj pownownie po odświeżeniu strony");
                         }
                     }
                 };
             } else {
-                //TODO wyświetlanie informacji o popełnionych błędach
-                alert("błędy w danych");
+                alert("Sprawdź poprawność danych")
             }
         } else {
-            alert(response.description);
+            alert("Nastąpił błąd podczas dodawania szpitala," +
+                " spróbuj pownownie po odświeżeniu strony");
         }
     });
 

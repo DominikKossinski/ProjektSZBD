@@ -173,8 +173,8 @@ function updateSalary(position, minSalary, maxSalary) {
                 if (response.resp_status === "ok") {
                     alert("Zaktualizowano stanowisko: " + position);
                 } else {
-                    //TODO lepsze wyswietlanie errora
-                    alert(response.description);
+                    alert("Nastąpił błąd podczas aktualizowania stanowiska," +
+                        " spróbuj pownownie po odświeżeniu strony");
                 }
                 getSalaries();
             }
@@ -198,8 +198,8 @@ function deleteSalary(position) {
             if (response.resp_status === "ok") {
                 alert("Usunięto stanowisko: " + position);
             } else {
-                //TODO lepsze wyswietlanie errora
-                alert(response.description);
+                alert("Nastąpił błąd podczas usuwania stanowiska," +
+                    " spróbuj pownownie po odświeżeniu strony");
             }
             getSalaries();
         }
@@ -226,19 +226,18 @@ function addSalary() {
                 var response = JSON.parse(http.responseText);
                 console.log(response);
                 if (response.resp_status === "ok") {
-                    //TODO ładniejsze info
                     var salary = response.salary;
                     alert("Dodano stanowisko: " + salary.position);
                 } else {
-                    //TODO lepsze wyswietlanie errora
-                    alert(response.description);
+                    alert("Nastąpił błąd podczas dodawania stanowiska," +
+                        " spróbuj pownownie po odświeżeniu strony");
                 }
                 getSalaries();
             }
         };
     } else {
-        //todo ładniejsze wyświetlanie błędu
-        alert("błąd");
+        alert("Błąd. Sprawdź czy płaca maksymalne jest większa od minimalnej oraz" +
+            " czy została podana nazwa stanowiska");
     }
 
 }

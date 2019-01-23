@@ -61,7 +61,7 @@ function getIllnessesByPattern() {
         if (data.resp_status === "ok") {
             mapIllnesses(data.illnesses);
         } else {
-            alert(data.description);
+            alert("Nastąpił błąd podczas ładowania chorób! Odśwież stronę.");
         }
     });
 }

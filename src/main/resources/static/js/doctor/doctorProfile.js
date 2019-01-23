@@ -27,13 +27,11 @@ function getDoctorData() {
                     var hospitalSection = data.hospital_section;
                     hospitalSectionLabel.innerText = hospitalSection.name;
                 } else {
-                    //TODO wyświetlanie informacjii o błędzie
-                    alert(data.description);
+                    alert("Nastąpił błąd podczas ładowania strony. Odśwież ją.");
                 }
             })
         } else {
-            //TODO wyświetlanie informacjii o błędzie
-            alert(data.description);
+            alert("Nastąpił błąd podczas ładowania strony. Odśwież ją.");
         }
     })
 }

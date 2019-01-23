@@ -71,8 +71,7 @@ function getHospitalSections() {
                 j++;
             })
         } else {
-            //ToDO ładniejsze info obłędzie
-            alert(data1.description);
+            alert("Nastąpił błąd podczas ładowania strony odśwież ją.");
         }
     })
 }
@@ -97,21 +96,20 @@ function addHospitalSection() {
                 var response = JSON.parse(http.responseText);
                 console.log(response);
                 if (response.resp_status === "ok") {
-                    //TODO ładniejsze info
                     var hospitalSection = response.hospital_section;
-                    alert("Dodano oddział id:" + hospitalSection.id);
+                    alert("Dodano oddział: " + hospitalSection.name);
                 } else {
-                    //TODO lepsze wyswietlanie errora
-                    alert(response.description);
+                    alert("Nastąpił błąd podczas dodawania oddziału.")
                 }
                 getHospitalSections();
             }
         };
+    } else {
+        alert("Nazwa oddziału nie może być pusta!");
     }
 }
 
 function deleteHospitalSection(id) {
-    //TODO dodać jakieś potwierdzenie zamiaru
     alert("delete " + id);
     var http = new XMLHttpRequest();
     var url = "/api/deleteHospitalSection?id=" + id;
@@ -123,11 +121,10 @@ function deleteHospitalSection(id) {
             var response = JSON.parse(http.responseText);
             console.log(response);
             if (response.resp_status === "ok") {
-                //TODO ładniejsze info
                 alert("Usunięto oddział");
             } else {
-                //TODO WAŻNE!!! lepsze wyswietlanie errora - ważne bo może powodować naruszenie integralności
-                alert(response.description);
+                alert("Nie udało się usunąć oddziału. Sprawdź czy nie są do niego przypisani " +
+                    "lakarze, pokoje, bądź elementy wyposażenia");
             }
             getHospitalSections();
         }
@@ -135,7 +132,6 @@ function deleteHospitalSection(id) {
 }
 
 function changeHospitalSection(id, newName) {
-    //TODO dodać jakieś potwierdzenie zamiaru
     var hospitalId = document.getElementById("hospital-id-span").innerText;
     alert("change " + id + " new name: '" + newName + "'");
     if (newName !== "") {
@@ -154,18 +150,16 @@ function changeHospitalSection(id, newName) {
                 var response = JSON.parse(http.responseText);
                 console.log(response);
                 if (response.resp_status === "ok") {
-                    //TODO ładniejsze info
                     alert("Zmieniono nazwę");
                 } else {
-                    //TODO lepsze wyswietlanie errora
-                    alert(response.description);
+                    alert("Nastąpił błąd podczas zmiany nazwy, " +
+                        "spróbuj ponownie po odświeżeniu strony")
                 }
                 getHospitalSections();
             }
         };
     } else {
-        //TODO lepsze wyświetlanie informacji o błędzie
-        alert("błąd");
+        alert("Nazwa oddziału nie może być pusta!");
     }
 }
 

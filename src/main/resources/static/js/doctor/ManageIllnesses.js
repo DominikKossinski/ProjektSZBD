@@ -101,16 +101,15 @@ function getIllnesses() {
                 illnessesDiv.appendChild(illnessDiv);
             })
         } else {
-            var label = document.createElement("label");
-            label.className = "error-description-label";
-            label.innerText = "Natąpił błąd podczas ładowania chorób";
-            illnessesDiv.appendChild(label);
+            var label1 = document.createElement("label");
+            label1.className = "error-description-label";
+            label1.innerText = "Natąpił błąd podczas ładowania chorób";
+            illnessesDiv.appendChild(label1);
         }
     })
 }
 
 function updateIllness(id, name, description) {
-    //TODO potwierdzenie woli
     var data = JSON.stringify({
         "id": id,
         "name": name,
@@ -130,8 +129,8 @@ function updateIllness(id, name, description) {
                 if (response.resp_status === "ok") {
                     alert("Zaktualizowano pomyślnie chorobę " + name);
                 } else {
-                    //TODO lepsze wyswietlanie errora
-                    alert(response.description);
+                    alert("Nastąpił błąd podczas aktualizowania choroby. " +
+                        "Odśwież stronę i spróbuj ponownie.");
                 }
                 getIllnesses();
             }
@@ -140,7 +139,6 @@ function updateIllness(id, name, description) {
 }
 
 function deleteIllness(id) {
-    //TODO potwierdzenie woli
     var http = new XMLHttpRequest();
     var url = "/api/deleteIllness?id=" + id;
     http.open("Delete", url, true);
@@ -153,8 +151,8 @@ function deleteIllness(id) {
             if (response.resp_status === "ok") {
                 alert("Usunięto chorobę");
             } else {
-                //TODO lepsze wyswietlanie errora
-                alert(response.description);
+                alert("Nastąpił błąd podczas usuwania choroby. " +
+                    "Sprawdź czy nie ma przypisanych do niej recept.");
             }
             getIllnesses()
         }
@@ -183,12 +181,14 @@ function addIllness() {
                 if (response.resp_status === "ok") {
                     alert("Dodano Chorobę");
                 } else {
-                    //TODO lepsze wyswietlanie errora
-                    alert(response.description);
+                    alert("Nastąpił błąd podczas dodawania choroby. " +
+                        "Odśwież stronę i spróbuj ponownie.");
                 }
                 getIllnesses()
             }
         };
+    } else {
+        alert("Nazwa choroby nie może być pusta!");
     }
 }
 

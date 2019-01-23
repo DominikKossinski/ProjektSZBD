@@ -169,8 +169,10 @@ function getRooms() {
                 })
             })
         } else {
-            //TODO ładniejsze wyświetlanie błędu
-            alert("error");
+            var errorLabel = document.createElement("label");
+            errorLabel.className = "error-description-label";
+            errorLabel.innerText = "Nastąpił błąd podczas ładownia strony. Odśwież ją.";
+            roomsDiv.appendChild(errorLabel);
         }
     })
 }
@@ -195,12 +197,10 @@ function updateRoom(id, count, room) {
                 var response = JSON.parse(http.responseText);
                 console.log(response);
                 if (response.resp_status === "ok") {
-                    //TODO ładniejsze info
-
-                    alert("Upate pokój");
+                    alert("Zaktualizowano pokój");
                 } else {
-                    //TODO lepsze wyswietlanie errora
-                    alert(response.description);
+                    alert("Nastąpił błąd podczas aktualizowania pokoju, " +
+                        "odśwież stronę i spróbuj jeszcze raz");
                 }
                 getRooms();
             }
@@ -211,7 +211,6 @@ function updateRoom(id, count, room) {
 }
 
 function deleteRoom(id) {
-    //TODO potwierdzenie zamiaru
     var http = new XMLHttpRequest();
     var url = "/api/deleteRoom?id=" + id;
     http.open("Delete", url, true);
@@ -222,11 +221,10 @@ function deleteRoom(id) {
             var response = JSON.parse(http.responseText);
             console.log(response);
             if (response.resp_status === "ok") {
-                //TODO ładniejsze info
                 alert("Usunięto pokój");
             } else {
-                //TODO lepsze wyswietlanie errora
-                alert(response.description);
+                alert("Nastąpił błąd podczas usuwania pokoju, " +
+                    "sprawdź czy nie ma do niego przypisanych pobytów");
             }
             getRooms();
         }
@@ -256,18 +254,18 @@ function addRoom() {
                 var response = JSON.parse(http.responseText);
                 console.log(response);
                 if (response.resp_status === "ok") {
-                    //TODO ładniejsze info
                     var room = response.room;
-                    alert("Dodano pokój:" + room.id);
+                    alert("Dodano pokój jego id to " + room.id);
                 } else {
-                    //TODO lepsze wyswietlanie errora
-                    alert(response.description);
+                    alert("Nastąpił błąd podczas dodawania pokoju, odśwież " +
+                        "stronę i spróbuj ponownie");
                 }
                 getRooms();
             }
         };
     } else {
-        alert("Błąd");
+        alert("Sprawdź czy podano oddział, piętro oraz ilość miejsc," +
+            " dwa ostatnie powinny wynosić najmiej 0.");
     }
 }
 
