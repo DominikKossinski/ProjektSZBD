@@ -6,16 +6,73 @@
     <link href="/css/ordynator/ManageElements.css" rel="stylesheet">
 </head>
 <body onload="getElements()">
-<label>Nazwa</label>
-<input id="name-input" type="text">
-<label>Ilość:</label>
-<input id="count-input" oninput="countPrice()" type="number">
-<label>Cena:</label>
-<input id="price-input" oninput="countPrice()" step="0.01" type="number">
-<label id="price-label">Łączna cena: 0.00 zł</label>
-<input onclick="addElement()" type="submit" value="Dodaj Element wyposażenia">
-<ul id="elements-ul"></ul>
-<span id="hospital-section-id-span" th:text="${hospitalSectionId}"></span>
+<div id="wrapper">
+    <div id="logo">
+
+        <a href="/home">
+            <img src="/img/hos_logo.png"/>
+        </a>
+
+        <div id="pasek">
+            <a href="/hospitals">
+                <div class="linkref">
+                    Szpitale
+                </div>
+            </a>
+            <a href="/illnesses">
+                <div class="linkref">
+                    Choroby
+                </div>
+            </a>
+            <a th:href="@{|/${userId}/doctorProfile|}" th:if="${isDoctor}">
+                <div class="linkref">
+                    Mój Profil
+                </div>
+            </a>
+            <a href="/adminPanel" th:if="${isAdmin}">
+                <div class="linkref">
+                    Admin Panel
+                </div>
+            </a>
+            <a th:href="@{|/patient/${userId}/patientProfile|}" th:if="${isPatient}">
+                <div class="linkref">Mój Profil</div>
+            </a>
+            <div class="linkref" onclick="logout()" th:if="${isAuthenticated}">
+                Wyloguj
+            </div>
+        </div>
+        <div style="clear: both"></div>
+
+    </div>
+    <div id="main-area">
+        <div id="left-div">
+            <div class="inline-div">
+                <label class="input-name-label">Nazwa:</label>
+                <input class="data-input" id="name-input" type="text">
+            </div>
+            <div class="inline-div">
+                <label class="input-name-label">Ilość:</label>
+                <input class="data-input" id="count-input" oninput="countPrice()" type="number">
+            </div>
+            <div class="inline-div">
+                <label class="input-name-label">Cena:</label>
+                <input class="data-input" id="price-input" oninput="countPrice()" step="0.01" type="number">
+            </div>
+            <div class="inline-div">
+                <label class="input-name-label" id="price-label">Łączna cena: 0.00 zł</label>
+            </div>
+            <div class="inline-div">
+                <input class="add-input" onclick="addElement()" type="submit" value="Dodaj Element wyposażenia">
+            </div>
+        </div>
+        <div id="right-div">
+            <br>
+            <div id="elements-div"></div>
+            <ul id="elements-ul"></ul>
+            <span id="hospital-section-id-span" style="display: none" th:text="${hospitalSectionId}"></span>
+        </div>
+    </div>
+</div>
 <script src="/js/ordynator/ManageElements.js"></script>
 </body>
 </html>

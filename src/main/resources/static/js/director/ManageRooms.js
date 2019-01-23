@@ -159,7 +159,6 @@ function getRooms() {
                                 table.appendChild(row);
                             })
                         } else {
-                            //TODO ładny komunikat
                             sectionDiv.appendChild(document.createElement("br"));
                             var errorLabel = document.createElement("label");
                             errorLabel.className = "error-description-label";
