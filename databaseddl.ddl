@@ -523,15 +523,24 @@ CREATE OR REPLACE FUNCTION updateDoctor(doctorId IN NUMBER,
 IS
 
 BEGIN
-
-  UPDATE LEKARZE
-  SET imie        = firstName,
-      nazwisko    = lastName,
-      placa       = salary,
-      id_oddzialu = hospitalSectionId,
-      stanowisko  = position,
-      haslo       = password
-  WHERE ID_LEKARZA = doctorId;
+  IF (password != '') then
+    UPDATE LEKARZE
+    SET imie        = firstName,
+        nazwisko    = lastName,
+        placa       = salary,
+        id_oddzialu = hospitalSectionId,
+        stanowisko  = position,
+        haslo       = password
+    WHERE ID_LEKARZA = doctorId;
+  else
+    UPDATE LEKARZE
+    SET imie        = firstName,
+        nazwisko    = lastName,
+        placa       = salary,
+        id_oddzialu = hospitalSectionId,
+        stanowisko  = position
+    WHERE ID_LEKARZA = doctorId;
+  end if;
   rowCount := SQL%ROWCOUNT;
   if (rowCount = 1) then
     return 0; --Poprawne zakończenie
@@ -1234,7 +1243,7 @@ IS
 
 BEGIN
 
-  UPDATE place SET placa_min = minSalary, placa_max = minSalary where stanowisko = position;
+  UPDATE place SET placa_min = minSalary, placa_max = maxSalary where stanowisko = position;
   rowCount := SQL%ROWCOUNT;
   if (rowCount = 1) then
     return 0; --Poprawne zakończenie
@@ -1302,9 +1311,14 @@ CREATE OR REPLACE FUNCTION insertStay(startDate IN DATE,
 IS
 
 BEGIN
-
   INSERT INTO POBYTY(TERMIN_PRZYJECIA, TERMIN_WYPISU, ID_POKOJU, ID_LEKARZA, PESEL)
   VALUES (startDate, endDate, roomId, doctorId, peselV) returning ID_POBYTU into stayId;
+  update pokoje
+  set ilosc_zajetych_miejsc = (select count(id_pobytu)
+                               from pobyty
+                               where pobyty.id_pokoju = pokoje.id_pokoju
+                                 and termin_wypisu is null)
+  where id_pokoju = roomId;
   return stayId;
   EXCEPTION
   WHEN OTHERS
@@ -1331,7 +1345,6 @@ CREATE OR REPLACE FUNCTION updateStay(stayId IN NUMBER,
 IS
 
 BEGIN
-
   UPDATE POBYTY
   SET termin_przyjecia = startDate,
       termin_wypisu    = endDate,
@@ -1341,6 +1354,12 @@ BEGIN
   where ID_POBYTU = stayId;
   rowCount := SQL%ROWCOUNT;
   if (rowCount = 1) then
+    update pokoje
+    set ilosc_zajetych_miejsc = (select count(id_pobytu)
+                                 from pobyty
+                                 where pobyty.id_pokoju = pokoje.id_pokoju
+                                   and termin_wypisu is null)
+    where id_pokoju = roomId;
     return 0; --Poprawne zakończenie
   elsif (rowCount = 0) then
     return -4; --Nie ma id
@@ -1367,12 +1386,18 @@ CREATE OR REPLACE FUNCTION deleteStay(stayId IN NUMBER,
                                       rowCount OUT NUMBER)
   RETURN NUMBER
 IS
-
+  roomId number;
 BEGIN
-
+  SELECT id_pokoju into roomId from pobyty where id_pobytu = stayId;
   DELETE FROM POBYTY WHERE ID_POBYTU = stayId;
   rowCount := SQL%ROWCOUNT;
   if (rowCount = 1) then
+    update pokoje
+    set ilosc_zajetych_miejsc = (select count(id_pobytu)
+                                 from pobyty
+                                 where pobyty.id_pokoju = pokoje.id_pokoju
+                                   and termin_wypisu is null)
+    where id_pokoju = roomId;
     return 0; --Poprawne zakończenie
   elsif (rowCount = 0) then
     return -4; --Nie ma id
@@ -1394,4 +1419,24 @@ BEGIN
     end if;
 END;
 
+CREATE OR REPLACE PROCEDURE updateAllSalaries
+IS
+BEGIN
+  UPDATE LEKARZE L
+  SET L.PLACA = (SELECT P.PLACA_MAX FROM PLACE P WHERE P.STANOWISKO = L.STANOWISKO)
+  WHERE L.PLACA > (SELECT P.PLACA_MAX FROM PLACE P WHERE P.STANOWISKO = L.STANOWISKO);
+  UPDATE LEKARZE L
+  SET L.PLACA = (SELECT P.PLACA_MIN FROM PLACE P WHERE P.STANOWISKO = L.STANOWISKO)
+  WHERE L.PLACA < (SELECT P.PLACA_MIN FROM PLACE P WHERE P.STANOWISKO = L.STANOWISKO);
+END;
 
+
+/*
+SELECT
+index_name, i.index_type, i.uniqueness, c.column_name
+FROM
+user_indexes i
+JOIN
+user_ind_columns c
+USING (index_name);
+*/

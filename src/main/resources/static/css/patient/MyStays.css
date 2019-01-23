@@ -1,0 +1,102 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+    background: url(/img/background.jpg) no-repeat;
+    background-size: cover;
+}
+
+#container{
+    width: 100%;
+    padding-top: 240px;
+    color: white;
+}
+
+#title{
+    font-size: 50px;
+    font-weight: 600;
+    margin-bottom: 40px;
+    width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+
+}
+
+#pobyty{
+    font-size: 30px;
+    width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+a{
+    text-decoration: none;
+}
+
+th{
+    border:1px solid white;
+    text-align: center;
+    width: 180px;
+}
+
+td{
+    border:1px solid white;
+    text-align: center;
+    width: 180px;
+}
+
+
+#logo{
+    height: 140px;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    position: fixed;
+}
+
+img {
+    max-width: 100px;
+    max-height: 100px;
+    padding: 20px;
+    display: inline-block;
+    float: left;
+}
+
+#pasek{
+    position: relative;
+    float: inside;
+    width: 1000px;
+    justify-content: center;
+    /*
+    background: #A6CE39;
+    */
+    text-align: center;
+    margin-top: 32px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.linkref{
+    color: #FFFFFF;
+    font-family: sans-serif;
+    display: inline-block;
+    font-size: 35px;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 20px;
+    margin: 0px 10px 0px 10px;
+}
+
+.linkref:after{
+    content:"";
+    display: block;
+    width: 0px;
+    height: 3px;
+    background-color: white;
+    transition: width .9s;
+
+}
+
+.linkref:hover:after{
+    width: 100%;
+    cursor: pointer;
+}

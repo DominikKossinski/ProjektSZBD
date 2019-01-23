@@ -36,7 +36,8 @@ public class ElementRestController {
             @Override
             public Element getElementById(long id) {
                 try {
-                    return getJdbcTemplate().queryForObject("SELECT * FROM ELEMENTY_WYPOSAZENIA WHERE ID_ELEMENTU = " + id,
+                    return getJdbcTemplate().queryForObject("SELECT * FROM ELEMENTY_WYPOSAZENIA WHERE ID_ELEMENTU = "
+                                    + id,
                             (rs, arg1) -> new Element(rs.getLong("id_elementu"), rs.getString("nazwa"),
                                     rs.getInt("ilosc"), rs.getFloat("cena_jednostkowa"),
                                     rs.getLong("id_oddzialu")));
@@ -47,7 +48,7 @@ public class ElementRestController {
 
             @Override
             public List<Element> getAllElements() {
-                return getJdbcTemplate().query("SELECT * FROM ELEMENTY_WYPOSAZENIA",
+                return getJdbcTemplate().query("SELECT * FROM ELEMENTY_WYPOSAZENIA" + " order by  ID_ELEMENTU",
                         (rs, arg1) -> new Element(rs.getLong("id_elementu"), rs.getString("nazwa"),
                                 rs.getInt("ilosc"), rs.getFloat("cena_jednostkowa"),
                                 rs.getLong("id_oddzialu")));
@@ -55,7 +56,8 @@ public class ElementRestController {
 
             @Override
             public List<Element> getElementsByHospitalSectionId(long hospitalSectionId) {
-                return getJdbcTemplate().query("SELECT * FROM ELEMENTY_WYPOSAZENIA WHERE ID_ODDZIALU = " + hospitalSectionId,
+                return getJdbcTemplate().query("SELECT * FROM ELEMENTY_WYPOSAZENIA WHERE ID_ODDZIALU = "
+                                + hospitalSectionId + " order by  ID_ELEMENTU",
                         (rs, arg1) -> new Element(rs.getLong("id_elementu"), rs.getString("nazwa"),
                                 rs.getInt("ilosc"), rs.getFloat("cena_jednostkowa"),
                                 rs.getLong("id_oddzialu")));
@@ -67,7 +69,7 @@ public class ElementRestController {
                                 "e.id_oddzialu FROM ELEMENTY_WYPOSAZENIA e " +
                                 "JOIN ODDZIALY o on e.id_oddzialu = o.id_oddzialu " +
                                 "JOIN SZPITALE s on o.id_szpitala = o.id_szpitala " +
-                                "WHERE s.id_szpitala = " + hospitalId,
+                                "WHERE s.id_szpitala = " + hospitalId + " order by  ID_ELEMENTU",
                         (rs, arg1) -> new Element(rs.getLong("id_elementu"), rs.getString("nazwa"),
                                 rs.getInt("ilosc"), rs.getFloat("cena_jednostkowa"),
                                 rs.getLong("id_oddzialu")));

@@ -53,6 +53,11 @@ public class HospitalTests {
             }
 
             @Override
+            public Hospital getHospitalByHospitalSectionId(long hospitalSectionId) {
+                return null;
+            }
+
+            @Override
             public Director getHospitalDirector(long hospitalId) {
                 if (hospitalId == 0) {
                     return null;

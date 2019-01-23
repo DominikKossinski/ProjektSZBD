@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Recepty</title>
+    <link href="/css/doctor/ManagePrescriptions.css" rel="stylesheet">
+</head>
+<body onload="getData()">
+
+<div id="wrapper">
+    <div id="logo">
+
+        <a href="/home">
+            <img src="/img/hos_logo.png"/>
+        </a>
+
+        <div id="pasek">
+            <a href="/hospitals">
+                <div class="linkref">
+                    Szpitale
+                </div>
+            </a>
+            <a href="/illnesses">
+                <div class="linkref">
+                    Choroby
+                </div>
+            </a>
+            <a th:href="@{|/${userId}/doctorProfile|}" th:if="${isDoctor}">
+                <div class="linkref">
+                    Mój Profil
+                </div>
+            </a>
+            <a href="/adminPanel" th:if="${isAdmin}">
+                <div class="linkref">
+                    Admin Panel
+                </div>
+            </a>
+            <a th:href="@{|/patient/${userId}/patientProfile|}" th:if="${isPatient}">
+                <div class="linkref">Mój Profil</div>
+            </a>
+            <div class="linkref" onclick="logout()" th:if="${isAuthenticated}">
+                Wyloguj
+            </div>
+        </div>
+        <div style="clear: both"></div>
+
+    </div>
+    <div id="main-area">
+        <div style="display: flex">
+            <div id="left-div">
+                <div class="inline-div">
+                    <label class="input-name-label">Data:</label>
+                    <input class="data-input" id="date-input" type="date">
+                </div>
+                <div class="inline-div">
+                    <label class="input-name-label">Dawkowanie:</label>
+                    <textarea id="dosage-textarea" style="margin: 0 5% 0 5%;"></textarea>
+                </div>
+                <div class="inline-div">
+                    <label class="input-name-label">Choroba</label>
+                    <form>
+                        <input class="data-input" id="illness-input" list="illnesses-datalist" type="text">
+                        <datalist id="illnesses-datalist"></datalist>
+                    </form>
+                </div>
+                <div class="inline-div">
+                    <label class="input-name-label">Pobyt</label>
+                    <form>
+                        <input class="data-input" id="stay-input" list="stay-datalist" type="text">
+                        <datalist id="stay-datalist"></datalist>
+                    </form>
+                </div>
+                <div class="inline-div">
+                    <input id="stay-add-input" onclick="addPrescription()" type="submit" value="Dodaj Receptę">
+
+                </div>
+            </div>
+            <div id="right-div">
+                <table id="patients-table" style="border:1px solid white;">
+                    <thead>
+                    <tr>
+                        <th style="width: 40px">Lp.</th>
+                        <th>Data wystawienia</th>
+                        <th>Zalecenia</th>
+                        <th>Choroba</th>
+                        <th>Edytuj</th>
+                        <th>Usuń</th>
+                    </tr>
+                    </thead>
+                    <tbody id="patients-tbody">
+                    </tbody>
+                </table>
+                <ul id="patients-ul"></ul>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<ul id="prescriptions-ul"></ul>
+
+<span id="doctor-id-span" th:text="${id}" style="display: none"></span>
+<span id="pesel-span" th:text="${pesel}" style="display: none"></span>
+<script src="/js/doctor/ManagePrescriptions.js"></script>
+</body>
+</html>

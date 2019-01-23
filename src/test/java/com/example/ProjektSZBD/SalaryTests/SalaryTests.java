@@ -60,6 +60,11 @@ public class SalaryTests {
             public int deleteSalary(String position) {
                 return 0;
             }
+
+            @Override
+            public void updateAllSalaries() {
+
+            }
         };
         restController = new SalaryRestController(salaryInterface);
     }

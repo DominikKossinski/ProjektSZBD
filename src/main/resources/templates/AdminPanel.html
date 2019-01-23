@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Panel</title>
+    <link href="/css/admin/AdminPanel.css" rel="stylesheet">
+</head>
+<body>
+<div id="wrapper">
+    <div id="logo">
+
+        <a href="/home">
+            <img src="/img/hos_logo.png"/>
+        </a>
+
+        <div id="pasek">
+            <a href="/hospitals">
+                <div class="linkref">
+                    Szpitale
+                </div>
+            </a>
+            <a href="/illnesses">
+                <div class="linkref">
+                    Choroby
+                </div>
+            </a>
+            <a th:href="@{|/${userId}/doctorProfile|}" th:if="${isDoctor}">
+                <div class="linkref">
+                    Mój Profil
+                </div>
+            </a>
+            <a href="/adminPanel" th:if="${isAdmin}">
+                <div class="linkref">
+                    Admin Panel
+                </div>
+            </a>
+            <a th:href="@{|/patient/${userId}/patientProfile|}" th:if="${isPatient}">
+                <div class="linkref">Mój Profil</div>
+            </a>
+            <div class="linkref" onclick="logout()">
+                Wyloguj
+            </div>
+        </div>
+        <div style="clear: both"></div>
+
+    </div>
+    <div id="main-area">
+        <br>
+        <div class="center-div">
+            <a href="/admin/addHospital">
+                <div class="log">Dodaj szpital</div>
+            </a>
+            <a href="/admin/manageSalaries">
+                <div class="log">Zarządzaj płacami</div>
+            </a>
+            <a href="/admin/manageHospitals">
+                <div class="log">Zarządzaj szpitalami</div>
+            </a>
+        </div>
+    </div>
+</div>
+<script src="/js/admin/AdminPanel.js"></script>
+</body>
+</html>

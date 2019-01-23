@@ -92,6 +92,11 @@ public class Stay {
     public static Stay getInstance(String stayData) throws ParseException {
         JSONParser parser = new JSONParser();
         JSONObject stay = (JSONObject) parser.parse(stayData);
+        if (stay.get("end_date") == null || String.valueOf(stay.get("end_date")).compareTo("") == 0) {
+            return new Stay((long) stay.get("id"), Date.valueOf((String) stay.get("start_date")),
+                    null, (long) stay.get("room_id"),
+                    (long) stay.get("doctor_id"), (long) stay.get("pesel"));
+        }
         return new Stay((long) stay.get("id"), Date.valueOf((String) stay.get("start_date")),
                 Date.valueOf((String) stay.get("end_date")), (long) stay.get("room_id"),
                 (long) stay.get("doctor_id"), (long) stay.get("pesel"));

@@ -35,7 +35,7 @@ public class IllnessRestController {
         this.illnessInterface = new IllnessInterface() {
             @Override
             public List<Illness> getAllIllnesses() {
-                return getJdbcTemplate().query("SELECT * FROM CHOROBY",
+                return getJdbcTemplate().query("SELECT * FROM CHOROBY" + " order by ID_CHOROBY",
                         (rs, arg1) -> {
                             return new Illness(rs.getLong("id_choroby"), rs.getString("nazwa"),
                                     rs.getString("opis"));
@@ -58,7 +58,8 @@ public class IllnessRestController {
 
             @Override
             public List<Illness> getAllIllnessesWithPattern(String pattern) {
-                return getJdbcTemplate().query("SELECT * FROM CHOROBY WHERE LOWER(nazwa) like '%" + pattern + "%'",
+                return getJdbcTemplate().query("SELECT * FROM CHOROBY WHERE LOWER(nazwa) like '%" + pattern + "%'"
+                                + " order by ID_CHOROBY",
                         (rs, arg1) -> {
                             return new Illness(rs.getLong("id_choroby"), rs.getString("nazwa"),
                                     rs.getString("opis"));

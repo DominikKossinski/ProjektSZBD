@@ -4,24 +4,154 @@
     <meta charset="UTF-8">
     <title>Moj Profil</title>
     <link href="/css/doctor/doctorProfile.css" rel="stylesheet" type="text/css">
+    <link href="/css/fontello/css/fontello.css" rel="stylesheet" type="text/css">
+
 </head>
 <body onload="getDoctorData()">
 
-<div style="display: block;">
-    <label>Imię:</label>
-    <label id="first-name-label"></label>
-    <label>Nazwisko:</label>
-    <label id="last-name-label"></label>
-    <label>Id:</label>
-    <label id="id-label"></label>
-    <label>Placa:</label>
-    <label id="salary-label"></label>
-    <label>Oddział:</label>
-    <label id="hospital-section-label"></label>
-    <label>Stanowisko:</label>
-    <label id="position-label"></label>
+<div id="logo">
+
+    <a href="/home">
+        <img src="/img/hos_logo.png"/>
+    </a>
+
+    <div id="pasek">
+        <a href="/hospitals">
+            <div class="linkref">
+                Szpitale
+            </div>
+        </a>
+        <a href="/illnesses">
+            <div class="linkref">
+                Choroby
+            </div>
+        </a>
+        <a th:href="@{|/${userId}/doctorProfile|}" th:if="${isDoctor}">
+            <div class="linkref">
+                Mój Profil
+            </div>
+        </a>
+        <a href="/adminPanel" th:if="${isAdmin}">
+            <div class="linkref">
+                Admin Panel
+            </div>
+        </a>
+        <a th:href="@{|/patient/${userId}/patientProfile|}" th:if="${isPatient}">
+            <div class="linkref">Mój Profil</div>
+        </a>
+        <div class="linkref" onclick="logout()" th:if="${isAuthenticated}">
+            Wyloguj
+        </div>
+    </div>
+    <div style="clear: both"></div>
+
 </div>
-<span id="doctor-id-span" th:text="${id}"></span>
+<div id="container">
+    <div id="all">
+        <div id="userVis">
+            <div id = "left">
+                <i class="icon-user" style="font-size: 100px"></i>
+            </div>
+            <div id = "right">
+
+                <div class = "lab">
+                    <div style="float: left; padding-right: 5px">ID: </div>
+                    <div id="id-label" th:text="${id}" style="float: left"></div>
+                    <div style="clear: both"></div>
+                </div>
+
+                <div class="lab">
+                    <div style="float: left; padding-right: 5px">Imię: </div>
+                    <div id="first-name-label" style="float: left"></div>
+                    <div style="clear: both"></div>
+                </div>
+
+                <div class="lab">
+                    <div style="float: left; padding-right: 5px">Nazwisko: </div>
+                    <div id="last-name-label" style="float: left"></div>
+                    <div style="clear: both"></div>
+                </div>
+
+                <div class="lab">
+                    <div style="float: left; padding-right: 5px">Placa: </div>
+                    <div id="salary-label" style="float: left"></div>
+                    <div style="clear: both"></div>
+                </div>
+
+                <div class="lab">
+                    <div style="float: left; padding-right: 5px">Oddział: </div>
+                    <div id="hospital-section-label" style="float: left"></div>
+                    <div style="clear: both"></div>
+                </div>
+
+                <div class="lab">
+                    <div style="float: left; padding-right: 5px">Stanowisko: </div>
+                    <div id="position-label" style="float: left"></div>
+                    <div style="clear: both"></div>
+                </div>
+
+            </div>
+            <div style="clear: both"></div>
+
+        </div>
+        <div id="slider">
+
+            <a href="/managePatients">
+                <div class="log" style="margin-top: 0px">
+                    Zarządzaj Pacjentami
+                </div>
+            </a>
+
+            <a th:href="@{|/${id}/manageStays|}">
+                <div class="log" style="margin-top: 0px">
+                    Zarządzaj Pobytami
+                </div>
+            </a>
+
+            <a href="/managePrescriptions">
+                <div class="log">
+                    Zarządzaj Receptami
+                </div>
+            </a>
+
+            <a href="/manageIllnesses">
+                <div class="log">
+                    Zarządzaj Chorobami
+                </div>
+            </a>
+
+            <a href="/manageDoctors" th:if="${isDirector}">
+                <div class="log">
+                    Zarządzaj Lekarzami
+                </div>
+            </a>
+
+            <a href="/manageHospitalSections" th:if="${isDirector}">
+                <div class="log">
+                    Zarządzaj Oddziałami
+                </div>
+            </a>
+
+            <a href="/manageRooms" th:if="${isDirector}">
+                <div class="log">
+                    Zarządzaj Pokojami
+                </div>
+            </a>
+
+            <a href="/manageElements" th:if="${isOrdynator}">
+                <div class="log">
+                    Zarządzaj Elementami Wyposażenia
+                </div>
+            </a>
+        </div>
+        <div style="clear: both;"></div>
+    </div>
+</div>
+
+<div style="display: block;">
+
+</div>
+<span id="doctor-id-span" th:text="${id}" style="display: none"></span>
 <script src="/js/doctor/doctorProfile.js"></script>
 </body>
 </html>

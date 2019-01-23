@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Dodaj Pacjenta</title>
+    <link href="/css/doctor/ManagePatients.css" rel="stylesheet">
+</head>
+<body onload="searchPatients()">
+<div id="wrapper">
+    <div id="logo">
+
+        <a href="/home">
+            <img src="/img/hos_logo.png"/>
+        </a>
+
+        <div id="pasek">
+            <a href="/hospitals">
+                <div class="linkref">
+                    Szpitale
+                </div>
+            </a>
+            <a href="/illnesses">
+                <div class="linkref">
+                    Choroby
+                </div>
+            </a>
+            <a th:href="@{|/${userId}/doctorProfile|}" th:if="${isDoctor}">
+                <div class="linkref">
+                    Mój Profil
+                </div>
+            </a>
+            <a href="/adminPanel" th:if="${isAdmin}">
+                <div class="linkref">
+                    Admin Panel
+                </div>
+            </a>
+            <a th:href="@{|/patient/${userId}/patientProfile|}" th:if="${isPatient}">
+                <div class="linkref">Mój Profil</div>
+            </a>
+            <div class="linkref" onclick="logout()" th:if="${isAuthenticated}">
+                Wyloguj
+            </div>
+        </div>
+        <div style="clear: both"></div>
+
+    </div>
+    <div id="main-area">
+        <div style="display: flex">
+            <div id="left-div">
+                <div class="inline-div">
+                    <label class="input-name-label">Pesel:</label>
+                    <input class="data-input" id="pesel-input" placeholder="PESEL" type="text">
+                </div>
+                <div class="inline-div">
+                    <label class="input-name-label">Imię:</label>
+                    <input class="data-input" id="first-name-input" placeholder="IMIĘ" type="text">
+                </div>
+                <div class="inline-div">
+                    <label class="input-name-label">Nazwisko:</label>
+                    <input class="data-input" id="last-name-input" placeholder="NAZWISKO" type="text">
+                </div>
+                <div class="inline-div">
+                    <label class="input-name-label">Hasło:</label>
+                    <input class="data-input" id="password-input" placeholder="HASŁO" type="password">
+                </div>
+                <div class="inline-div">
+                    <input id="patient-add-input" onclick="addPatient()" type="submit" value="Dodaj Pacjenta">
+                    <input id="stay-add-input" onclick="addStay()" type="submit" value="Dodaj Pobyt">
+                </div>
+            </div>
+            <div id="right-div">
+                <input id="search-input" oninput="searchPatients()" placeholder="Wyszukaj pacjenta" type="text">
+                <table id="patients-table" style="border:1px solid white;">
+                    <thead>
+                    <tr>
+                        <th>Lp.</th>
+                        <th>Pesel</th>
+                        <th>Imię</th>
+                        <th>Nazwisko</th>
+                        <th>Edytuj</th>
+                        <th>Usuń</th>
+                    </tr>
+                    </thead>
+                    <tbody id="patients-tbody">
+                    </tbody>
+                </table>
+                <ul id="patients-ul"></ul>
+            </div>
+        </div>
+
+    </div>
+</div>
+<span id="id-span" th:text="${id}"></span>
+<script src="/js/doctor/ManagePatients.js"></script>
+</body>
+</html>

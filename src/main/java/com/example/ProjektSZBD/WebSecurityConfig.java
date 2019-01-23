@@ -37,23 +37,43 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/", "/home", "/api/login", "/css/all/*", "/js/all/*", "/api/hospitalSection**").permitAll()
-                .antMatchers("/api/logout").authenticated()
+                .antMatchers("/home", "/api/login", "/css/fontello/css/*", "/css/fontello/font/*", "/css/all/*",
+                        "/js/all/*", "/img/*", "/api/hospitalSection**",
+                        "/illnesses", "/api/illness**", "/api/allHospitals", "/api/hospitalSections**", "/hospitals",
+                        "/api/rooms**", "/api/hospital**", "/api/hospitalDirector**").permitAll()
 
-                /*.antMatchers("/css/doctor/*", "/js/doctor/*").hasRole("Dyrektor")
-                .antMatchers("/css/doctor/*", "/js/doctor/*").hasRole("Ordynator")
-                .antMatchers("/css/doctor/*", "/js/doctor/*").hasRole("Lekarz")
+                .antMatchers("/api/logout", "/api/doctorInfo**").authenticated()
+
+                .antMatchers("/api/salary**").access("@webSecurityConfig.isDirectorOrAdmin(authentication)")
+
+                .antMatchers("/css/director/*", "/js/director/*", "/manageDoctors",
+                        "/api/hospitalSections**", "/manageHospitalSections",
+                        "/api/updateHospitalSection", "/api/addHospitalSection", "/api/deleteHospitalSection",
+                        "/manageRooms", "/api/addRoom", "/api/updateRoom", "/api/deleteRoom",
+                        "/api/doctors**", "/api/addDoctor", "/api/updateDoctor", "/api/deleteDoctor**").hasRole("Dyrektor")
+                .antMatchers("/css/ordynator/*", "/js/ordynator/*", "/manageElements", "/api/elements**",
+                        "/api/addElement", "/api/updateElement", "/api/deleteElement**").hasRole("Ordynator")
+                /*.antMatchers("/css/doctor/*", "/js/doctor/*").hasRole("Lekarz")
                 .antMatchers("/css/doctor/*", "/js/doctor/*").hasRole("Asystent")
                 .antMatchers("/css/doctor/*", "/js/doctor/*").hasRole("Rezydent")
                 .antMatchers("/css/doctor/*", "/js/doctor/*").hasRole("Praktykant")*/
 
-                .antMatchers("/admin/*", "/api/admin/*", "/js/admin/*", "/css/admin/*", "/api/salary*").hasRole("ADMIN")
+                .antMatchers("/admin/*", "/api/admin/*", "/js/admin/*", "/css/admin/*",
+                        "/adminPanel", "/api/addSalary**", "/api/updateSalary",
+                        "/api/deleteSalary").hasRole("ADMIN")
 
-                .antMatchers("/js/patient/*", "/css/patient/*").access(
+                .antMatchers("/js/patient/*", "/css/patient/*", "/myStays", "/myPrescriptions").access(
                 "@webSecurityConfig.isPatient(authentication)")
-                .antMatchers("/js/doctor/*", "/css/doctor/*").access(
-                "@webSecurityConfig.idDoctor(authentication)")
-                .antMatchers("/api/{userId}/**", "/{userId}/**").access("@webSecurityConfig.checkDoctorId(authentication, #userId)")
+                .antMatchers("/js/doctor/*", "/css/doctor/*", "/managePatients", "/api/addPatient",
+                        "/api/deletePatient", "/api/updatePatient", "/api/searchPatients**", "/api/patient**",
+                        "/api/addStay", "/api/updateStay", "/api/deleteStay", "/api/addIllness", "/api/updateIllness", "/api/deleteIllness**",
+                        "/manageIllnesses", "/api/prescriptions**", "/managePrescriptions", "/api/addPrescription", "/api/updatePrescription",
+                        "/api/deletePrescription**", "/api/stays**").access("@webSecurityConfig.isDoctor(authentication)")
+
+                .antMatchers("/api/patient/{pesel}/**", "/patient/{pesel}/**").access(
+                "@webSecurityConfig.checkPatientPesel(authentication, #pesel)")
+                .antMatchers("/api/{userId}/**", "/{userId}/**").access(
+                "@webSecurityConfig.checkDoctorId(authentication, #userId)")
                 // .antMatchers().access("@webSecurityConfig.checkDoctorId(authentication, #userId)")
 
                 .anyRequest().denyAll()
@@ -90,16 +110,22 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .password(patient.getPassword()).roles("PATIENT").build();
             getInMemoryUserDetailsManager().createUser(userDetails);
         }
-        UserDetails userDetails = User.withUsername("Admin")
+        UserDetails userDetails = User.withUsername("admin")
                 .password("admin").roles("ADMIN").build();
         getInMemoryUserDetailsManager().createUser(userDetails);
         return ProjektSzbdApplication.getInMemoryUserDetailsManager();
     }
 
+    public boolean checkPatientPesel(Authentication authentication, String pesel) {
+        String userName = authentication.getName();
+        System.out.println("Check id name = " + userName + " id = " + pesel);
+        return userName.compareTo(pesel) == 0 && isPatient(authentication);
+    }
+
     public boolean checkDoctorId(Authentication authentication, String id) {
         String userName = authentication.getName();
         System.out.println("Check id name = " + userName + " id = " + id);
-        return userName.compareTo(id) == 0;
+        return userName.compareTo(id) == 0 && isDoctor(authentication);
     }
 
     public boolean isDoctor(Authentication authentication) {
@@ -115,6 +141,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         Set<String> roles = authentication.getAuthorities().stream()
                 .map(r -> r.getAuthority()).collect(Collectors.toSet());
         ArrayList<String> list = new ArrayList<>(roles);
+        System.out.println("Role Patient: " + list.get(0));
         return list.get(0).compareTo("ROLE_PATIENT") == 0;
+    }
+
+    public boolean isDirectorOrAdmin(Authentication authentication) {
+        Set<String> roles = authentication.getAuthorities().stream()
+                .map(r -> r.getAuthority()).collect(Collectors.toSet());
+        ArrayList<String> list = new ArrayList<>(roles);
+        System.out.println("is Admin or director" +
+                (list.get(0).compareTo("ROLE_ADMIN") == 0 || list.get(0).compareTo("ROLE_Dyrektor") == 0));
+        return list.get(0).compareTo("ROLE_ADMIN") == 0 || list.get(0).compareTo("ROLE_Dyrektor") == 0;
     }
 }

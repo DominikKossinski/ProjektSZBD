@@ -68,6 +68,9 @@ public class Illness {
     public static Illness getInstance(String illnessData) throws ParseException {
         JSONParser parser = new JSONParser();
         JSONObject illness = (JSONObject) parser.parse(illnessData);
+        if (illness.get("description") == null) {
+            return new Illness((long) illness.get("id"), (String) illness.get("name"), null);
+        }
         return new Illness((long) illness.get("id"), (String) illness.get("name"), (String) illness.get("description"));
     }
 

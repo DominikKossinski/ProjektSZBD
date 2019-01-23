@@ -47,7 +47,8 @@ public class RoomRestController {
 
             @Override
             public List<Room> getRoomsByHospitalSectionId(long hospitalSectionId) {
-                return getJdbcTemplate().query("SELECT * FROM POKOJE WHERE ID_ODDZIALU = " + hospitalSectionId,
+                return getJdbcTemplate().query("SELECT * FROM POKOJE WHERE ID_ODDZIALU = " + hospitalSectionId
+                                + " order by ID_POKOJU",
                         (rs, arg1) -> new Room(rs.getLong("id_pokoju"), rs.getInt("pietro"),
                                 rs.getInt("liczba_miejsc"), rs.getLong("id_oddzialu"),
                                 rs.getInt("ilosc_zajetych_miejsc")));
@@ -56,7 +57,7 @@ public class RoomRestController {
             @Override
             public List<Room> getRoomsWithFreePlaces(long hospitalSectionId) {
                 return getJdbcTemplate().query("SELECT * FROM POKOJE WHERE ilosc_zajetych_miejsc < liczba_miejsc " +
-                                "and  ID_ODDZIALU = " + hospitalSectionId,
+                                "and  ID_ODDZIALU = " + hospitalSectionId + " order by ID_POKOJU",
                         (rs, arg1) -> new Room(rs.getLong("id_pokoju"), rs.getInt("pietro"),
                                 rs.getInt("liczba_miejsc"), rs.getLong("id_oddzialu"),
                                 rs.getInt("ilosc_zajetych_miejsc")));

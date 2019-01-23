@@ -1,9 +1,13 @@
 package com.example.ProjektSZBD.Controllers;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+
+import static com.example.ProjektSZBD.DataGetter.getUserRoles;
 
 /**
  * Controler odpowiadajacy za wyświetlanie strony profilu pacjenta.
@@ -18,9 +22,11 @@ public class PatientProfileController {
      * @param model - model widoku
      * @return "doctorProfile" - nazwa widoku strony.
      */
-    @GetMapping("/{id}/patientProfile")
+    @GetMapping("/patient/{id}/patientProfile")
     public String getPatientProfile(@PathVariable("id") String id, Model model) {
         model.addAttribute("id", id);
-        return "patientProfile";
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        getUserRoles(model, authentication);
+        return "PatientProfile";
     }
 }

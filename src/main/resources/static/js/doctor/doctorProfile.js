@@ -27,13 +27,26 @@ function getDoctorData() {
                     var hospitalSection = data.hospital_section;
                     hospitalSectionLabel.innerText = hospitalSection.name;
                 } else {
-                    //TODO wyświetlanie informacjii o błędzie
-                    alert(data.description);
+                    alert("Nastąpił błąd podczas ładowania strony. Odśwież ją.");
                 }
             })
         } else {
-            //TODO wyświetlanie informacjii o błędzie
-            alert(data.description);
+            alert("Nastąpił błąd podczas ładowania strony. Odśwież ją.");
         }
     })
+}
+
+function logout() {
+    var url = "/api/logout";
+    fetch(url).then(function (value) {
+        return value.json();
+    }).then(function (data) {
+        if (data.resp_status === "ok") {
+            if (data.logout.logout === true) {
+                console.log("Logged out");
+                window.location.assign("/home");
+            }
+        }
+    });
+
 }

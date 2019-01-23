@@ -52,7 +52,7 @@ public class PatientRestController {
             @Override
             public List<Patient> getAllPatients() {
 
-                return getJdbcTemplate().query("SELECT * FROM PACJENCI",
+                return getJdbcTemplate().query("SELECT * FROM PACJENCI" + " order by PESEL",
                         (rs, arg1) -> new Patient(rs.getLong("pesel"), rs.getString("imie"),
                                 rs.getString("nazwisko"), rs.getString("haslo")));
             }
@@ -70,9 +70,20 @@ public class PatientRestController {
 
             @Override
             public List<Patient> getAllPatientsInfo() {
-                return getJdbcTemplate().query("SELECT pesel, imie, nazwisko FROM PACJENCI",
+                return getJdbcTemplate().query("SELECT pesel, imie, nazwisko FROM PACJENCI" + " order by PESEL",
                         (rs, arg1) -> new Patient(rs.getLong("pesel"), rs.getString("imie"),
                                 rs.getString("nazwisko")));
+            }
+
+            @Override
+            public List<Patient> getPatientsByPattern(String pattern) {
+                return getJdbcTemplate().query("SELECT * FROM PACJENCI " +
+                                "WHERE TO_CHAR(PESEL) LIKE '%" + pattern + "%' OR" +
+                                " LOWER(IMIE) LIKE '%" + pattern + "%' OR" +
+                                " Lower(NAZWISKO) LIKE '%" + pattern + "%'" +
+                                " order by PESEL",
+                        (rs, arg1) -> new Patient(rs.getLong("pesel"), rs.getString("imie"),
+                                rs.getString("nazwisko"), rs.getString("haslo")));
             }
 
             @Override
@@ -173,12 +184,34 @@ public class PatientRestController {
      * @param pesel - pesel pacjenta
      * @return (String) - tekst w formacie JSON zawierający pełne dane o pacjencie
      */
-    @RequestMapping(value = "/api/{pesel}/patient", method = RequestMethod.GET,
+    @RequestMapping(value = "/api/patient/{pesel}/patient", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String getPatientByPesel(@PathVariable("pesel") long pesel) {
         Patient patient = patientInterface.getPatientByPesel(pesel);
         return createResponseWithPatient(patient, pesel);
 
+    }
+
+    /**
+     * Metoda zwracająca dane pacjenta na podstawie ciągu znaków.
+     *
+     * @param pattern - ciąg znaków
+     * @return (String) - tekst w formacie JSON zawierający pełne dane o znalezionych pacjentach
+     */
+    @RequestMapping(value = "/api/searchPatients", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public String searchPatientsByPattern(@RequestParam(name = "pattern") String pattern) {
+        JSONArray patientsArray = new JSONArray();
+        List<Patient> patients = patientInterface.getPatientsByPattern(pattern.toLowerCase());
+        for (Patient patient : patients) {
+            try {
+                patientsArray.add(patient.toJSONObject());
+            } catch (ParseException e) {
+                return ResponseCreator.parseErrorResponse(e);
+            }
+        }
+        return ResponseCreator.jsonResponse("patients", patientsArray,
+                "List of patients with pattern: " + pattern);
     }
 
     /**

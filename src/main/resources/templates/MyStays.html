@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Moje Pobyty</title>
+    <link href="/css/patient/MyStays.css" rel="stylesheet">
+</head>
+<body onload="getMyStays()">
+
+<div id="logo">
+
+    <a href="/home">
+        <img src="/img/hos_logo.png"/>
+    </a>
+
+    <div id="pasek">
+        <a href="/hospitals">
+            <div class="linkref">
+                Szpitale
+            </div>
+        </a>
+        <a href="/illnesses">
+            <div class="linkref">
+                Choroby
+            </div>
+        </a>
+        <a th:href="@{|/${userId}/doctorProfile|}" th:if="${isDoctor}">
+            <div class="linkref">
+                Mój Profil
+            </div>
+        </a>
+        <a href="/adminPanel" th:if="${isAdmin}">
+            <div class="linkref">
+                Admin Panel
+            </div>
+        </a>
+        <a th:href="@{|/patient/${userId}/patientProfile|}" th:if="${isPatient}">
+            <div class="linkref">Mój Profil</div>
+        </a>
+        <div class="linkref" onclick="logout()" th:if="${isAuthenticated}">
+            Wyloguj
+        </div>
+    </div>
+    <div style="clear: both"></div>
+
+</div>
+
+<div id="container">
+    <div id="title">
+        Pobyty
+    </div>
+    <div id="pobyty">
+
+        <span id="pesel-span" th:text="${pesel}" style="display: none"></span>
+        <table style="border:1px solid white;">
+            <thead>
+            <tr>
+                <th>ID pobytu</th>
+                <th>ID szpitala</th>
+                <th>Oddział</th>
+                <th>Nr pokoju</th>
+                <th>Początek</th>
+                <th>Koniec</th>
+                <th>Lekarz</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="/js/patient/MyStays.js"></script>
+</body>
+</html>

@@ -43,7 +43,7 @@ public class HospitalRestController {
         this.hospitalInterface = new HospitalInterface() {
             @Override
             public List<Hospital> getAllHospitals() {
-                return getJdbcTemplate().query("SELECT * FROM SZPITALE", (rs, arg1) -> new Hospital(
+                return getJdbcTemplate().query("SELECT * FROM SZPITALE order by ID_SZPITALA", (rs, arg1) -> new Hospital(
                         rs.getLong("id_szpitala"), rs.getString("nazwa_szpitala"),
                         rs.getString("adres"), rs.getString("miasto")));
             }
@@ -51,7 +51,20 @@ public class HospitalRestController {
             @Override
             public Hospital getHospitalById(long id) {
                 try {
-                    return getJdbcTemplate().queryForObject("SELECT * FROM SZPITALE WHERE ID_SZPITALA = " + id,
+                    return getJdbcTemplate().queryForObject("SELECT * FROM SZPITALE WHERE ID_SZPITALA = "
+                                    + id,
+                            (rs, ag1) -> new Hospital(rs.getLong("id_szpitala"), rs.getString("nazwa_szpitala"),
+                                    rs.getString("adres"), rs.getString("miasto")));
+                } catch (EmptyResultDataAccessException e) {
+                    return null;
+                }
+            }
+
+            @Override
+            public Hospital getHospitalByHospitalSectionId(long hospitalSectionId) {
+                try {
+                    return getJdbcTemplate().queryForObject("SELECT * FROM SZPITALE JOIN ODDZIALY O on SZPITALE.ID_SZPITALA = O.ID_SZPITALA" +
+                                    " WHERE ID_ODDZIALU = " + hospitalSectionId,
                             (rs, ag1) -> new Hospital(rs.getLong("id_szpitala"), rs.getString("nazwa_szpitala"),
                                     rs.getString("adres"), rs.getString("miasto")));
                 } catch (EmptyResultDataAccessException e) {
@@ -65,7 +78,7 @@ public class HospitalRestController {
                     return getJdbcTemplate().queryForObject("select l.ID_LEKARZA, l.IMIE, l.NAZWISKO, l.id_oddzialu, l.stanowisko " +
                                     "from lekarze l join oddzialy o on l.id_oddzialu = o.id_oddzialu " +
                                     "join SZPITALE s on s.ID_SZPITALA = o.ID_SZPITALA " +
-                                    "where  o.ID_SZPITALA = " + hospitalId + " and l.stanowisko = 'Dyrektor' order by s.id_szpitala",
+                                    "where  o.ID_SZPITALA = " + hospitalId + " and l.stanowisko = 'Dyrektor'",
                             (rs, ag1) -> new Director(hospitalId, rs.getLong("id_lekarza"), rs.getString("imie"),
                                     rs.getString("nazwisko"), rs.getLong("id_oddzialu"))
                     );
@@ -320,7 +333,7 @@ public class HospitalRestController {
      * @param hospitalData - tekst w formacie JSON zawierający dane o szpitalu
      * @return (String) - odpowiedź serwera zawierająca status zakończenia aktualizowania danych szpitala
      */
-    @RequestMapping(value = "/api/updateHospital", method = RequestMethod.POST,
+    @RequestMapping(value = "/api/admin/updateHospital", method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String updateHospital(@RequestBody String hospitalData) {
         try {
@@ -347,7 +360,7 @@ public class HospitalRestController {
      * @param id - id szpitala
      * @return (String) - odpowiedź serwera zawierająca status zakończenia usuwania szpitala
      */
-    @RequestMapping(value = "/api/deleteHospital", method = RequestMethod.DELETE,
+    @RequestMapping(value = "/api/admin/deleteHospital", method = RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String deleteHospital(@RequestParam("id") long id) {
         int status = hospitalInterface.deleteHospital(id);
@@ -362,5 +375,7 @@ public class HospitalRestController {
         }
     }
 
-
+    public HospitalInterface getHospitalInterface() {
+        return hospitalInterface;
+    }
 }

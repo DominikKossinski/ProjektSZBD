@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Dodaj Chorobę</title>
+    <link href="/css/doctor/ManageIllnesses.css" rel="stylesheet">
+</head>
+<body onload="getIllnesses()">
+<div id="wrapper">
+    <div id="logo">
+
+        <a href="/home">
+            <img src="/img/hos_logo.png"/>
+        </a>
+
+        <div id="pasek">
+            <a href="/hospitals">
+                <div class="linkref">
+                    Szpitale
+                </div>
+            </a>
+            <a href="/illnesses">
+                <div class="linkref">
+                    Choroby
+                </div>
+            </a>
+            <a th:href="@{|/${userId}/doctorProfile|}" th:if="${isDoctor}">
+                <div class="linkref">
+                    Mój Profil
+                </div>
+            </a>
+            <a href="/adminPanel" th:if="${isAdmin}">
+                <div class="linkref">
+                    Admin Panel
+                </div>
+            </a>
+            <a th:href="@{|/patient/${userId}/patientProfile|}" th:if="${isPatient}">
+                <div class="linkref">Mój Profil</div>
+            </a>
+            <div class="linkref" onclick="logout()" th:if="${isAuthenticated}">
+                Wyloguj
+            </div>
+        </div>
+        <div style="clear: both"></div>
+
+    </div>
+    <div id="main-area">
+        <div id="left-div">
+            <div class="inline-div">
+                <label class="input-name-label">Nazwa:</label>
+                <input class="data-input" id="name-input" placeholder="NAZWA" type="text">
+            </div>
+            <div class="inline-div">
+                <label class="input-name-label">Opis:</label>
+                <textarea id="description-textarea" placeholder="OPIS..."></textarea>
+            </div>
+            <div class="inline-div">
+                <input class="add-input" onclick="addIllness()" type="submit" value="Dodaj Chorobę">
+            </div>
+        </div>
+
+        <div id="right-div">
+            <input class="search-input" id="name-search-input" oninput="getIllnesses()" placeholder="Nazwa Choroby"
+                   type="text">
+            <br>
+            <br>
+            <br>
+            <div class="data-div" id="illnesses-div"></div>
+        </div>
+    </div>
+</div>
+<script src="/js/doctor/ManageIllnesses.js"></script>
+</body>
+</html>
