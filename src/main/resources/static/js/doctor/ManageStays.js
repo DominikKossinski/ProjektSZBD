@@ -164,12 +164,20 @@ function mapStays(stays) {
         var lastNameTd = document.createElement("td");
         var lastNameLabel = document.createElement("label");
         lastNameLabel.className = "table-text-label";
-        lastNameLabel.innerText = stay.end_date;
+        var end_d;
+        if ((end_d = stay.end_date) == "null") {
+            end_d = "-";
+        }
+        lastNameLabel.innerText = end_d;
         lastNameTd.appendChild(lastNameLabel);
 
         var lastNameInput = document.createElement("input");
         lastNameInput.type = "date";
-        lastNameInput.value = stay.end_date;
+        var end_d;
+        if ((end_d = stay.end_date) == "null"){
+            end_d = "-";
+        }
+        lastNameInput.value = end_d;
         lastNameInput.style.display = "none";
         lastNameInput.className = "text-input";
         lastNameTd.appendChild(lastNameInput);

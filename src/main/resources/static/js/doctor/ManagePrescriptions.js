@@ -63,6 +63,10 @@ function getPrescriptions() {
     }
     var prescriptionsUl = document.getElementById("prescriptions-ul");
     prescriptionsUl.innerHTML = "";
+
+    var patientsTbody = document.getElementById("patients-tbody");
+    patientsTbody.innerHTML = "";
+
     fetch("/api/prescriptions?doctorId=" + doctorId + pesel).then(
         function (value) {
             return value.json();
@@ -80,58 +84,104 @@ function getPrescriptions() {
                 ).then(function (data1) {
                     console.log(data1);
                     if (data1.resp_status === "ok") {
-                        var prescriptionLi = document.createElement("li");
 
-                        var label = document.createElement("label");
+                        var dos = prescription.dosage;
+                        if (dos === 'null'){
+                            dos = "-";
+                        }
+
+                        var row = document.createElement("tr");
+                        var numTd = document.createElement("td");
+                        numTd.innerText = i+".";
+                        numTd.className = "text-td";
+                        row.append(numTd);
+
+                        var firstNameTd = document.createElement("td");
+                        var firstNameLabel = document.createElement("label");
+                        firstNameLabel.className = "table-text-label";
+                        firstNameLabel.innerText = prescription.date;
+                        firstNameTd.appendChild(firstNameLabel);
+
+                        row.append(firstNameTd);
+
+                        var dosageTd = document.createElement("td");
+                        var dosageTdLabel = document.createElement("label");
+                        dosageTdLabel.className = "table-text-label";
+                        dosageTdLabel.innerText = dos;
+                        dosageTdLabel.style.color = "white";
+                        dosageTd.appendChild(dosageTdLabel);
+
+                        var dosageTdInput = document.createElement("textarea");
+                        dosageTdInput.style.display = "none";
+                        dosageTdInput.innerText = dos;
+                        dosageTdInput.className = "text-td";
+                        dosageTdInput.style.color = "black";
+                        dosageTd.appendChild(dosageTdInput);
+
+                        row.append(dosageTd);
+
+                        var illTd = document.createElement("td");
+                        illTd.className = "text-td";
                         var illness = data1.illness;
-                        label.innerText = i + ". " + prescription.date + " " + prescription.dosage +
-                            " choroba: " + illness.name;
-                        prescriptionLi.appendChild(label);
+                        illTd.innerText = illness.name;
+                        row.append(illTd);
 
-                        var dosageTextarea = document.createElement("textarea");
-                        dosageTextarea.value = prescription.dosage;
-                        dosageTextarea.style.display = "none";
-                        prescriptionLi.appendChild(dosageTextarea);
+                        var editTd = document.createElement("td");
 
                         var acceptInput = document.createElement("input");
+                        acceptInput.className = "accept-input";
                         acceptInput.type = "submit";
                         acceptInput.value = "Akceptuj";
-                        acceptInput.style.display = "none";
                         acceptInput.onclick = function () {
                             updatePrescription(prescription.id, prescription, dosageTextarea.value);
                         };
-                        prescriptionLi.appendChild(acceptInput);
+                        acceptInput.style.display = "none";
+                        editTd.appendChild(acceptInput);
 
                         var manageInput = document.createElement("input");
+                        manageInput.className = "manage-input";
                         manageInput.type = "submit";
                         manageInput.value = "Edytuj";
                         manageInput.onclick = function () {
                             if (manageInput.value === "Edytuj") {
+
                                 manageInput.value = "Anuluj";
-                                label.innerText = i + ". " + prescription.date +
-                                    " choroba: " + illness.name;
-                                dosageTextarea.style.display = "block";
-                                dosageTextarea.value = prescription.dosage;
-                                acceptInput.style.display = "block";
+                                manageInput.style.height = "50%";
+                                dosageTdInput.style.display = "inline-block";
+                                dosageTdInput.value = dos;
+                                dosageTdLabel.style.display = "none";
+                                acceptInput.style.display = "inline-block";
+
                             } else {
+
+
                                 manageInput.value = "Edytuj";
-                                label.innerText = i + ". " + prescription.date + " " + prescription.dosage +
-                                    " choroba: " + illness.name;
-                                dosageTextarea.style.display = "none";
+                                manageInput.style.height = "100%";
+                                firstNameLabel.style.display = "inline-block";
+                                dosageTdInput.style.display = "none";
+                                dosageTdLabel.style.display = "inline-block";
                                 acceptInput.style.display = "none";
                             }
+                            deleteInput.style.height = "100%";
                         };
-                        prescriptionLi.appendChild(manageInput);
+                        editTd.appendChild(manageInput);
+
+                        row.append(editTd);
+
+                        var deleteTd = document.createElement("td");
 
                         var deleteInput = document.createElement("input");
+                        deleteInput.className = "delete-input";
                         deleteInput.type = "submit";
                         deleteInput.value = "Usuń";
                         deleteInput.onclick = function () {
                             deletePrescription(prescription.id);
                         };
-                        prescriptionLi.appendChild(deleteInput);
+                        deleteTd.appendChild(deleteInput);
 
-                        prescriptionsUl.appendChild(prescriptionLi);
+                        row.append(deleteTd);
+                        patientsTbody.append(row);
+
                         i++;
                     } else {
                         //Todo ładniejsze wyświetlanie błaędu
