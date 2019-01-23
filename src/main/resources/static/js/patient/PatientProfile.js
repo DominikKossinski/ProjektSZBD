@@ -11,8 +11,8 @@ function getPatientData() {
             firstNameLabel.innerText = patient.first_name;
             lastNameLabel.innerText = patient.last_name;
         } else {
-            //TODO info o błedzie
-            alert(data.description);
+            alert("Nastąpił błąd podczas ładowania danych pacjenta. Odśwież stronę");
+            ;
         }
     })
 }

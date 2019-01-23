@@ -211,8 +211,7 @@ function addElement() {
                 if (response.resp_status === "ok") {
                     alert("Dodano element");
                 } else {
-                    //TODO lepsze wyswietlanie errora
-                    alert(response.description);
+                    alert("Nastąpił błąd podczas dodawania elementu. Odśwież stronę i spróbuj jeszcze raz.")
                 }
                 getElements();
             }
@@ -225,7 +224,6 @@ function addElement() {
 }
 
 function deleteElement(id) {
-    alert("delete: " + id);
     var http = new XMLHttpRequest();
     var url = "/api/deleteElement?id=" + id;
     http.open("Delete", url, true);

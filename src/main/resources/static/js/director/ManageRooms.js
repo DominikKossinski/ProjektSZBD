@@ -200,7 +200,7 @@ function updateRoom(id, count, room) {
                     alert("Zaktualizowano pokój");
                 } else {
                     alert("Nastąpił błąd podczas aktualizowania pokoju, " +
-                        "odśwież stronę i spróbuj jeszcze raz");
+                        " sprawdź czy liczba aktualnie zajętych miejsc nie jest większa od podanej liczby miejsc");
                 }
                 getRooms();
             }

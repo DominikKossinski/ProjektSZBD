@@ -19,26 +19,28 @@ function getPrescriptions() {
                     console.log(data1);
                     if (data1.resp_status === "ok") {
 
+                        var text = prescription.dosage;
+                        if (text === "null") {
+                            text = "";
+                        }
                         var row = $('<tr/>')
                             .append($('<td/>', {text: prescription.id || ''}))          // ID recepty
                             .append($('<td/>', {text: prescription.illness_id || ''}))          // ID choroby
-                            .append($('<td/>', {text: prescription.stay_id|| ''}))          // ID choroby
+                            .append($('<td/>', {text: prescription.stay_id || ''}))          // ID choroby
                             .append($('<td/>', {text: prescription.date || ''}))          // Data wystawienia
-                            .append($('<td/>', {text: prescription.dosage || ''}))     // Dawkowanie
+                            .append($('<td/>', {text: text || ''}));   // Dawkowanie
 
                         $('table tbody').append(row);
 
 
                     } else {
-                        //TODO ładniejsze wyświetlanie błędu
-                        alert(data.description);
+                        alert("Nastąpił błąd podczas ładowania recept. Odśwież stronę");
                     }
                 })
 
             })
         } else {
-            //TODO ładniejsze wyświetlanie błędu
-            alert(data.description);
+            alert("Nastąpił błąd podczas ładowania recept. Odśwież stronę");
         }
     })
 }

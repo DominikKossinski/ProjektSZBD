@@ -1,7 +1,4 @@
 function getData() {
-    //TODO wczytaj pobyty,
-    //TODO wczytaj chorony
-
     getPrescriptions();
     getIllnesses();
     getStays();
@@ -26,8 +23,7 @@ function getIllnesses() {
 
 
         } else {
-            //todo łaniejsze wyświtlanie informacji
-            alert("error")
+            alert("Nastąpił błąd podczas ładowania chorób. Odśwież stronę.");
         }
     })
 }
@@ -49,8 +45,7 @@ function getStays() {
                 stayDataList.appendChild(op);
             })
         } else {
-            //todo ładniejsze wyświetlanie błędu
-            alert("error");
+            alert("Nastąpił błąd podczas ładowania pobytów. Odśwież stronę.");
         }
     })
 }
@@ -133,7 +128,7 @@ function getPrescriptions() {
                         acceptInput.type = "submit";
                         acceptInput.value = "Akceptuj";
                         acceptInput.onclick = function () {
-                            updatePrescription(prescription.id, prescription, dosageTextarea.value);
+                            updatePrescription(prescription.id, prescription, dosageTdInput.value);
                         };
                         acceptInput.style.display = "none";
                         editTd.appendChild(acceptInput);
@@ -184,22 +179,19 @@ function getPrescriptions() {
 
                         i++;
                     } else {
-                        //Todo ładniejsze wyświetlanie błaędu
-                        alert("error")
+                        alert("Nastąpił błąd podczas ładowania recept. Odśwież stronę.");
                     }
                 })
 
 
             })
         } else {
-            //Todo łaniejsze wyświetlanie erroró
-            alert("error");
+            alert("Nastąpił błąd podczas ładowania pobytów. Odśwież stronę.");
         }
     })
 }
 
 function updatePrescription(id, prescription, dosage) {
-    //TODO potwierdzenie chęci
     var data = JSON.stringify({
         "id": id,
         "date": prescription.date,
@@ -217,11 +209,9 @@ function updatePrescription(id, prescription, dosage) {
             var response = JSON.parse(http.responseText);
             console.log(response);
             if (response.resp_status === "ok") {
-                //TODO ładniejsze info
-                alert("Update Receptę id:" + id);
+                alert("Pomyślnie zaktualizowano receptę");
             } else {
-                //TODO lepsze wyswietlanie errora
-                alert(response.description);
+                alert("Nastąpił błąd podczas aktualizacji recepty. Odśwież stronę i spróbuj ponownie.");
             }
             getPrescriptions();
         }
@@ -229,7 +219,6 @@ function updatePrescription(id, prescription, dosage) {
 }
 
 function deletePrescription(id) {
-    //TODO potwierdzenie chęci
     var http = new XMLHttpRequest();
     var url = "/api/deletePrescription?id=" + id;
     http.open("Delete", url, true);
@@ -240,11 +229,9 @@ function deletePrescription(id) {
             var response = JSON.parse(http.responseText);
             console.log(response);
             if (response.resp_status === "ok") {
-                //TODO ładniejsze info
-                alert("Delete Receptę id:" + id);
+                alert("Usunięto receptę");
             } else {
-                //TODO lepsze wyswietlanie errora
-                alert(response.description);
+                alert("Nastąpił błąd podczs usuwania recepty");
             }
             getPrescriptions();
         }
@@ -277,20 +264,15 @@ function addPrescription() {
                 var response = JSON.parse(http.responseText);
                 console.log(response);
                 if (response.resp_status === "ok") {
-                    //TODO ładniejsze info
-                    var prescription = response.prescription;
-                    alert("Add Receptę id:" + prescription.id);
+                    alert("Dodano receptę");
                 } else {
-                    //TODO lepsze wyswietlanie errora
-                    alert(response.description);
+                    alert("Nastąpił błąd podczas dodawania recepty. Odśwież stronę i spróbuj ponownie.");
                 }
                 getPrescriptions();
             }
         };
     } else {
-        //TODO łądniejsza informacja o błędzie
-        alert("błąd");
-
+        alert("Sprawdź poprawność danych recepty.");
     }
 }
 

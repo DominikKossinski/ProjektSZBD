@@ -110,7 +110,6 @@ function addHospitalSection() {
 }
 
 function deleteHospitalSection(id) {
-    alert("delete " + id);
     var http = new XMLHttpRequest();
     var url = "/api/deleteHospitalSection?id=" + id;
     http.open("delete", url, true);
@@ -133,7 +132,6 @@ function deleteHospitalSection(id) {
 
 function changeHospitalSection(id, newName) {
     var hospitalId = document.getElementById("hospital-id-span").innerText;
-    alert("change " + id + " new name: '" + newName + "'");
     if (newName !== "") {
         var data = JSON.stringify({
             "id": parseInt(id),

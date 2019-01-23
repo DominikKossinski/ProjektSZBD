@@ -116,8 +116,7 @@ function searchPatients() {
 
             })
         } else {
-            // TODO łdniejsze wyświetlanie błędu
-            alert("błąd")
+            alert("Nastąpił błąd przy ładowaniu strony. Odśwież ją");
         }
     })
 }
@@ -147,25 +146,21 @@ function addPatient() {
                 var response = JSON.parse(http.responseText);
                 console.log(response);
                 if (response.resp_status === "ok") {
-                    //TODO ładniejsze info
                     globalPesel = pesel;
-                    alert("Dodano Pacjenta      ");
+                    alert("Dodano Pacjenta");
                 } else {
-                    //TODO lepsze wyswietlanie errora
-                    alert(response.description);
+                    alert("Nastąpił błąd przy dodawaniu pacjenta. Odśwież stronę i spróbuj ponownie.");
                 }
                 searchPatients();
             }
 
         };
     } else {
-        //TODO ladniej wyswietlac informacje
-        alert("error")
+        alert("Sprawdź poprawność danych pacjenta pesel to 11 cyfrowa liczba.");
     }
 }
 
 function deletePatient(pesel) {
-    //TODO potwierdzenie chęci
     var http = new XMLHttpRequest();
     var url = "/api/deletePatient?pesel=" + pesel;
     http.open("Delete", url, true);
@@ -176,11 +171,9 @@ function deletePatient(pesel) {
             var response = JSON.parse(http.responseText);
             console.log(response);
             if (response.resp_status === "ok") {
-                //TODO ładniejsze info
-                alert("Patient deleted pesel:" + pesel)
+                alert("Usunięto pacjenta");
             } else {
-                //TODO lepsze wyswietlanie errora
-                alert(response.description);
+                alert("Nastąpił błąd podczas usuwania pacjenta. Prawdopodobnie są z nim powiązane pobyty");
             }
             searchPatients();
         }
@@ -207,19 +200,15 @@ function updatePatient(pesel, firstName, lastName, password) {
                 var response = JSON.parse(http.responseText);
                 console.log(response);
                 if (response.resp_status === "ok") {
-                    //TODO ładniejsze info
-                    globalPesel = pesel;
-                    alert("update Pacjenta:" + pesel);
+                    alert("Zaktualizowano dane pacjenta");
                 } else {
-                    //TODO lepsze wyswietlanie errora
-                    alert(response.description);
+                    alert("Nastąpił błąd podczas aktualizowania danych pacjenta. Odśwież stronę i spróbuj ponownie");
                 }
                 searchPatients();
             }
         };
     } else {
-        //TODO ladniej wyswietlac informacje
-        alert("error")
+        alert("Sprawdź poprawność danych pacjenta pesel to 11 cyfrowa liczba.");
     }
 }
 

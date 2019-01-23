@@ -20,8 +20,7 @@ function addPesel() {
                     peselDataList.appendChild(op);
                 })
             } else {
-                //todo łeniejsza informacja o błędzie
-                alert("Error");
+                alert("Nastąpił błąd podczas ładowania peseli. Odśwież stronę.");
             }
         })
     }
@@ -54,7 +53,6 @@ function reloadRooms() {
 }
 
 function addStay() {
-    //TODO sprawdznie poprawności danych i fech do api
     var pesel = document.getElementById("pesel-input").value;
     var id = document.getElementById("id-span").innerText;
     var date = document.getElementById("date-input").value;
@@ -79,20 +77,16 @@ function addStay() {
                 var response = JSON.parse(http.responseText);
                 console.log(response);
                 if (response.resp_status === "ok") {
-                    //TODO ładniejsze info
-                    var stay = response.stay;
-                    alert("Dodano Pobyt id:" + stay.id);
+                    alert("Dodano Pobyt");
                 } else {
-                    //TODO lepsze wyswietlanie errora
-                    alert(response.description);
+                    alert("Nastąpił błąd podczas dodawania pobytu. Odśwież stronę.");
                 }
                 reloadRooms();
                 getStays();
             }
         };
     } else {
-        //TODO ładne wyświetlanie info o błędzie
-        alert("Błąd");
+        alert("Podano złe dane. Sprawdź poprawność danych dodawanego pobytu.");
     }
     console.log(data);
 }
@@ -111,8 +105,7 @@ function getStays() {
                 var stays = data.stays;
                 mapStays(stays)
             } else {
-                //todo łaniejsze wyświetlanie błędu
-                alert(data.description);
+                alert("Nastąpił błąd podczas ładowania pobytów. Odśwież stronę.");
             }
         })
     } else {
@@ -126,8 +119,7 @@ function getStays() {
                 var stays = data.stays;
                 mapStays(stays)
             } else {
-                //todo łaniejsze wyświetlanie błędu
-                alert(data.description);
+                alert("Nastąpił błąd podczas ładowania pobytów. Odśwież stronę.");
             }
         })
     }
@@ -164,8 +156,8 @@ function mapStays(stays) {
         var lastNameTd = document.createElement("td");
         var lastNameLabel = document.createElement("label");
         lastNameLabel.className = "table-text-label";
-        var end_d;
-        if ((end_d = stay.end_date) == "null") {
+        var end_d = stay.end_date;
+        if (end_d === "null") {
             end_d = "-";
         }
         lastNameLabel.innerText = end_d;
@@ -173,10 +165,7 @@ function mapStays(stays) {
 
         var lastNameInput = document.createElement("input");
         lastNameInput.type = "date";
-        var end_d;
-        if ((end_d = stay.end_date) == "null"){
-            end_d = "-";
-        }
+
         lastNameInput.value = end_d;
         lastNameInput.style.display = "none";
         lastNameInput.className = "text-input";
@@ -259,11 +248,9 @@ function updateStay(stay, endDate) {
             var response = JSON.parse(http.responseText);
             console.log(response);
             if (response.resp_status === "ok") {
-                //TODO ładniejsze info
-                alert("update Pobyt id:" + stay.id);
+                alert("Zaktualizowano pobyt");
             } else {
-                //TODO lepsze wyswietlanie errora
-                alert(response.description);
+                alert("Nastąpił błąd podczas aktualizowania pobytu. Sprawdź czy podano datę późniejszą niż data startu");
             }
             reloadRooms();
             getStays()
@@ -283,11 +270,9 @@ function deleteStay(id) {
             var response = JSON.parse(http.responseText);
             console.log(response);
             if (response.resp_status === "ok") {
-                //TODO ładniejsze info
-                alert("delete Pobyt id:" + id);
+                alert("Usunięto pobyt");
             } else {
-                //TODO lepsze wyswietlanie errora
-                alert(response.description);
+                alert("Nastąpił błąd podczas usuwania pobytu. Prawdopodobnie są z nim powiązane recepty");
             }
             reloadRooms();
             getStays()

@@ -15,10 +15,6 @@ function loadData() {
     ).then(function (data) {
         console.log(data);
         if (data.resp_status === "ok") {
-
-
-            //TODO pokazywanie lekarzy tak jak w manageRooms
-            /*------------------------------------------------------------------------*/
             salaries = data.salaries;
             salaries.map(function (salary) {
                 if (salary.position !== "Dyrektor") {
@@ -55,9 +51,8 @@ function loadData() {
 }
 
 function getDoctors() {
-    var doctorsUl = document.getElementById("doctors-ul");
-    doctorsUl.innerHTML = "";
-    var i = 0;
+    var doctorsDiv = document.getElementById("doctors-div");
+    doctorsDiv.innerHTML = "";
     hospitalSections.map(
         function (hospitalSection) {
             fetch("/api/doctors?hospitalSectionId=" + hospitalSection.id).then(
@@ -67,151 +62,272 @@ function getDoctors() {
             ).then(function (data) {
                 console.log(data);
                 if (data.resp_status === "ok") {
-                    var sectionLi = document.createElement("li");
+                    var sectionDiv = document.createElement("div");
+                    sectionDiv.className = "section-div";
 
                     var label = document.createElement("label");
-                    label.innerText = i + ". " + hospitalSection.name;
-                    sectionLi.appendChild(label);
-
-                    var dUl = document.createElement("ul");
+                    label.className = "section-name-label";
+                    label.innerText = hospitalSection.id + ". " + hospitalSection.name;
+                    sectionDiv.appendChild(label);
 
 
                     var doctors = data.doctors;
-                    var j = 0;
-                    doctors.map(function (doctor) {
-                        var doctorLi = document.createElement("li");
+                    if (doctors.length > 0) {
 
-                        var doctorLabel = document.createElement("label");
-                        doctorLabel.innerText = j + ". Id:" + doctor.id + " imie: " + doctor.first_name + " nazwisko " +
-                            doctor.last_name + " płaca: " + doctor.salary + " stanowisko: " + doctor.position;
-                        doctorLi.appendChild(doctorLabel);
+                        var table = document.createElement("table");
+                        var thead = document.createElement("thead");
+                        var tr = document.createElement("tr");
 
-                        var firstNameInput = document.createElement("input");
-                        firstNameInput.type = "text";
-                        firstNameInput.value = doctor.first_name;
-                        firstNameInput.style.display = "none";
-                        doctorLi.appendChild(firstNameInput);
+                        var idTh = document.createElement("th");
+                        idTh.innerText = "ID lekarza";
+                        tr.appendChild(idTh);
 
+                        var firstNameTh = document.createElement("th");
+                        firstNameTh.innerText = "Imię";
+                        tr.appendChild(firstNameTh);
 
-                        var lastNameInput = document.createElement("input");
-                        lastNameInput.type = "text";
-                        lastNameInput.value = doctor.last_name;
-                        lastNameInput.style.display = "none";
-                        doctorLi.appendChild(lastNameInput);
+                        var lastNameTh = document.createElement("th");
+                        lastNameTh.innerText = "Nazwisko";
+                        tr.appendChild(lastNameTh);
 
-                        var positionSelect = document.createElement("select");
-                        positionSelect.style.display = "none";
-                        salaries.map(function (salary) {
-                            var option = document.createElement("option");
-                            option.value = salary.position;
-                            option.innerText = salary.position;
-                            positionSelect.appendChild(option);
-                        });
-                        for (var a = 0; a < positionSelect.length; a++) {
-                            if (positionSelect[a].value === doctor.position) {
-                                positionSelect.selectedIndex = a;
-                                break;
-                            }
-                        }
-                        doctorLi.appendChild(positionSelect);
+                        var salaryTh = document.createElement("th");
+                        salaryTh.innerText = "Płaca";
+                        tr.appendChild(salaryTh);
 
-                        var salaryInput = document.createElement("input");
-                        salaryInput.type = "number";
-                        salaryInput.value = doctor.salary;
-                        salaryInput.style.display = "none";
-                        doctorLi.appendChild(salaryInput);
+                        var positionTh = document.createElement("th");
+                        positionTh.innerText = "Stanowisko";
+                        tr.appendChild(positionTh);
 
-                        var sectionSelect = document.createElement("select");
-                        sectionSelect.style.display = "none";
-                        hospitalSections.map(function (hospitalSection1) {
-                            var option = document.createElement("option");
-                            option.value = hospitalSection1.id;
-                            option.innerText = hospitalSection1.id + "-" + hospitalSection1.name;
-                            sectionSelect.appendChild(option);
-                        });
-                        for (a = 0; a < sectionSelect.length; a++) {
-                            if (parseInt(sectionSelect[a].value) === parseInt(doctor.hospital_section_id)) {
-                                sectionSelect.selectedIndex = a;
-                                break;
-                            }
-                        }
-                        doctorLi.appendChild(sectionSelect);
+                        var sectionTh = document.createElement("th");
+                        sectionTh.innerText = "Oddział";
+                        tr.appendChild(sectionTh);
+
+                        var manageTh = document.createElement("th");
+                        manageTh.innerText = "Edytuj";
+                        tr.appendChild(manageTh);
+
+                        var deleteTh = document.createElement("th");
+                        deleteTh.innerText = "Usuń";
+                        tr.appendChild(deleteTh);
+
+                        thead.appendChild(tr);
+
+                        table.appendChild(thead);
+
+                        var tbody = document.createElement("tbody");
+                        table.appendChild(tbody);
 
 
-                        var acceptInput = document.createElement("input");
-                        acceptInput.type = "submit";
-                        acceptInput.value = "Akceptuj";
-                        acceptInput.style.display = "none";
-                        acceptInput.onclick = function () {
-                            updateDoctor(doctor.id, firstNameInput.value, lastNameInput.value,
-                                positionSelect[positionSelect.selectedIndex].value,
-                                salaryInput.value,
-                                sectionSelect[sectionSelect.selectedIndex].value);
-                        };
-                        doctorLi.appendChild(acceptInput);
+                        sectionDiv.appendChild(table);
 
-                        var manageInput = document.createElement("input");
-                        manageInput.type = "submit";
-                        manageInput.value = "Edytuj";
-                        manageInput.onclick = function () {
-                            if (manageInput.value === "Edytuj") {
-                                manageInput.value = "Anuluj";
-                                doctorLabel.innerText = j + ". Id: " + doctor.id;
-                                firstNameInput.style.display = "block";
-                                lastNameInput.style.display = "block";
-                                positionSelect.style.display = "block";
-                                salaryInput.style.display = "block";
-                                sectionSelect.style.display = "block";
-                                acceptInput.style.display = "block";
-                            } else {
-                                //TODO resetowanie value inputów
-                                manageInput.value = "Edytuj";
-                                doctorLabel.innerText = j + ". Id:" + doctor.id + " imie: " + doctor.first_name + " nazwisko " +
-                                    " płaca: " + doctor.salary + " stanowisko: " + doctor.position;
-                                firstNameInput.style.display = "none";
-                                firstNameInput.value = doctor.first_name;
-                                lastNameInput.style.display = "none";
-                                lastNameInput.value = doctor.last_name;
-                                positionSelect.style.display = "none";
-                                for (var a = 0; a < positionSelect.length; a++) {
-                                    if (positionSelect[a].value === doctor.position) {
-                                        positionSelect.selectedIndex = a;
-                                        break;
-                                    }
+                        doctors.map(function (doctor) {
+                            var row = document.createElement("tr");
+
+                            var idTd = document.createElement("td");
+                            idTd.className = "text-td";
+                            idTd.innerText = doctor.id;
+                            row.appendChild(idTd);
+
+                            var firstNameTd = document.createElement("td");
+
+                            var firstNameLabel = document.createElement("label");
+                            firstNameLabel.className = "table-text-label";
+                            firstNameLabel.innerText = doctor.first_name;
+                            firstNameTd.appendChild(firstNameLabel);
+
+                            var firstNameInput = document.createElement("input");
+                            firstNameInput.className = "text-input";
+                            firstNameInput.type = "text";
+                            firstNameInput.value = doctor.first_name;
+                            firstNameInput.style.display = "none";
+                            firstNameTd.appendChild(firstNameInput);
+
+                            row.appendChild(firstNameTd);
+
+                            var lastNameTd = document.createElement("td");
+
+                            var lastNameLabel = document.createElement("label");
+                            lastNameLabel.className = "table-text-label";
+                            lastNameLabel.innerText = doctor.last_name;
+                            lastNameTd.appendChild(lastNameLabel);
+
+
+                            var lastNameInput = document.createElement("input");
+                            lastNameInput.className = "text-input";
+                            lastNameInput.type = "text";
+                            lastNameInput.value = doctor.last_name;
+                            lastNameInput.style.display = "none";
+                            lastNameTd.appendChild(lastNameInput);
+
+                            row.appendChild(lastNameTd);
+
+                            var positionTd = document.createElement("td");
+
+                            var positionLabel = document.createElement("label");
+                            positionLabel.className = "table-text-label";
+                            positionLabel.innerText = doctor.position;
+                            positionTd.appendChild(positionLabel);
+
+                            var positionSelect = document.createElement("select");
+                            positionSelect.className = "text-input";
+                            positionSelect.style.display = "none";
+                            salaries.map(function (salary) {
+                                var option = document.createElement("option");
+                                option.value = salary.position;
+                                option.innerText = salary.position;
+                                positionSelect.appendChild(option);
+                            });
+                            for (var a = 0; a < positionSelect.length; a++) {
+                                if (positionSelect[a].value === doctor.position) {
+                                    positionSelect.selectedIndex = a;
+                                    break;
                                 }
-                                salaryInput.style.display = "none";
-                                salaryInput.value = doctor.salary;
-                                sectionSelect.style.display = "none";
-                                for (a = 0; a < sectionSelect.length; a++) {
-                                    if (parseInt(sectionSelect[a].value) === parseInt(doctor.hospital_section_id)) {
-                                        sectionSelect.selectedIndex = a;
-                                        break;
-                                    }
-                                }
-                                acceptInput.style.display = "none";
-
                             }
-                        };
-                        doctorLi.appendChild(manageInput);
+                            positionTd.appendChild(positionSelect);
 
-                        var deleteInput = document.createElement("input");
-                        deleteInput.type = "submit";
-                        deleteInput.value = "Usuń";
-                        deleteInput.onclick = function () {
-                            deleteDoctor(doctor.id);
-                        };
-                        doctorLi.appendChild(deleteInput);
+                            row.appendChild(positionTd);
 
-                        dUl.appendChild(doctorLi);
-                        j++;
-                    });
+                            var salaryTd = document.createElement("td");
 
-                    sectionLi.appendChild(dUl);
-                    doctorsUl.appendChild(sectionLi);
-                    i++;
+                            var salaryLabel = document.createElement("label");
+                            salaryLabel.className = "table-text-label";
+                            salaryLabel.innerText = doctor.salary;
+
+                            salaryTd.appendChild(salaryLabel);
+
+                            var salaryInput = document.createElement("input");
+                            salaryInput.className = "text-input";
+                            salaryInput.type = "number";
+                            salaryInput.value = doctor.salary;
+                            salaryInput.style.display = "none";
+                            salaryTd.appendChild(salaryInput);
+
+                            row.appendChild(salaryTd);
+
+                            var sectionTd = document.createElement("td");
+
+                            var sectionLabel = document.createElement("label");
+                            sectionLabel.className = "table-text-label";
+                            sectionTd.appendChild(sectionLabel);
+
+                            var sectionSelect = document.createElement("select");
+                            sectionSelect.className = "text-input";
+                            sectionSelect.style.display = "none";
+                            hospitalSections.map(function (hospitalSection1) {
+                                var option = document.createElement("option");
+                                option.value = hospitalSection1.id;
+                                option.innerText = hospitalSection1.id + "-" + hospitalSection1.name;
+                                sectionSelect.appendChild(option);
+                            });
+                            for (a = 0; a < sectionSelect.length; a++) {
+                                if (parseInt(sectionSelect[a].value) === parseInt(doctor.hospital_section_id)) {
+                                    sectionSelect.selectedIndex = a;
+                                    sectionLabel.innerText = sectionSelect[a].innerText;
+                                    break;
+                                }
+                            }
+                            sectionTd.appendChild(sectionSelect);
+
+                            row.appendChild(sectionTd);
+
+                            var manageTd = document.createElement("td");
+
+
+                            var acceptInput = document.createElement("input");
+                            acceptInput.className = "accept-input";
+                            acceptInput.type = "submit";
+                            acceptInput.value = "Akceptuj";
+                            acceptInput.style.display = "none";
+                            acceptInput.onclick = function () {
+                                updateDoctor(doctor.id, firstNameInput.value, lastNameInput.value,
+                                    positionSelect[positionSelect.selectedIndex].value,
+                                    salaryInput.value,
+                                    sectionSelect[sectionSelect.selectedIndex].value);
+                            };
+                            manageTd.appendChild(acceptInput);
+
+                            var manageInput = document.createElement("input");
+                            manageInput.className = "manage-input";
+                            manageInput.type = "submit";
+                            manageInput.value = "Edytuj";
+                            manageInput.onclick = function () {
+                                if (manageInput.value === "Edytuj") {
+                                    manageInput.value = "Anuluj";
+                                    firstNameInput.style.display = "block";
+                                    firstNameLabel.style.display = "none";
+                                    lastNameInput.style.display = "block";
+                                    lastNameLabel.style.display = "none";
+                                    positionSelect.style.display = "block";
+                                    positionLabel.style.display = "none";
+                                    salaryInput.style.display = "block";
+                                    salaryLabel.style.display = "none";
+                                    sectionSelect.style.display = "block";
+                                    sectionLabel.style.display = "none";
+                                    acceptInput.style.display = "block";
+                                } else {
+                                    manageInput.value = "Edytuj";
+                                    firstNameInput.style.display = "none";
+                                    firstNameInput.value = doctor.first_name;
+                                    firstNameLabel.style.display = "block";
+                                    lastNameInput.style.display = "none";
+                                    lastNameInput.value = doctor.last_name;
+                                    lastNameLabel.style.display = "block";
+                                    positionSelect.style.display = "none";
+                                    for (var a = 0; a < positionSelect.length; a++) {
+                                        if (positionSelect[a].value === doctor.position) {
+                                            positionSelect.selectedIndex = a;
+                                            break;
+                                        }
+                                    }
+                                    positionLabel.style.display = "block";
+                                    salaryInput.style.display = "none";
+                                    salaryInput.value = doctor.salary;
+                                    salaryLabel.style.display = "block";
+                                    sectionSelect.style.display = "none";
+                                    for (a = 0; a < sectionSelect.length; a++) {
+                                        if (parseInt(sectionSelect[a].value) === parseInt(doctor.hospital_section_id)) {
+                                            sectionSelect.selectedIndex = a;
+                                            break;
+                                        }
+                                    }
+                                    sectionLabel.style.display = "block";
+                                    acceptInput.style.display = "none";
+
+                                }
+                            };
+                            manageTd.appendChild(manageInput);
+
+                            row.appendChild(manageTd);
+
+                            var deleteTd = document.createElement("td");
+                            var deleteInput = document.createElement("input");
+                            deleteInput.className = "delete-input";
+                            deleteInput.type = "submit";
+                            deleteInput.value = "Usuń";
+                            deleteInput.onclick = function () {
+                                deleteDoctor(doctor.id);
+                            };
+                            deleteTd.appendChild(deleteInput);
+
+                            row.appendChild(deleteTd);
+
+                            tbody.appendChild(row);
+
+                        });
+                        sectionDiv.appendChild(table);
+                        doctorsDiv.appendChild(sectionDiv);
+                    } else {
+                        sectionDiv.appendChild(document.createElement("br"));
+                        var errorLabel = document.createElement("label");
+                        errorLabel.className = "error-description-label";
+                        errorLabel.innerText = "Ten oddział nie ma jeszcze lekarzy!";
+                        sectionDiv.appendChild(errorLabel);
+                        doctorsDiv.appendChild(sectionDiv);
+                    }
+
 
                 } else {
-                    alert(data.description);
+                    alert("Nastąpił błąd podczas ładowania strony. Odśwież ją.");
                 }
             })
         }
@@ -251,20 +367,19 @@ function updateDoctor(id, firstName, lastName, position,
                         var response = JSON.parse(http.responseText);
                         console.log(response);
                         if (response.resp_status === "ok") {
-                            //TODO ładniejsze info
-                            alert("Update Lekarza");
+                            alert("Zaktualizowano dane lekarza");
                         } else {
-                            //TODO lepsze wyswietlanie errora
-                            alert(response.description);
+                            alert("Próba aktualizacji danych lekarza zakończyła się niepowodzeniem");
                         }
                         getDoctors();
                     }
                 };
             } else {
-                alert("bład");
+                alert("Podano błędne dane sprawdź czy imię, nazwisko nie są puste," +
+                    " a płaca jest między <" + s.min_salary + "; " + s.max_salary + ">!");
             }
         } else {
-            alert(data.description)
+            alert("Próba aktualizacji danych lekarza zakończyła się niepowodzeniem");
         }
 
     });
@@ -281,11 +396,9 @@ function deleteDoctor(id) {
             var response = JSON.parse(http.responseText);
             console.log(response);
             if (response.resp_status === "ok") {
-                //TODO ładniejsze info
-                alert("usunięto Lekarza id:" + id);
+                alert("Pomyślnie usunięto lekarza");
             } else {
-                //TODO lepsze wyswietlanie errora
-                alert(response.description);
+                alert("Nie można usunąć lekarza, prawdopodobnie są jeszcze z nim powiązane pobyty");
             }
             getDoctors();
         }
@@ -331,21 +444,22 @@ function addDoctor() {
                         var response = JSON.parse(http.responseText);
                         console.log(response);
                         if (response.resp_status === "ok") {
-                            //TODO ładniejsze info - konieczne bo tylko tu zobaczysz id
                             var doctor = response.doctor;
                             alert("Dodano Lekarza id:" + doctor.id);
                         } else {
-                            //TODO lepsze wyswietlanie errora
-                            alert(response.description);
+                            alert("Nastąpił błąd przy dodawaniu lekarza. Odśwież stronę i spróbuj jeszcze raz");
                         }
                         getDoctors();
                     }
                 };
             } else {
-                alert("bład");
+                s = data.salary;
+                console.log(s);
+                alert("Podano błędne dane sprawdź czy imię, nazwisko nie są puste," +
+                    " a płaca jest między <" + s.min_salary + "; " + s.max_salary + ">!");
             }
         } else {
-            alert(data.description)
+            alert("Nastąpił błąd przy dodawaniu lekarza. Odśwież stronę i spróbuj jeszcze raz");
         }
     })
 }

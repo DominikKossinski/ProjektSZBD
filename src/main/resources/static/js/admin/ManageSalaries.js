@@ -199,7 +199,7 @@ function deleteSalary(position) {
                 alert("Usunięto stanowisko: " + position);
             } else {
                 alert("Nastąpił błąd podczas usuwania stanowiska," +
-                    " spróbuj pownownie po odświeżeniu strony");
+                    " prawdopodobnie ktoś jest zatrudniony na takim stanowisku");
             }
             getSalaries();
         }

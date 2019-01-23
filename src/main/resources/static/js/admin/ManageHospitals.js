@@ -74,7 +74,7 @@ function getHospitals() {
                 acceptInput.type = "submit";
                 acceptInput.value = "Akceptuj";
                 acceptInput.onclick = function () {
-                    updateHospital(hospital.id, nameInput.value, addressInput.value, cityInput.value);
+                    updateHospital(hospital.id, nameTdInput.value, adresTdInput.value, miastoTdInput.value);
                 };
                 acceptInput.style.display = "none";
                 editTd.appendChild(acceptInput);
@@ -128,14 +128,12 @@ function getHospitals() {
                 patientsTbody.append(row);
             })
         } else {
-            //TOdo ładniejsze wyświetlanie błędu
-            alert(data.description);
+            alert("Nastąpił błąd podczas ładowania szpitali");
         }
     })
 }
 
 function updateHospital(id, name, address, city) {
-    //TODO potwierdzenie chęci
     var data = JSON.stringify({
         "id": id,
         "name": name,
@@ -153,23 +151,20 @@ function updateHospital(id, name, address, city) {
                 var response = JSON.parse(http.responseText);
                 console.log(response);
                 if (response.resp_status === "ok") {
-                    //TODO ładniejsze info - konieczne bo tylko tu zobaczysz id
-                    alert("Update hospital id:" + id);
+                    alert("Zaktualizowano dane szpitala");
                 } else {
-                    //TODO lepsze wyswietlanie errora
-                    alert(response.description);
+                    alert("Błąd przy aktualizacji danych. Odśwież stronę i spróbuj jeszcze raz");
                 }
                 getHospitals();
             }
         };
     } else {
-        //TODO ładniejsze wyświetlanie info o błedzie
-        alert("błąd")
+        alert("Podano błędne dane! Nazwa, adres i miasto nie mogą być puste");
     }
+
 }
 
 function deleteHospital(id) {
-    //TODO potwierdznie woli
     var http = new XMLHttpRequest();
     var url = "/api/admin/deleteHospital?id=" + id;
     http.open("Delete", url, true);
@@ -180,11 +175,9 @@ function deleteHospital(id) {
             var response = JSON.parse(http.responseText);
             console.log(response);
             if (response.resp_status === "ok") {
-                //TODO ładniejsze info - konieczne bo tylko tu zobaczysz id
-                alert("Delete hospital id:" + id);
+                alert("Usunięto szpital");
             } else {
-                //TODO lepsze wyswietlanie errora
-                alert(response.description);
+                alert("Nie można usunąć szpitala, prawdopodobnie posiada on jeszcze oddziały!")
             }
             getHospitals();
         }

@@ -38,8 +38,7 @@ function getMyStays() {
             })
 
         } else {
-            //TODO ładniejsze wyświetlanie błędu
-            alert(data.description);
+            alert("Nastąpił błąd podczas ładowania pobytów. Odśwież stronę");
         }
     })
 
@@ -56,8 +55,7 @@ function getRoomById(id, hosp_id, oddzial) {
             var room = data.room;
             getHospitalSectionById(room.hospital_section_id, hosp_id, oddzial);
         } else {
-            //TODO ładniesze info o błędzie
-            alert(data.description);
+            alert("Nastąpił błąd podczas ładowania pobytów. Odśwież stronę");
         }
     })
 }
@@ -75,8 +73,7 @@ function getHospitalSectionById(id, hosp_id, oddzial) {
             oddzial.innerText = hospitalSection.name;
             getHospitalById(hospitalSection.hospital_id);
         } else {
-            //TODO ładniesze info o błędzie
-            alert(data.description);
+            alert("Nastąpił błąd podczas ładowania pobytów. Odśwież stronę");
         }
     })
 }
@@ -90,8 +87,7 @@ function getDoctorById(id, nameTd) {
             var doctor = data.doctor;
             nameTd.innerText = doctor.last_name;
         } else {
-            //TODO ładniesze info o błędzie
-            alert(data.description);
+            alert("Nastąpił błąd podczas ładowania pobytów. Odśwież stronę");
         }
     })
 }
